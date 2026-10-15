@@ -1,0 +1,6 @@
+interface:
+  display_name: "Starling Director"
+  short_description: "Review scene meaning, action and branch continuity"
+  default_prompt: "Use $starling-director to plan and review this project's visual meaning and continuity."
+policy:
+  allow_implicit_invocation: true

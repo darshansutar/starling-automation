@@ -1,0 +1,13 @@
+interface:
+  display_name: Starling Image Pack Generator
+  short_description: Verify narration images and dialogue storyboards
+  default_prompt: Use $starling-image-pack-generator for this Starling project.
+  icon_small: assets/icon.svg
+  icon_large: assets/icon.svg
+policy:
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas
+  allow_implicit_invocation: true

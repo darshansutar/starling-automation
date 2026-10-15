@@ -1,0 +1,12 @@
+projects/
+tmp/
+.env
+.env.*
+!.env.example
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.sqlite3-*
+pipeline/connections.json
+.venv/
+*.log

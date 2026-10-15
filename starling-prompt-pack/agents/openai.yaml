@@ -1,0 +1,13 @@
+interface:
+  display_name: Starling Prompt Pack
+  short_description: Plan narration images and dialogue storyboards
+  default_prompt: Use $starling-prompt-pack for this Starling project.
+  icon_small: assets/icon.svg
+  icon_large: assets/icon.svg
+policy:
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas
+  allow_implicit_invocation: true

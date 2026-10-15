@@ -1,0 +1,13 @@
+interface:
+  display_name: Starling Panel Corrector
+  short_description: Inspect narration images and dialogue panels
+  default_prompt: Use $starling-panel-corrector for this Starling project.
+  icon_small: assets/icon.svg
+  icon_large: assets/icon.svg
+policy:
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas
+  allow_implicit_invocation: true

@@ -1,0 +1,6 @@
+interface:
+  display_name: "Starling Verification"
+  short_description: "Review images, panels and videos with evidence"
+  default_prompt: "Use $starling-verification to review project images, panels and videos and report defects and unverified checks."
+policy:
+  allow_implicit_invocation: true

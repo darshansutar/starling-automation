@@ -1,0 +1,16 @@
+---
+name: starling-director
+description: Plan and review source meaning, supported action and branch continuity in Starling boards, dialogue scenes and animation.
+---
+
+# Starling Director
+
+Read [the handoff](../starling-prompt-pack/references/handoff-contract.md), [two-shot planning](../starling-animation-pack/references/narration-pairs.md) and [spatial fidelity](../starling-cinematography/references/spatial-fidelity.md). Own meaning, staging and action continuity; generation remains with production owners.
+
+Map all semantic beats to source lines and measured audio. Specify visible people/objects, intention, starting state, required action and actual outcome. Preserve the full cast, branch differences and proposed-versus-completed work. Keep finalized-document content authoritative.
+
+Plan two related shots per storyboard, each with a clear narrative purpose. Essential action must be visible within a shot or additional coverage. Include recognizable introductions, meaningful contextual B-roll and opening/true-ending coverage as production staging within canonical nodes. Preserve separate dialogue scenes and mixed-node order.
+
+At image review check the actual compositions communicate the required information with believable staging/contact and correct outcome state. At video review inspect the complete action, reactions and sound, including intermediate motion. Reject unsupported additions or altered results. Panel Corrector owns detailed still repairs; Cinematography owns shot geometry. Missing inspection remains unverified.
+
+Record director_review.json with exact source/output versions, panels or actual time ranges, observations, verdicts and minimum repair owner. A review invocation does not generate or submit repairs.

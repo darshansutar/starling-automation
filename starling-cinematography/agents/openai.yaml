@@ -1,0 +1,6 @@
+interface:
+  display_name: "Starling Cinematography"
+  short_description: "Plan and verify framing, panel geometry and cuts"
+  default_prompt: "Use $starling-cinematography to plan and verify this project's framing and shot geometry."
+policy:
+  allow_implicit_invocation: true

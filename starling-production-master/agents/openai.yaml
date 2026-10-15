@@ -1,0 +1,14 @@
+interface:
+  display_name: Starling Production Master
+  short_description: Run the Starling script-to-video pipeline in order
+  default_prompt: Use $starling-production-master with my script or roleplay to run
+    the full audio-first production pipeline through verified animation and stitching.
+  icon_small: assets/icon.svg
+  icon_large: assets/icon.svg
+policy:
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas
+  allow_implicit_invocation: true

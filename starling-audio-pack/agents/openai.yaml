@@ -1,0 +1,6 @@
+interface:
+  display_name: "Starling Audio Pack"
+  short_description: "Prepare accepted speech and measured audio cues"
+  default_prompt: "Use $starling-audio-pack to prepare accepted project speech and measured cues."
+policy:
+  allow_implicit_invocation: true

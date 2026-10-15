@@ -1,0 +1,14 @@
+interface:
+  display_name: Starling Animation Monitor
+  short_description: Queue animations, monitor completion and repair defects
+  default_prompt: Use $starling-animation-monitor to submit all authorized ready clips
+    once, check hourly with a supported runner, and review and repair completed outputs.
+  icon_small: assets/icon.svg
+  icon_large: assets/icon.svg
+policy:
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas
+  allow_implicit_invocation: true
