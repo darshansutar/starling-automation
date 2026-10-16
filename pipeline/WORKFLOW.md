@@ -29,8 +29,12 @@ Follow [visual routing](../starling-animation-pack/references/visual-routing.md)
 
 Declare complete render scope. Animation receipt render_plans match it exactly: payload, content_kind, visual_format, shot_count/cut_times for boards and measured reference_seconds for dialogue. Keep these local metadata fields outside API payloads. The runtime validates structure; actual image geometry and full prompt meaning require review.
 
+Animation prompts use the [five-section template](../starling-animation-pack/references/animation-template.md). Save a per-shot visible inventory and ordered reference map, and record shot_inventory_match with inspected evidence. Older animation receipts without this review or with the previous heading format become stale; reconcile and reaccept the prompt stage before new submissions. Preserve historical prompts, media and paid-job IDs. This change does not automatically regenerate or resubmit any clip.
+
 prepare-render CLIP PAYLOAD --kind narration returns a saved intent and exact tool arguments. The host submits once, then records actual provider ID using job INTENT queued --provider-id REAL_ID --evidence RESPONSE. Submit all ready clips in canonical order respecting provider limits. Review is not a hold between initial submission groups. Unknown outcomes use submission_unknown and are reconciled, not blindly retried. Repairs retain at most two replacements after the initial attempt.
 
 Collect all known outputs or explicit pending/failed records, then review complete picture/sound and repair defects through EN2. Full review is required for verified jobs; missing capability remains unverified. Read [POSTPRODUCTION.md](POSTPRODUCTION.md) for selected outputs, exact current manifests, stitching and final ZIP. FFmpeg still-image animation fallbacks are disabled.
+
+After the complete initial render pass, the animation monitor can run as a ten-minute scheduled follow-up in the same chat when scheduling and connector access are demonstrated. It uses studio_queue for shared queue context and video_status for exact project IDs; `postproduction.py monitor-report` gives project counts and review scorecards. Record a real scheduled task ID only after a successful first run. Scheduling does not itself approve output or authorize paid replacements.
 
 Run offline checks with `python -m unittest discover -s pipeline -p test_*.py -v`. Test fixtures do not approve production media. Archived projects, provider-guide snapshots and historical media remain preserved; current skill contracts govern new work.

@@ -10,14 +10,7 @@ Movement stays within each shot and follows source meaning. Quiet object coverag
 
 ## Reference prompt
 
-Use the live EN2 reference guide and these six sections in order:
-
-1. `subject_definitions`: actual Picture/Audio indexes and their assigned roles.
-2. `summary`: scene purpose, output style and approved shot structure.
-3. `retention_analysis`: identities, compositions and state retained; source-sheet presentation excluded.
-4. `detailed_description`: Shot 1 from top panel, permitted movement and locked camera; exact hard-cut cue; Shot 2 from bottom panel, permitted movement and locked camera. One full-screen composition at a time. For dialogue describe the clean scene, assigned speakers and measured turns instead.
-5. `overall_soundscape`: only planned non-vocal sound; no generated narration. Dialogue sound follows the supplied recording.
-6. `non_diegetic_music`: N/A unless explicitly requested and supported by the assembly plan.
+Use the [five-section animation template](animation-template.md) for subject_definitions, summary, retention_analysis, detailed_description and overall_soundscape. It owns the ordered reference map, per-reference preservation labels, per-shot visible inventory and concrete action wording. Record shot_inventory_match by comparing the final prompt and actual reference assignments with both inspected panels.
 
 Both storyboard shots need adequate measured time. The cut is direct; preserve scene geometry without blended/morph transitions. Narration characters are silent with relaxed closed mouths. Dialogue lip-sync belongs only to the current speaker. Keep narration master/transcript outside the board render. Reference sheets do not become scenes or extra people.
 

@@ -25,7 +25,7 @@ STAGES = {
     'images': {'deps': ['prompts'], 'skills': ['starling-image-pack-generator', 'starling-verification'],
                'checks': ['all_assets_and_panels', 'director', 'cinematography', 'format_and_geometry', 'spatial_fidelity']},
     'animation_prompts': {'deps': ['images'], 'skills': ['starling-animation-pack'],
-                          'checks': ['actual_inputs_inspected', 'mode_and_references', 'measured_timing', 'provider_limits']},
+                          'checks': ['actual_inputs_inspected', 'mode_and_references', 'shot_inventory_match', 'measured_timing', 'provider_limits']},
     'renders': {'deps': ['animation_prompts'], 'skills': ['starling-animation-pack', 'starling-verification'],
                 'checks': ['complete_picture', 'complete_sound', 'speech_and_lipsync', 'director', 'cinematography', 'spatial_fidelity']},
     'assembly': {'deps': ['renders', 'docs'], 'skills': ['starling-animation-pack', 'starling-verification'],
@@ -88,9 +88,9 @@ def validate_render(payload, content_kind, reference_seconds=None):
         require('ref_audios' not in payload, 'Bookends keep narration external and omit reference audio')
         require(reference_seconds is None or (type(reference_seconds) in (int, float) and reference_seconds == 0),
                 'Visual-only bookends have no reference audio duration')
-    sections = ['subject_definitions', 'summary', 'retention_analysis', 'detailed_description', 'overall_soundscape', 'non_diegetic_music']
+    sections = ['subject_definitions', 'summary', 'retention_analysis', 'detailed_description', 'overall_soundscape']
     headings = re.findall(r'^([a-z_]+):', payload['prompt'], re.MULTILINE)
-    require(headings == sections, 'Reference prompt requires exactly six sections in order')
+    require(headings == sections, 'Reference prompt requires exactly five sections in order')
 
 
 def validate_plan(plan):
@@ -218,6 +218,11 @@ class Project:
             if receipt:
                 state, reason = 'verified', None
                 try:
+                    if stage == 'animation_prompts':
+                        require(receipt.get('checks', {}).get('shot_inventory_match', {}).get('verdict') == 'pass',
+                                'Animation prompt inventory review required under current contract')
+                        for plan in receipt.get('render_plans', {}).values():
+                            validate_plan(plan)
                     for artifact in receipt['artifacts']:
                         require(digest(self.file(artifact['path'])) == artifact['sha256'], 'Artifact changed: ' + artifact['path'])
                 except (PipelineError, OSError) as exc:

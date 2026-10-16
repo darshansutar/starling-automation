@@ -8,7 +8,7 @@ from test_intake import complete_intake
 
 
 def reference_prompt(description='approved two related shots'):
-    return '\n\n'.join(k+': '+(description if k=='detailed_description' else 'fixture') for k in ('subject_definitions','summary','retention_analysis','detailed_description','overall_soundscape','non_diegetic_music'))
+    return '\n\n'.join(k+': '+(description if k=='detailed_description' else 'fixture') for k in ('subject_definitions','summary','retention_analysis','detailed_description','overall_soundscape'))
 
 def payload():
     return {'prompt':reference_prompt(), 'refs':['uploaded-board.jpg'], 'duration':5, 'width':1280, 'height':720, 'quality':False}
@@ -75,6 +75,31 @@ class RuntimeTests(unittest.TestCase):
 
     def test_dependency_gate(self):
         with self.assertRaises(PipelineError): self.project.accept(self.receipt('audio'))
+
+    def test_five_section_animation_contract(self):
+        validate_render(payload(), 'narration')
+        for prompt in (reference_prompt()+'\nnon_diegetic_music: N/A',
+                       reference_prompt().replace('summary:', 'subject_definitions:'),
+                       reference_prompt().replace('retention_analysis:', 'unmapped:')):
+            with self.subTest(prompt=prompt):
+                p=payload();p['prompt']=prompt
+                with self.assertRaises(PipelineError):validate_render(p,'narration')
+
+    def test_animation_requires_inventory_review(self):
+        self.project.set_scope('renders',['clip1'])
+        for stage in list(STAGES)[:5]:self.project.accept(self.receipt(stage))
+        receipt=self.receipt('animation_prompts')
+        del receipt['checks']['shot_inventory_match']
+        with self.assertRaises(PipelineError):self.project.accept(receipt)
+        self.project.accept(self.receipt('animation_prompts'))
+
+    def test_saved_animation_receipt_needs_current_review(self):
+        self.ready()
+        row=self.project.db.execute("SELECT receipt FROM stages WHERE name='animation_prompts'").fetchone()
+        receipt=json.loads(row[0]);del receipt['checks']['shot_inventory_match']
+        with self.project.db:
+            self.project.db.execute("UPDATE stages SET receipt=? WHERE name='animation_prompts'",(json.dumps(receipt),))
+        self.assertEqual(self.project.status()['animation_prompts']['state'],'stale')
 
     def test_connector_rejection_without_job_can_retry(self):
         self.ready()

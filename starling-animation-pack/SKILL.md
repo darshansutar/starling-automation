@@ -9,7 +9,7 @@ Check completed [intake](../pipeline/INTAKE.md). Read [visual routing](reference
 
 ## Prepare from accepted inputs
 
-Inspect both actual panels of every approved board or the clean dialogue scene, relevant assets and accepted audio/cues. Verify Director/Cinematography and spatial findings. Write each six-section reference prompt from the actual composition and permitted action. A board is two related shots: top then bottom with one measured hard cut, one full-screen scene at a time and locked cameras. Movement occurs within shots. Keep original narration outside EN2; dialogue uses accepted speech with speaker/turn mapping.
+Inspect both actual panels of every approved board or the clean dialogue scene, relevant assets and accepted audio/cues. Verify Director/Cinematography and spatial findings. Use the [five-section animation template](references/animation-template.md), with explicit Picture roles, per-shot retention and concrete acting from the inspected composition. Save a per-shot visible inventory and ordered reference map; record shot_inventory_match before submission. A board is two related shots: top then bottom with one measured hard cut, one full-screen scene at a time and locked cameras. Movement occurs within shots. Keep original narration outside EN2; dialogue uses accepted speech with speaker/turn mapping.
 
 Save exact prompt/payload, source hashes, refs and audio mappings, board panel boxes, shot_count, cut_times, duration/used duration, source/assembly offsets and review evidence. Inspect returned uploaded bytes as well as local originals before render acceptance. Use EN2 reference mode and Fast quality=false throughout.
 
