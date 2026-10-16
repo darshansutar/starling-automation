@@ -6,7 +6,7 @@ Source-faithful branching video workflow: script, accepted audio, two-shot story
 
 - `starling-*/`: 11 skills, reference instructions and the Script Rebuilder helper.
 - `pipeline/`: project state, intake, handoffs, acceptance, assembly and offline tests.
-- `docs/Starling_Workflow_Explained.pdf`: illustrated 16-page workflow explanation.
+- `docs/Starling_Workflow_Explained.pdf`: illustrated 17-page workflow explanation.
 - `docs/skill-documents/`: full text of each skill in 11 separate Word documents.
 
 ## Setup
