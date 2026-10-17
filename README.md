@@ -1,12 +1,12 @@
 # Starling automation
 
-Source-faithful branching video workflow: script, accepted audio, two-shot storyboards, EN2 animation, review and final assembly.
+Source-faithful branching video workflow: script, accepted audio, labelled black-and-white two-shot narration storyboards, EN2 animation, review and final assembly.
 
 ## Contents
 
 - `starling-*/`: 11 skills, reference instructions and the Script Rebuilder helper.
 - `pipeline/`: project state, intake, handoffs, acceptance, assembly and offline tests.
-- `docs/Starling_Workflow_Explained.pdf`: illustrated 17-page workflow explanation.
+- `docs/Starling_Workflow_Explained.pdf`: illustrated 18-page workflow explanation.
 - `docs/skill-documents/`: full text of each skill in 11 separate Word documents.
 
 ## Setup
@@ -44,3 +44,5 @@ FFmpeg and ffprobe are required for the synthetic media tests. Offline tests do 
 The CLI records state and prepares handoffs. It does not run MCP calls or a background service. Connected operations happen in the active assistant session. Full listening and video review must be performed before acceptance. Failed video is repaired through EN2; FFmpeg is used for technical checks and accepted-media assembly, not still-image replacement animation.
 
 Original production media, paid-job IDs, credentials, historical exports and local connector-link IDs are not included in this repository. No production run is triggered by cloning or pushing it.
+
+Current narration uses relevant character, environment, prop and storyboard references in that order, affirmative five-section prompts and a measured hard cut between edge-to-edge colour shots. Dialogue keeps its clean-scene/reference-audio generation route. Assembly uses the selected video’s embedded dialogue audio and blocks a timeline that would shorten it. Reconcile a longer dialogue interval and shift following material before assembly.

@@ -1,6 +1,6 @@
 # Starling production workflow
 
-Current contract: 16 October 2026. Read mandatory [INTAKE.md](INTAKE.md), the production Master and the owning stage skills. This runtime preserves state and issues handoffs; ChatGPT executes MCP tools in the active session. No detached runner or automatic perceptual reviewer is installed.
+Current contract: 17 October 2026. Read mandatory [INTAKE.md](INTAKE.md), the production Master and the owning stage skills. This runtime preserves state and issues handoffs; ChatGPT executes MCP tools in the active session. No detached runner or automatic perceptual reviewer is installed.
 
 ## Start and resume
 
@@ -25,13 +25,9 @@ Confirm Google account metadata is darshan@en2.ai before native Docs writes. Sav
 
 ## Visual and render handoff
 
-Follow [visual routing](../starling-animation-pack/references/visual-routing.md): each 1x2 board contains two related shots with one measured hard cut. Clean dialogue scenes use approved speech. Narration stays outside generation. Actual panels, spatial relationships, audio cues and uploaded bytes must pass preflight.
+Follow [visual routing](../starling-animation-pack/references/visual-routing.md). Narration uses black-and-white 1x2 storyboards with SHOT/time/CAMERA/ACTION labels below both pictures. Inspect the board, then write the five-section affirmative animation prompt and attach relevant character, environment, prop and storyboard references in that order. Render two individual edge-to-edge colour shots with one measured hard cut. Caption strips and layout are production guidance. Dialogue retains clean-scene refs, accepted speech and existing turn mapping. Record picture boxes, hashes, actual upload checks, measured audio mappings and shot_inventory_match. Narration plans use visual_format=storyboard_1x2, shot_count=2 and one cut_times value within used duration. The runtime validates structure, not visual truth. Reconcile older narration plans before new submissions; preserve paid IDs and media.
 
-Declare complete render scope. Animation receipt render_plans match it exactly: payload, content_kind, visual_format, shot_count/cut_times for boards and measured reference_seconds for dialogue. Keep these local metadata fields outside API payloads. The runtime validates structure; actual image geometry and full prompt meaning require review.
-
-Animation prompts use the [five-section template](../starling-animation-pack/references/animation-template.md). Save a per-shot visible inventory and ordered reference map, and record shot_inventory_match with inspected evidence. Older animation receipts without this review or with the previous heading format become stale; reconcile and reaccept the prompt stage before new submissions. Preserve historical prompts, media and paid-job IDs. This change does not automatically regenerate or resubmit any clip.
-
-prepare-render CLIP PAYLOAD --kind narration returns a saved intent and exact tool arguments. The host submits once, then records actual provider ID using job INTENT queued --provider-id REAL_ID --evidence RESPONSE. Submit all ready clips in canonical order respecting provider limits. Review is not a hold between initial submission groups. Unknown outcomes use submission_unknown and are reconciled, not blindly retried. Repairs retain at most two replacements after the initial attempt.
+prepare-render CLIP PAYLOAD --kind narration returns a saved intent and exact tool arguments. The host submits once, then records actual provider ID using job INTENT queued --provider-id REAL_ID --evidence RESPONSE. Submit all ready clips in canonical order respecting provider limits. Review is not a hold between initial submission groups. Unknown outcomes use submission_unknown and are reconciled, not blindly retried. An initial visual failure permits one script-faithful scene redesign, inspected fresh images and one replacement animation; a second failure stops for user review. Retain the logical clip ID across redesigns. Runtime caps automatic replacements at one, including projects with an older higher setting; it does not judge scene fidelity. Animation prompts explicitly select 2D, 2.5D or 3D to match the inspected images.
 
 Collect all known outputs or explicit pending/failed records, then review complete picture/sound and repair defects through EN2. Full review is required for verified jobs; missing capability remains unverified. Read [POSTPRODUCTION.md](POSTPRODUCTION.md) for selected outputs, exact current manifests, stitching and final ZIP. FFmpeg still-image animation fallbacks are disabled.
 

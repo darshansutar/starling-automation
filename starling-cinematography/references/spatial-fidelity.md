@@ -1,6 +1,6 @@
 # Physical plausibility and spatial continuity
 
-Maintain physically plausible scene geometry and spatial continuity. People, objects and environments must have consistent proportions, perspective, orientation, depth ordering, clearance and supported contact. Solid surfaces remain distinct, with correct visible and hidden faces. Preserve these relationships across both storyboard shots and throughout animation; changes must follow the planned action and viewpoint.
+Maintain physically plausible scene geometry and spatial continuity. People, objects and environments must have consistent proportions, perspective, orientation, depth ordering, clearance and supported contact. Solid surfaces remain distinct, with correct visible and hidden faces. Preserve these relationships across related storyboard shots and throughout animation; changes must follow the planned action and viewpoint.
 
 ## Required checks
 

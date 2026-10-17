@@ -1,6 +1,6 @@
 ---
 name: starling-production-master
-description: Coordinate Starling production from mandatory intake through script, accepted audio, two-shot storyboards, EN2 rendering, review and node assembly.
+description: Coordinate Starling production from mandatory intake through script, accepted audio, labelled narration storyboards, EN2 rendering, review and node assembly.
 ---
 
 # Starling Production Master
@@ -21,13 +21,13 @@ For a source Starling link, retrieve all beats, branches, recovery content, cons
 | Docs | Google Drive and Google Docs skills | Confirmed darshan@en2.ai account, real native document ID/URL and matching readback |
 | Audio | starling-audio-pack | Complete accepted speech, speakers, listening and measured cues |
 | Visual plan | starling-prompt-pack, director, cinematography | Full inventory and audio-timed source coverage |
-| Images | image-pack-generator, panel-corrector | Approved assets, both panels of every board and clean dialogue scenes |
+| Images | image-pack-generator, panel-corrector | Approved assets, labelled two-shot narration boards and clean dialogue scenes |
 | Animation preflight | starling-animation-pack | Exact approved inputs/uploads, prompts, shot mapping and measured timing |
 | Submit and collect | animation-pack, animation-monitor | All ready clips submitted once, real IDs and downloaded outputs or explicit failures |
 | Review and repair | verification, director, cinematography | Complete picture/sound reviews; targeted EN2 replacements rechecked |
 | Assembly | animation-pack and postproduction | Verified nodes, original audio, branch/word/join checks and final ZIP |
 
-Apply image review immediately after generation; foundational assets pass before dependent scenes. Use [visual routing](../starling-animation-pack/references/visual-routing.md) and [spatial fidelity](../starling-cinematography/references/spatial-fidelity.md). Submit all approved boards in one ordered pass respecting capacity, collect the scoped outputs, then verify. Failed/unverified clips cannot enter final stitching. Repairs use EN2 Fast, at most two replacements after the initial attempt. FFmpeg handles technical checks, trimming, normalization, original-audio stitching and export; still-image video replacements are disabled.
+Apply image review immediately after generation; foundational assets pass before dependent scenes. Use [visual routing](../starling-animation-pack/references/visual-routing.md) and [spatial fidelity](../starling-cinematography/references/spatial-fidelity.md). Submit all approved clips in one ordered pass respecting capacity, collect the scoped outputs, then verify. Failed/unverified clips cannot enter final stitching. After an initial visual failure, follow Animation Pack: redesign the scene once to match the same script beat, inspect fresh images and submit one EN2 Fast replacement. If it fails, stop for user review. Match explicit 2D, 2.5D or 3D animation wording to the inspected visuals. During assembly, narration, filler, establishing and ending clips discard rendered sound and use accepted external narration. Dialogue and conversation clips retain the verified audio embedded in their selected video so speech remains aligned to the rendered lip movement; do not replace that interval with the standalone dialogue file. Measure the selected dialogue video's usable picture/audio duration and keep it through the completed final utterance. If it runs longer than the earlier standalone-audio timing, extend the node timeline rather than cutting speech. FFmpeg handles technical checks, trimming, normalization, audio routing and export; still-image video replacements are disabled.
 
 ## Providers and authority
 

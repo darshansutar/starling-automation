@@ -1,9 +1,11 @@
 ---
 name: starling-verification
-description: Review Starling images, two-shot boards, complete EN2 videos and final node assemblies against approved sources without generating media.
+description: Review Starling images, labelled narration storyboards, complete EN2 videos and final node assemblies against approved sources without generating media.
 ---
 
 # Starling Verification
+
+Check temporal and lighting continuity throughout each clip: sky colour, sun position, exposure, artificial lights and shadow direction/length remain consistent with the approved scene. Flag unplanned timelapse, day/night cycling, changing weather or light flicker, even if the opening and closing frames match. Permit a time transition only when explicitly supported by the source and approved shot plan.
 
 Review only the requested scope. Read [the handoff](../starling-prompt-pack/references/handoff-contract.md), [visual routing](../starling-animation-pack/references/visual-routing.md) and [spatial fidelity](../starling-cinematography/references/spatial-fidelity.md). Use Panel Corrector for still criteria, Animation Pack for video/assembly criteria and Director/Cinematography for their required verdicts. This review skill does not generate repairs, submit jobs, publish or activate monitoring.
 
@@ -13,9 +15,9 @@ Identify canonical script/branches, accepted audio/cues, style/assets, exact ima
 
 ## Inspect
 
-For stills inspect the whole image and both panels at useful resolution. Check identity, anatomy, cast, set/state, source meaning, clean presentation, aspect/panel boxes and all applicable spatial checklist items. Verify the two shots are related and each communicates its planned purpose. A board passes only when both panels and cross-panel checks pass.
+For stills inspect each complete image and both pictures and labels at useful resolution. Check identity, anatomy, cast, set/state, source meaning, clean presentation, aspect and framing and all applicable spatial checklist items. Verify the upper/lower pictures form two related shots, with matching camera/action/time labels below them and no arrows. Both pictures and label accuracy must pass.
 
-For video inspect complete normal-speed picture and sound, plus detailed cuts/suspicious intervals. Compare each shot against its saved panel inventory and ordered reference map. Flag added, duplicated or missing people/objects and reference-sheet content leaking into the scene, including temporary appearances during motion or cuts. Check approved visible inventory, only planned movement, supported action/contact, consistent background state, physical scale/depth/occlusion/orientation, fixed cameras and the exact hard cut. Both shots must be full-screen without source-sheet presentation. Narration subjects remain silent; original voice-over is checked at assembly. Dialogue requires exact speakers, full accepted speech, lip-sync and original-audio alignment. Samples/transcripts/metadata alone cannot establish whole-video acceptance.
+For video inspect complete normal-speed picture and sound, plus detailed cuts/suspicious intervals. Compare each shot against its saved panel inventory and ordered reference map. Flag added, duplicated or missing people/objects and reference-sheet content leaking into the scene, including temporary appearances during motion or cuts. Check approved visible inventory, only planned movement, supported action/contact, consistent background state, physical scale/depth/occlusion/orientation, the planned camera motion and the planned two-shot sequence. Check the measured hard cut and edge-to-edge colour presentation. Flag fades, dissolves, overlays, white borders/frames, mixed storyboard panels, printed labels or layout leakage. Inspect all intervening motion; matching sampled frames alone cannot pass the clip. In camera-only clips, reject any object or subject movement beyond the planned change of framing, including temporary opening/closing, cargo changes or newly revealed invented content. Narration subjects remain silent; original voice-over is checked at assembly. Dialogue requires exact speakers, full accepted speech, lip-sync and original-audio alignment. Samples/transcripts/metadata alone cannot establish whole-video acceptance.
 
 For final nodes check selected EN2 provenance, complete words/pauses at original speed, all joins, dialogue sync, canonical order, actual outcomes and every required branch. Review cuts containing unverified footage are not final delivery. Existing local animation alternatives are retained as history and excluded from current selection.
 

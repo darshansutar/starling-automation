@@ -12,6 +12,43 @@ SPATIAL={key:{"verdict":"pass","evidence":"Synthetic fixture only, not productio
 
 
 class PostproductionTests(unittest.TestCase):
+    def test_dialogue_uses_embedded_audio_and_blocks_short_timeline(self):
+        from unittest.mock import patch
+        self.engine.clips['a']['content_kind']='dialogue'
+        node={'clips':[{'clip_id':'a','start':0,'end':1}],
+              'audio_units':[{'path':'standalone.wav','sha256':'old','duration':1}]}
+        selected=[{'path':'fixture.mp4','sha':'selected-video-hash'}]
+        streams={'streams':[{'codec_type':'video','duration':'1','start_time':'0'},
+                            {'codec_type':'audio','duration':'1','start_time':'0'}]}
+        with patch('postproduction.probe',return_value=streams):
+            routed=self.engine.assembly_audio(node,selected)
+            self.assertEqual(routed[0]['path'],'fixture.mp4')
+            self.assertTrue(routed[0]['embedded_dialogue'])
+            node['clips'][0]['end']=.8
+            with self.assertRaisesRegex(PipelineError,'Dialogue would be cut'):
+                self.engine.assembly_audio(node,selected)
+            node['clips'][0]['end']=1
+            node['audio_units'][0]['duration']=1.2
+            with self.assertRaisesRegex(PipelineError,'boundaries'):
+                self.engine.assembly_audio(node,selected)
+        with patch('postproduction.probe',return_value={'streams':[streams['streams'][0]]}):
+            with self.assertRaisesRegex(PipelineError,'embedded'):
+                self.engine.assembly_audio(node,selected)
+
+    def test_real_mixed_assembly_keeps_embedded_dialogue(self):
+        execute(['ffmpeg','-v','error','-y','-i',str(self.root/'fixture.mp4'),'-i',str(self.root/'voice.wav'),
+                 '-map','0:v:0','-map','1:a:0','-t','0.4','-c:v','copy','-c:a','aac',str(self.root/'dialogue.mp4')])
+        self.engine.clips['a']['content_kind']='dialogue'
+        r=self.engine.attach('a','dialogue.mp4','test_a')
+        r.update(reviewer='OFFLINE SYNTHETIC TEST ONLY',status='verified',observations=['Synthetic only'],
+                 full_picture_reviewed=True,full_audio_reviewed=True,scene_fidelity='pass',spatial_checks=SPATIAL,
+                 dialogue_lipsync='pass',original_audio_sync='pass')
+        write(self.root/'a.json',r);self.engine.record_review('a.json');self.accept_fixture('b')
+        self.engine.timeline[0]['audio_units']=[{'path':'voice.wav','sha256':digest(self.root/'voice.wav'),'duration':.4} for _ in range(2)]
+        result=self.engine.assemble('node')
+        self.assertEqual(result['audio_units'][0]['path'],'dialogue.mp4')
+        self.assertEqual(result['audio_units'][1]['path'],'voice.wav')
+        self.assertAlmostEqual(float(probe(self.root/result['path'])['format']['duration']),.8,delta=.05)
     def setUp(self):
         self.temp=tempfile.TemporaryDirectory();self.root=Path(self.temp.name)
         runtime=Project(self.root,create=True,title='Offline synthetic postproduction')
@@ -61,6 +98,35 @@ class PostproductionTests(unittest.TestCase):
         self.assertEqual(self.engine.ingest('snapshot.json')['download_count'],0)
         self.assertEqual(len(self.engine.status()['outputs']),1)
         with self.assertRaises(PipelineError):self.engine.assemble('node')
+
+    def test_ten_minute_monitor_scopes_queue_and_scores_only_reviewed_output(self):
+        write(self.root/'statuses.json', [{'id':'test_a','state':'done','video_url':'https://example.invalid/a'},
+                                          {'id':'test_b','state':'done','video_url':'https://example.invalid/b'}])
+        result=self.engine.ingest('statuses.json')
+        self.assertAlmostEqual(result['next_due_epoch']-float(self.engine.db.execute(
+            "SELECT value FROM settings WHERE key='last_poll'").fetchone()[0]),600,delta=1)
+        write(self.root/'queue.json', {'lanes':1,'items':[{'id':'test_a','state':'in line','videos_ahead':0},
+                                                      {'id':'other','state':'rendering'}], 'all_done_in_s':80})
+        pending=self.engine.monitor_report('queue.json')
+        self.assertEqual(pending['studio_queue']['total'],2)
+        self.assertEqual(pending['studio_queue']['project_items'],1)
+        self.assertEqual(pending['counts']['generated'],2)
+        self.assertEqual(pending['counts']['downloaded'],0)
+        self.engine.attach('a','fixture.mp4','test_a')
+        provisional=self.engine.monitor_report('queue.json')
+        self.assertIsNone(provisional['clips'][0]['scorecard']['quality_score_percent'])
+        self.assertEqual(provisional['clips'][0]['scorecard']['decision'],'unverified')
+        review_path=self.engine.db.execute("SELECT review FROM outputs WHERE clip='a'").fetchone()[0]
+        review=json.loads((self.root/review_path).read_text(encoding='utf-8'))
+        review.update(reviewer='OFFLINE SYNTHETIC TEST ONLY',status='verified',
+                      observations=['Synthetic fixture; not production review'],
+                      full_picture_reviewed=True,full_audio_reviewed=True,
+                      scene_fidelity='pass',spatial_checks=SPATIAL)
+        write(self.root/'monitor-review.json',review)
+        self.engine.record_review('monitor-review.json')
+        accepted=self.engine.monitor_report('queue.json')
+        self.assertEqual(accepted['counts']['verified'],1)
+        self.assertEqual(accepted['clips'][0]['scorecard']['quality_score_percent'],100)
 
     def test_partial_review_cannot_pass_and_dialogue_cannot_zoom(self):
         r=self.engine.attach('a','fixture.mp4','test_a');r.update(reviewer='fixture',observations=['sample only'],status='verified',scene_fidelity='pass',spatial_checks=SPATIAL);write(self.root/'partial.json',r)

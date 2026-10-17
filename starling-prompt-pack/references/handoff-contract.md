@@ -16,7 +16,7 @@ Use pending, needs_fix, unverified, verified, blocked or stale with concrete evi
 
 Completed intake -> source-faithful script -> accepted measured audio -> visual plan -> reviewed assets/boards/scenes -> animation preflight -> submit all ready once -> collect -> complete picture/sound review -> targeted EN2 repairs -> re-review -> node stitching -> final review/ZIP.
 
-Foundational assets pass before dependent scenes. Both storyboard panels pass before animation. Relevant refs are mapped explicitly; only dialogue passes speech to EN2. Raw narration review and final assembled-audio review are distinct. Complete output review cannot be replaced by sampled frames, metadata or provider completion.
+Foundational assets pass before dependent scenes. Both narration storyboard pictures, below-picture labels and shot mapping pass before animation. Relevant refs are mapped explicitly; only dialogue passes speech to EN2. Raw narration review and final assembled-audio review are distinct. Complete output review cannot be replaced by sampled frames, metadata or provider completion.
 
 ## Branch-aware assembly
 

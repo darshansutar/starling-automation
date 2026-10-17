@@ -1,52 +1,66 @@
-# Five-section animation template
+# Five-section animation templates
 
-Adapted from the user's Home-Palliative Care animation pack. These are our writing conventions; discover live EN2 payload fields, reference syntax and limits before submission.
+Adapted from the user's Home-Palliative Care prompt pack. Both production routes use these five headings. Write affirmative instructions describing the desired result; keep defect lists in review checklists. Read [narration storyboard production](narration-pairs.md) for the current narration method.
 
-## Inspect and map before writing
+Inspect the approved clean scene and accepted speech first. Record visible cast, positions, object ownership/contact, background, lighting and supported movement. Attach only references needed by those visible subjects. Character sheets supply identity, not extra occupants; the clean scene controls composition. Save actual sequential Picture/Audio indexes and file hashes outside the prompt. Rebuild indexes when attachments change.
 
-Inspect each actual approved panel. Save its visible people (including partial bodies), counts, positions, objects, ownership/contact, background and lighting state, and permitted movement. Record empty backgrounds explicitly. Script meaning determines the action; the approved panel determines what is visible. Repair the panel first if required action needs missing people, objects or staging.
+## Dialogue template
 
-Attach only relevant character sheets, environment, props and the complete board, in that order. For dialogue use the approved clean scene and accepted audio, with supplementary assets only when useful. Save an ordered filename/index/role/shot map outside the prompt. Use actual sequential `<Picture N>` and `<Audio N>` indexes. Rebuild this map and all prompt mentions if optional references are removed to meet live limits.
-
-The board supplies composition, visible cast and state; character sheets supply identity, environment plates supply relevant set details, and props supply construction/material. Multiple views on a sheet represent one identity. A person visible in one shot must not appear in the other unless that panel also shows them. Exclude sheets for characters absent from the clip. References do not introduce their other occupants or objects into the scene. Name panel-grounded exceptions when wardrobe, visibility or state differs from an asset reference.
-
-## Template
-
-Use exactly these five headings, in order. Replace placeholders with inspected facts and measured timing. The three Picture entries below are illustrative; include exactly the references attached.
+Use exactly these five headings. The indexes below are illustrative; match actual attachments and measured timing.
 
 ```text
 subject_definitions:
-<Picture 1> is the character-design reference for [visible character]: [distinctive identity traits]. It supplies appearance only for [applicable shots].
-<Picture 2> is the environment reference for [location]: [relevant set details]. It does not add contents absent from the board.
-<Picture 3> is the approved storyboard: TOP defines [Shot 1], BOTTOM defines [Shot 2]. It controls framing, visible people/objects, placement and lighting. Render one full-screen shot at a time; the sheet layout is not shown.
+<Picture 1> is the approved clean scene: [exact visible cast, positions and objects]. It controls framing, inventory and lighting.
+<Picture 2> supplies [visible character]'s identity only: [retained traits].
+<Audio 1> supplies [speaker]'s accepted speech and selected voice.
 
 summary:
-[reference generation] The target video runs [measured duration] seconds. [Scene purpose and concrete action progression.] Follow <Picture 3>. [Exact visible cast for each shot, including zero where appropriate.] Characters remain silent; narration is added separately.
+[reference generation] The target video runs [duration] seconds. [Concrete scene action.] Follow <Picture 1> with exactly [visible cast]. [Speaker] delivers the supplied speech while [listener] listens.
 
 retention_analysis:
-<Picture 1> ([applicable shots]): fully_preserved - [specific identity traits retained and which body parts are actually visible].
-<Picture 2> ([applicable shots]): partially_preserved - [set details retained and explicit panel-grounded lighting/state differences].
-<Picture 3> ([Shot 1], [Shot 2]): partially_preserved - [panel-specific framing, positions, count, prop ownership and contact retained]; stacked-sheet presentation is excluded. [Relevant empty background or fixed object state.]
+<Picture 1>: fully_preserved - [composition, cast, supported contact, background and lighting].
+<Picture 2>: [fully_preserved/partially_preserved] - [assigned identity traits; explicit scene-grounded exceptions].
+<Audio 1>: fully_preserved - [exact speaker, voice and original words].
 
 detailed_description:
-The target video is [approved rendering style, palette and texture].
-[Shot 1] [Framing and starting arrangement visible in the top panel.] [Character/reference identity, position, gaze and supported contact.] [Specific movement, expression change and resulting hold during the measured interval.] [Relevant objects/background retain their pictured state.] Camera remains fixed. No speech.
-[Shot 2] At [exact measured timestamp], hard cut to [bottom panel composition]. [Exact cast and starting state.] [Supported action sequence and end state.] Camera remains fixed. Hold until [clip end]. No speech.
+[Shot 1] [2D, 2.5D or 3D animation matching the inspected visual style; approved framing.] [Starting pose, gaze and contact.] [Exact supplied dialogue using the live reference guide's speech syntax and correct audio/speaker mapping.] [Observable gesture during the measured turn, listener response and final hold.] Camera remains fixed. [Only action supported by the scene.]
 
 overall_soundscape:
-[Only planned sound compatible with the audio/assembly plan.] No generated narration or music. [For the current narration assembly route, request silence: accepted narration is added separately and generated sound is discarded.]
+[Supplied dialogue and explicitly planned compatible sound.] The supplied dialogue is the complete soundtrack.
 ```
 
-Describe observable acting: gaze shifts, supported hand movement, expression and end hold, rather than only an emotional adjective. Quiet shots can remain still. Avoid invented background activity or generic setting phrases that imply additional occupants.
-
-Use `fully_preserved` only for the assigned reference role actually retained. Use `partially_preserved` and name exceptions when needed; the label alone does not establish fidelity. Put reference/state facts in retention_analysis and action progression in detailed_description. Keep sections consistent on lighting, inventory, timing and reference roles, without repeating long restriction lists.
-
-For dialogue keep these five headings but describe the clean scene, supplied `<Audio N>`, exact speaker/turn mapping and measured action/lip-sync. Preserve source words and selected voices; do not invent a voice or request generated narration. Dialogue retains its clean-scene route. Music decisions belong in overall_soundscape, not a sixth heading.
-
-## Action-writing example
-
-For an inspected panel showing one seated person holding a phone: "Exactly one person is visible. Nitin sits at frame right, his forearm supported on his thigh and the phone already in his right hand. He lowers his gaze to the dark screen, blinks once and holds. His thumb rests on its edge; the empty passage and closed door retain their pictured state. Camera fixed." This illustrates specificity, not a default character or action to insert elsewhere.
+Describe observable acting rather than emotional labels alone. Keep reference/state facts in retention_analysis and movement in detailed_description. Use fully_preserved only for the assigned role actually retained; name exceptions. Preserve words, voices and complete turns. Music decisions belong in overall_soundscape, not a sixth heading.
 
 ## Preflight evidence
 
-Save the shot inventory and reference map with the prompt/plan, bound to inspected image hashes. Compare every prompt person, object, entry/exit, sound source and movement against the inventory and source. Off-screen sound does not authorize an on-screen actor. Record `shot_inventory_match` with concrete observations and artifact IDs, not just filename/count agreement. The runtime checks the receipt and headings; it cannot inspect image semantics. Follow [scene preservation](scene-preservation.md) and [submission](en2-submission.md).
+Compare every prompted person, object, entry/exit, sound source and movement with the inspected inventory and source. Off-screen sound does not authorize an on-screen actor. Record shot_inventory_match with observations and image hashes. Follow [scene preservation](scene-preservation.md) and [submission](en2-submission.md). Runtime checks structure, not image semantics.
+
+## Narration template
+
+Inspect the actual storyboard first. Attach only relevant references in character, environment, prop, storyboard order. Omit unused categories; match every Picture index to its real upload. The example has one character reference, one environment reference and one storyboard; adapt actions to the inspected artwork.
+
+```text
+subject_definitions:
+<Picture 1> supplies Meera's appearance: white hardhat, clear goggles, low dark bun, navy shirt and orange vest.
+<Picture 2> supplies the workshop colours, lighting and machine materials.
+<Picture 3> is the labelled 1x2 storyboard. Its upper picture defines Shot 1; its lower picture defines Shot 2. Each picture determines the visible cast, objects, placement and composition. Labels below the pictures provide timing, camera and action instructions.
+
+summary:
+[reference generation] An 8-second coloured 2D illustrated animation with two related shots. Meera inspects the machine, then considers what she notices. A direct hard cut at 4 seconds connects the shots.
+
+retention_analysis:
+<Picture 1>: partially_preserved - apply Meera's identity, hairstyle, clothing and proportions to the storyboard character.
+<Picture 2>: partially_preserved - apply its appearance to the workshop and machine regions drawn in each shot.
+<Picture 3>: fully_preserved - follow both illustrated compositions, visible inventories and action instructions. Render each illustrated scene individually as an edge-to-edge, full-frame colour shot. Treat the storyboard layout and caption strips exclusively as production guidance.
+
+detailed_description:
+Clean outlines, softly painted shading and warm colours match the supplied appearance references.
+[Shot 1] 0-4 seconds: Begin immediately with the fully formed upper-panel scene, a medium shot of Meera beside the control housing. ACTION: She leans her head slightly forward to inspect it, hands comfortably behind her back, then settles. CAMERA: A gentle three-percent push-in. The machine remains stationary and lighting stays constant.
+[Shot 2] 4-8 seconds: At exactly 4 seconds, switch directly to the fully formed lower-panel scene using a hard cut, a close-up of Meera and the housing. ACTION: Her gaze moves down the housing; she tilts her head slightly, blinks once naturally and settles. CAMERA: Static.
+Each shot occupies the entire canvas, with scene imagery extending to every edge. Display one complete scene at a time. Preserve the pictured cast count, identity, hairstyle, object scale, contact and spatial relationships. Meera's mouth stays naturally relaxed and closed.
+
+overall_soundscape:
+Silent visual sequence prepared for the approved narration track to be added during assembly.
+```
+
+Replace example cast, props, actions, timings and animation style with the inspected storyboard and measured audio plan. Use 2D, 2.5D or 3D according to approved colour references. Captions and prompt must agree. Record geometry and review evidence outside the prompt.

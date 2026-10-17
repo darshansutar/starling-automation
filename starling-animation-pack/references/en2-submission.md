@@ -4,13 +4,15 @@ Discover live EN2 upload, generation, status and reference-guide tools in the ac
 
 ## Before submission
 
-Check completed intake, source/audio acceptance, approved images, director/cinematography/spatial reviews and measured timing. Declare the complete clip inventory. Store exact `render_plans` in animation-prompts acceptance. Every plan uses `visual_format: storyboard_1x2` or `dialogue_scene`; board plans contain `shot_count: 2` and one `cut_times` value strictly inside duration. Record `reference_seconds` for dialogue from the actual combined audio. Board plans have no reference speech.
+Check completed intake, source/audio acceptance, inspected images, spatial/director/cinematography reviews and measured timing. Save shot_inventory_match and real uploaded-byte evidence. Follow [routing](visual-routing.md).
 
-Before upload, compare the prompt against the saved per-shot visible inventory and record shot_inventory_match. Use only references relevant to those visible subjects; save an ordered filename/index/role/shot map and reconcile every Picture/Audio mention after upload. Upload relevant references in their planned order. For boards: character -> environment -> props -> full board. For dialogue: clean scene and approved speech, with supplementary assets only when useful. Save actual returned uploaded names, indexes, byte counts and SHA-256. Retrieve the uploaded bytes and inspect the returned image; reconcile any mismatch before paying for video.
+Narration plans use visual_format=storyboard_1x2, shot_count=2 and one measured cut_times value inside the used interval. Upload relevant character, environment, prop and labelled storyboard images in that order; use refs and the five-section template. Keep narration external. Dialogue retains visual_format=dialogue_scene, refs and accepted ref_audios, explicit speaker/turn mapping and five-section reference prompting. Record actual reference_seconds and live provider limits. All requests use Fast quality=false. Local manifest fields stay outside the API payload.
 
-Build reference payloads with prompt, refs, duration, output dimensions and `quality: false`; dialogue additionally has ref_audios. Use current live limits. The runtime has a conservative under-15-second combined dialogue reference guard; stricter live limits also apply. Do not add local manifest fields to the API payload. Use the five-section reference format, not image/keyframe alignment instructions.
+Submit whole-second render durations within the live limits, rounding up when needed. Complete the planned action within the source interval and budget the surplus as a final hold for later conform; preserve exact narration timing in the manifest.
 
 ## Submit all ready once
+
+Honor an explicit user-selected rolling handoff: when the user asks to submit each completed pair immediately, inspect and accept that pair, record its intent, submit once, and continue image generation without waiting for that video's completion. Record the requested policy in project history. A generated pair with unresolved defects is not ready. Existing paid jobs remain tracked; changing submission cadence does not resubmit them.
 
 Call prepare-render per approved clip, save its intent, invoke the exact returned connected tool once, then record the real provider ID immediately. Submit in canonical order respecting service capacity. There is no review hold between initial groups. Input acceptance, duplicate prevention and repair limits still apply. Hold uncertain submissions and reconcile history instead of submitting again.
 

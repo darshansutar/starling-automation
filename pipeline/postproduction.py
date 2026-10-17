@@ -8,6 +8,7 @@ import subprocess
 import time
 import wave
 import zipfile
+from datetime import datetime, timezone
 from pathlib import Path
 try:
     from .runtime import Project, PipelineError, require, digest
@@ -37,6 +38,16 @@ def probe(path):
     return json.loads(execute(['ffprobe', '-v', 'error', '-show_streams', '-show_format', '-of', 'json', str(path)]))
 
 
+POLL_INTERVAL_SECONDS = 600
+
+
+def unwrap_mcp(value):
+    """Read saved MCP results without relying on a text block's presentation."""
+    if isinstance(value, dict) and 'structuredContent' in value:
+        return value['structuredContent']
+    return value
+
+
 class Postproduction:
     def __init__(self, project):
         self.runtime = Project(project)
@@ -60,14 +71,19 @@ class Postproduction:
         self.timeline = read(self.root / 'animation/assembly-plan.json')
         cfg = self.home / 'automation.json'
         if not cfg.exists():
-            write(cfg, {'poll_interval_seconds': 300, 'timezone': 'Asia/Calcutta',
+            write(cfg, {'poll_interval_seconds': POLL_INTERVAL_SECONDS, 'timezone': 'Asia/Calcutta',
                         'runner_status': 'blocked_runtime', 'runner_id': None,
                         'reason': 'No connected persistent scheduler with EN2 MCP and local workspace access',
                         'review_all_clips': True, 'auto_continue_authorized': True,
                         'submission_policy': 'all_ready_once',
-                        'animation_fallback': 'disabled', 'max_paid_repairs': 2,
+                        'animation_fallback': 'disabled', 'max_paid_repairs': 1,
                         'delivery': 'separate_node_videos_zip',
                         'full_audiovisual_review_capability': 'unavailable_in_current_session'})
+        else:
+            existing = read(cfg)
+            if existing.get('runner_status') == 'blocked_runtime' and existing.get('poll_interval_seconds') == 300:
+                existing['poll_interval_seconds'] = POLL_INTERVAL_SECONDS
+                write(cfg, existing)
 
     def close(self):
         self.db.close()
@@ -111,7 +127,7 @@ class Postproduction:
         return result
 
     def ingest(self, snapshot):
-        data = read(self.file(snapshot))
+        data = unwrap_mcp(read(self.file(snapshot)))
         if isinstance(data, dict):
             data = data.get('structuredContent', data)
             data = data.get('result', data.get('items', []))
@@ -138,11 +154,137 @@ class Postproduction:
             elif state in ('failed', 'error') and item.get('error') and job['state'] in ('queued', 'running', 'review_pending'):
                 self.runtime.job_update(job['intent'], 'needs_fix', snapshot)
         now = time.time()
+        interval = read(self.home / 'automation.json')['poll_interval_seconds']
         with self.db:
             self.db.execute('INSERT OR REPLACE INTO settings VALUES (?,?)', ('last_poll', str(now)))
+            self.db.execute('INSERT OR REPLACE INTO settings VALUES (?,?)', ('last_snapshot', snapshot))
         write(self.home / 'download-handoff.json', download)
-        self.event('poll', {'snapshot': snapshot, 'observed': observed, 'next_due_epoch': now + 300})
-        return {'observed': observed, 'download_count': len(download), 'next_due_epoch': now + 300}
+        self.event('poll', {'snapshot': snapshot, 'observed': observed, 'next_due_epoch': now + interval})
+        return {'observed': observed, 'download_count': len(download), 'next_due_epoch': now + interval}
+
+    def monitor_report(self, queue_snapshot=None):
+        """Summarize the approved project scope; studio queue is context only."""
+        scope = self.runtime.scope('renders') or []
+        require(scope, 'No declared render scope')
+        known = self.known_jobs()
+        latest = {clip: self.runtime.db.execute(
+            'SELECT * FROM jobs WHERE clip=? ORDER BY attempt DESC LIMIT 1', (clip,)).fetchone()
+            for clip in scope}
+        last = self.db.execute('SELECT value FROM settings WHERE key=?', ('last_snapshot',)).fetchone()
+        observed = {}
+        if last:
+            data = unwrap_mcp(read(self.file(last[0])))
+            if isinstance(data, dict):
+                data = data.get('result', data.get('items', []))
+            observed = {item['id']: item for item in data if isinstance(item, dict) and item.get('id') in known}
+        queue = None
+        if queue_snapshot:
+            queue = unwrap_mcp(read(self.file(queue_snapshot)))
+            require(isinstance(queue, dict) and isinstance(queue.get('items'), list), 'Invalid studio queue snapshot')
+        queue_items = {item.get('id'): item for item in (queue or {}).get('items', []) if isinstance(item, dict)}
+        outputs = [dict(row) for row in self.db.execute('SELECT * FROM outputs')]
+        by_provider = {}
+        for output in outputs:
+            by_provider.setdefault(output['provider_id'], []).append(output)
+        counts = {key: 0 for key in ('not_submitted', 'submission_unknown', 'queued', 'rendering',
+                                     'generated', 'downloaded', 'awaiting_review', 'verified', 'needs_fix', 'provider_failed')}
+        generated_duration = 0.0
+        downloaded_duration = 0.0
+        unknown_duration = 0
+        clips = []
+        for clip in scope:
+            row = latest[clip]
+            if row is None:
+                state, pid = 'not_submitted', None
+            else:
+                state, pid = row['state'], row['provider_id']
+            provider = observed.get(pid, {})
+            qitem = queue_items.get(pid, {})
+            raw_state = provider.get('state') or qitem.get('state')
+            attached = by_provider.get(pid, [])
+            good = any(item['state'] == 'verified' for item in attached)
+            broken = state == 'needs_fix' or any(item['state'] == 'needs_fix' for item in attached)
+            if state == 'not_submitted': counts['not_submitted'] += 1
+            if state == 'submission_unknown': counts['submission_unknown'] += 1
+            if raw_state in ('in line', 'queued', 'pending') or (not raw_state and state == 'queued'):
+                counts['queued'] += 1
+            if raw_state in ('running', 'rendering') or (not raw_state and state == 'running'):
+                counts['rendering'] += 1
+            if raw_state == 'done' or state in ('review_pending', 'verified') or attached:
+                counts['generated'] += 1
+                duration = provider.get('duration_s')
+                if duration is None and attached:
+                    try:
+                        duration = read(self.file(attached[-1]['review'])).get('probe', {}).get('format', {}).get('duration')
+                    except (OSError, ValueError, KeyError):
+                        pass
+                if duration is None: unknown_duration += 1
+                else: generated_duration += float(duration)
+            if attached: counts['downloaded'] += 1
+            if attached:
+                try:
+                    downloaded_duration += float(read(self.file(attached[-1]['review']))['probe']['format']['duration'])
+                except (OSError, ValueError, KeyError, TypeError):
+                    pass
+            if raw_state in ('failed', 'error'): counts['provider_failed'] += 1
+            if good: counts['verified'] += 1
+            elif broken: counts['needs_fix'] += 1
+            elif attached: counts['awaiting_review'] += 1
+            selected_output = next((item for item in attached if item['state'] == 'verified'),
+                                   attached[-1] if attached else None)
+            scorecard = self.score_output(clip, selected_output) if selected_output else None
+            clips.append({'clip_id': clip, 'provider_id': pid, 'runtime_state': state,
+                          'provider_state': raw_state, 'queue_position': qitem.get('videos_ahead'),
+                          'progress_pct': qitem.get('progress_pct'), 'output_attached': bool(attached),
+                          'review': 'verified' if good else 'needs_fix' if broken else 'unverified',
+                          'scorecard': scorecard})
+        cfg = read(self.home / 'automation.json')
+        last_poll = self.db.execute('SELECT value FROM settings WHERE key=?', ('last_poll',)).fetchone()
+        next_due = float(last_poll[0]) + cfg['poll_interval_seconds'] if last_poll else None
+        return {'created_at': datetime.now(timezone.utc).isoformat(), 'project': self.root.name,
+                'scope_total': len(scope), 'all_initial_jobs_recorded': all(row and row['provider_id'] for row in latest.values()),
+                'counts': counts, 'generated_duration_seconds_observed': round(generated_duration, 3),
+                'generated_duration_unknown_clips': unknown_duration,
+                'downloaded_duration_seconds_observed': round(downloaded_duration, 3), 'clips': clips,
+                'studio_queue': None if queue is None else {'total': len(queue['items']),
+                    'project_items': sum(item.get('id') in known for item in queue['items']),
+                    'all_done_in_s': queue.get('all_done_in_s')},
+                'poll_interval_seconds': cfg['poll_interval_seconds'], 'next_due_epoch': next_due,
+                'runner_status': cfg['runner_status'], 'runner_id': cfg.get('runner_id')}
+
+    def score_output(self, clip, output):
+        """Evidence coverage and quality score; missing full review never earns a score."""
+        try:
+            review = read(self.file(output['review']))
+        except (OSError, ValueError, KeyError):
+            return {'quality_score_percent': None, 'evidence_coverage_percent': 0,
+                    'decision': 'unverified', 'missing': ['review_record']}
+        duration = review.get('probe', {}).get('format', {}).get('duration')
+        checks = {
+            'technical_decode': 'pass' if review.get('technical_decode') == 'pass' else 'unverified',
+            'duration': ('pass' if float(duration) >= self.clips[clip]['used_duration_seconds'] else 'fail') if duration is not None else 'unverified',
+            'full_picture': 'pass' if review.get('full_picture_reviewed') is True else 'unverified',
+            'full_audio': 'pass' if review.get('full_audio_reviewed') is True else 'unverified',
+            'scene_fidelity': review.get('scene_fidelity', 'unverified'),
+        }
+        spatial = review.get('spatial_checks', {})
+        for key in ('scale_proportion', 'perspective_depth', 'separation_clearance', 'support_contact',
+                    'orientation_construction', 'occlusion_order', 'spatial_continuity'):
+            checks[key] = spatial.get(key, {}).get('verdict', 'unverified')
+        if self.clips[clip]['content_kind'] == 'dialogue':
+            checks['dialogue_lipsync'] = review.get('dialogue_lipsync', 'unverified')
+            checks['original_audio_sync'] = review.get('original_audio_sync', 'unverified')
+        checks['overall_review'] = ('pass' if output['state'] == 'verified' else
+                                    'fail' if output['state'] == 'needs_fix' else 'unverified')
+        missing = [key for key, verdict in checks.items() if verdict not in ('pass', 'fail', 'not_applicable')]
+        failed = [key for key, verdict in checks.items() if verdict == 'fail']
+        coverage = round(100 * (len(checks) - len(missing)) / len(checks))
+        decision = output['state'] if output['state'] in ('verified', 'needs_fix') else 'unverified'
+        quality = round(100 * (len(checks) - len(failed)) / len(checks)) if not missing else None
+        return {'quality_score_percent': quality,
+                'evidence_coverage_percent': coverage, 'decision': decision,
+                'unverified_checks': missing, 'failed_checks': failed,
+                'note': 'Equal-weight score summarizes recorded checks; only a verified review approves assembly.'}
 
     def attach(self, clip, path, provider_id, kind='en2_render'):
         require(kind == 'en2_render', 'Only EN2 animation outputs may be attached for current production')
@@ -256,6 +398,43 @@ class Postproduction:
                 return actual
         raise PipelineError('No recorded review acceptance')
 
+    def assembly_audio(self, node, selected):
+        """Preserve complete embedded dialogue; require a reconciled timeline."""
+        dialogues = []
+        for clip, output in zip(node['clips'], selected):
+            if self.clips[clip['clip_id']]['content_kind'] != 'dialogue':
+                continue
+            streams = probe(self.file(output['path']))['streams']
+            video = next((s for s in streams if s['codec_type'] == 'video'), None)
+            audio = next((s for s in streams if s['codec_type'] == 'audio'), None)
+            require(video and audio, 'Dialogue requires embedded video and audio')
+            vd, ad = float(video.get('duration', 0)), float(audio.get('duration', 0))
+            require(vd > 0 and ad > 0 and ad + .05 >= vd and vd + .05 >= ad,
+                    'Dialogue stream duration mismatch; review complete speech and picture')
+            require(abs(float(video.get('start_time', 0))-float(audio.get('start_time', 0))) <= .001,
+                    'Dialogue stream starts must align')
+            duration = clip['end'] - clip['start']
+            frames = round(clip['end']*30)-round(clip['start']*30)
+            require(duration + .000001 >= max(vd, ad) and frames/30 + .000001 >= max(vd, ad),
+                    'Dialogue would be cut: extend this interval and shift following clips/audio units')
+            require(duration-max(vd, ad) <= 1/30+.001,
+                    'Reconcile dialogue interval to complete selected media duration')
+            dialogues.append((clip, output))
+        result=[];cursor=0;matched=set()
+        for unit in node['audio_units']:
+            end=cursor+unit['duration'];r=dict(unit)
+            overlaps=[(c,s) for c,s in dialogues if c['start'] < end-.000001 and c['end'] > cursor+.000001]
+            if overlaps:
+                require(len(overlaps)==1, 'Split audio units at dialogue boundaries')
+                clip,output=overlaps[0]
+                require(abs(cursor-clip['start'])<.001 and abs(end-clip['end'])<.001,
+                        'Split audio units at dialogue boundaries')
+                r.update(path=output['path'],sha256=output['sha'],embedded_dialogue=True,clip_id=clip['clip_id'])
+                matched.add(clip['clip_id'])
+            result.append(r);cursor=end
+        require(len(matched)==len(dialogues), 'Missing embedded dialogue audio interval')
+        return result
+
     def assemble(self, node_id):
         self.source_check()
         node = next(n for n in self.timeline if n['node_id'] == node_id)
@@ -265,7 +444,8 @@ class Postproduction:
             require(abs(c['start']-cursor)<.001 and c['end']>c['start'], 'Timeline gap/overlap'); cursor=c['end']
         require(abs(cursor-node['duration'])<.001, 'Timeline duration mismatch')
         require(abs(sum(u['duration'] for u in node['audio_units'])-node['duration'])<.001, 'Audio coverage gap')
-        fingerprint = hashlib.sha256(json.dumps([node, selected],sort_keys=True).encode()).hexdigest()
+        audio_units = self.assembly_audio(node, selected)
+        fingerprint = hashlib.sha256(json.dumps(['full-frame-embedded-dialogue-v1', node, selected, audio_units],sort_keys=True).encode()).hexdigest()
         previous = self.db.execute('SELECT * FROM nodes WHERE node=?', (node_id,)).fetchone()
         if previous and previous['fingerprint']==fingerprint and (self.root/previous['path']).is_file() and digest(self.root/previous['path'])==previous['sha']:
             return dict(previous)
@@ -273,23 +453,24 @@ class Postproduction:
         parts=[]
         for n,(c,s) in enumerate(zip(node['clips'],selected)):
             frames=round(c['end']*30)-round(c['start']*30); target=home/f'visual-{n:02}.mp4'
-            execute(['ffmpeg','-v','error','-y','-i',str(self.file(s['path'])),'-vf','scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2,setsar=1,fps=30','-frames:v',str(frames),'-an','-c:v','libx264','-crf','18','-preset','fast','-pix_fmt','yuv420p',str(target)])
+            execute(['ffmpeg','-v','error','-y','-i',str(self.file(s['path'])),'-vf','scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720,setsar=1,fps=30,tpad=stop_mode=clone:stop_duration=0.034','-frames:v',str(frames),'-an','-c:v','libx264','-crf','18','-preset','fast','-pix_fmt','yuv420p',str(target)])
             require(int(probe(target)['streams'][0]['nb_frames'])==frames,'Insufficient visual frames');parts.append(target)
         visual=home/'visual.mp4';self.concat_video(parts,visual)
         pcm=home/'original-audio.wav'
         with wave.open(str(pcm),'wb') as joined:
             joined.setparams((2,2,48000,0,'NONE','not compressed'))
-            for n,u in enumerate(node['audio_units']):
+            for n,u in enumerate(audio_units):
                 source=self.file(u['path']);require(digest(source)==u['sha256'],'Accepted audio changed')
                 part=home/f'audio-{n:02}.wav';samples=round(u['duration']*48000)
-                execute(['ffmpeg','-v','error','-y','-i',str(source),'-af',f'aresample=48000,atrim=end_sample={samples},asetpts=PTS-STARTPTS','-ac','2','-c:a','pcm_s16le',str(part)])
+                pad = 'apad,' if u.get('embedded_dialogue') else ''
+                execute(['ffmpeg','-v','error','-y','-i',str(source),'-map','0:a:0','-af',f'aresample=48000,{pad}atrim=end_sample={samples},asetpts=PTS-STARTPTS','-ac','2','-c:a','pcm_s16le',str(part)])
                 with wave.open(str(part),'rb') as audio:
                     require(audio.getnframes()==samples,'Audio shorter than approved interval');joined.writeframes(audio.readframes(samples))
         target=home/(node_id+'.mp4')
         execute(['ffmpeg','-v','error','-y','-i',str(visual),'-i',str(pcm),'-map','0:v:0','-map','1:a:0','-c:v','copy','-c:a','aac','-b:a','192k','-t',str(node['duration']),'-movflags','+faststart',str(target)])
         execute(['ffmpeg','-v','error','-i',str(target),'-f','null','-'])
         require(abs(float(probe(target)['format']['duration'])-node['duration'])<=.05,'Assembly duration drift')
-        review={'node_id':node_id,'path':self.rel(target),'sha256':digest(target),'status':'review_pending','full_picture_reviewed':False,'full_audio_reviewed':False,'scene_fidelity':'unverified','audio_joins':'unverified','script_coverage':'unverified','observations':[],'source_outputs':selected,'audio_units':node['audio_units'],'fingerprint':fingerprint}
+        review={'node_id':node_id,'path':self.rel(target),'sha256':digest(target),'status':'review_pending','full_picture_reviewed':False,'full_audio_reviewed':False,'scene_fidelity':'unverified','audio_joins':'unverified','script_coverage':'unverified','observations':[],'source_outputs':selected,'audio_units':audio_units,'fingerprint':fingerprint}
         write(home/'review.json',review)
         with self.db:self.db.execute('INSERT OR REPLACE INTO nodes VALUES (?,?,?,?,?,?)',(node_id,self.rel(target),digest(target),fingerprint,'review_pending',self.rel(home/'review.json')))
         self.event('assembled',review)
@@ -322,7 +503,8 @@ class Postproduction:
     def status(self):
         row=self.db.execute('SELECT value FROM settings WHERE key=?',('last_poll',)).fetchone()
         last=float(row[0]) if row else 0
-        return {'configuration':read(self.home/'automation.json'),'poll_due':time.time()>=last+300,'next_due_epoch':last+300,
+        cfg=read(self.home/'automation.json'); interval=cfg['poll_interval_seconds']
+        return {'configuration':cfg,'poll_due':time.time()>=last+interval,'next_due_epoch':last+interval,
                 'outputs':[dict(x) for x in self.db.execute('SELECT clip,kind,state,path,review FROM outputs')],
                 'nodes':[dict(x) for x in self.db.execute('SELECT node,state,path,review FROM nodes')]}
 
@@ -340,7 +522,7 @@ class Postproduction:
             assembled.append(self.assemble(node['node_id']))
         actions.extend({'action':'review_final_node_and_audio_joins','node_id':r['node'],'path':r['path'],'review':r['review']} for r in self.db.execute('SELECT * FROM nodes WHERE state!=?',('verified',)))
         if self.status()['poll_due']:
-            actions.insert(0,{'action':'poll_en2_known_jobs','tool':'en2_video.list_videos','provider_ids':list(self.known_jobs()),'interval_seconds':300})
+            actions.insert(0,{'action':'poll_en2_known_jobs','tools':['en2_video.studio_queue','en2_video.video_status'],'provider_ids':list(self.known_jobs()),'interval_seconds':POLL_INTERVAL_SECONDS})
         result={'actions':actions,'assembled':len(assembled),'automatic_external_runner':'not_active'}
         if len(list(self.db.execute('SELECT node FROM nodes WHERE state=?',('verified',))))==len(self.timeline):
             if self.runtime.status()['assembly']['state'] == 'verified':
@@ -354,13 +536,14 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--project',required=True)
     sub=parser.add_subparsers(dest='command',required=True)
     for name in ('status','advance','package'):sub.add_parser(name)
+    monitor=sub.add_parser('monitor-report');monitor.add_argument('--queue-snapshot')
     cmd=sub.add_parser('ingest');cmd.add_argument('snapshot')
     cmd=sub.add_parser('attach');cmd.add_argument('clip');cmd.add_argument('path');cmd.add_argument('--provider-id',required=True)
     cmd=sub.add_parser('review');cmd.add_argument('path')
     cmd=sub.add_parser('assemble');cmd.add_argument('node')
     args=parser.parse_args();engine=Postproduction(args.project)
     try:
-        calls={'ingest':lambda:engine.ingest(args.snapshot),'attach':lambda:engine.attach(args.clip,args.path,args.provider_id),'review':lambda:engine.record_review(args.path),'assemble':lambda:engine.assemble(args.node),'advance':engine.advance,'status':engine.status,'package':engine.package}
+        calls={'ingest':lambda:engine.ingest(args.snapshot),'attach':lambda:engine.attach(args.clip,args.path,args.provider_id),'review':lambda:engine.record_review(args.path),'assemble':lambda:engine.assemble(args.node),'advance':engine.advance,'status':engine.status,'package':engine.package,'monitor-report':lambda:engine.monitor_report(args.queue_snapshot)}
         print(json.dumps(calls[args.command](),indent=2))
     except (PipelineError,OSError,KeyError,ValueError) as exc:parser.exit(1,str(exc)+'\n')
     finally:engine.close()

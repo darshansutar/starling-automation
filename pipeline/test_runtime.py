@@ -15,6 +15,47 @@ def payload():
 
 
 class RuntimeTests(unittest.TestCase):
+    def test_explicit_replacement_authorization_is_payload_and_attempt_bound(self):
+        from runtime import canonical_hash
+        self.ready()
+        for _ in range(2):
+            h = self.project.prepare_render('clip1', payload(), 'narration')
+            self.project.job_update(h['intent'], 'queued', 'fixture', 'fixture-id-'+str(_))
+            self.project.job_update(h['intent'], 'needs_fix', 'fixture')
+        with self.assertRaises(PipelineError):
+            self.project.prepare_render('clip1', payload(), 'narration')
+        auth = {'authorized_by':'user', 'user_instruction':'Restart this reviewed clip',
+                'clips':{'clip1':{'attempt':2,'payload_sha256':canonical_hash(payload())}}}
+        path = Path(self.temp.name, 'replacement.json')
+        path.write_text(json.dumps(auth))
+        changed = dict(payload(), duration=6)
+        with self.assertRaises(PipelineError):
+            self.project.prepare_render('clip1', changed, 'narration', replacement_authorization='replacement.json')
+        h = self.project.prepare_render('clip1', payload(), 'narration', replacement_authorization='replacement.json')
+        with self.assertRaises(PipelineError):
+            self.project.prepare_render('clip1', payload(), 'narration', replacement_authorization='replacement.json')
+        self.project.job_update(h['intent'], 'queued', 'fixture', 'fixture-new')
+        self.project.job_update(h['intent'], 'needs_fix', 'fixture')
+        with self.assertRaises(PipelineError):
+            self.project.prepare_render('clip1', payload(), 'narration', replacement_authorization='replacement.json')
+
+    def test_first_last_handoff_and_input_isolation(self):
+        self.ready()
+        p = {'prompt': 'How the reference pictures align with the target video — Picture 1 opens; Picture 2 ends.\n\nintegrated_multimodal_description: [Shot 1] Fixture.\n\noverall_soundscape: Silence.\n\nnon_diegetic_music: N/A',
+             'image': 'first.jpg', 'end': 'last.jpg', 'duration': 5, 'width': 1344, 'height': 768, 'quality': False}
+        plan = {'payload': p, 'content_kind': 'narration', 'visual_format': 'first_last_frames', 'shot_count': 1, 'cut_times': []}
+        r = self.receipt('animation_prompts')
+        r['render_plans'] = {'clip1': plan}
+        self.project.accept(r)
+        # Historical receipts remain readable, but the retired route cannot submit.
+        self.assertEqual(self.project.status()['animation_prompts']['state'], 'verified')
+        with self.assertRaises(PipelineError): self.project.prepare_render('clip1', p, 'narration')
+        for change in ({'refs': ['board.jpg']}, {'ref_audios': ['speech.wav']}, {'image': ''}, {'duration': 3}):
+            with self.subTest(change=change):
+                with self.assertRaises(PipelineError): validate_render(dict(p, **change), 'narration')
+        with self.assertRaises(PipelineError): validate_render(p, 'dialogue')
+        with self.assertRaises(PipelineError): validate_plan(dict(plan, cut_times=[5]))
+
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.project = Project(self.temp.name, create=True, title='Offline fixture')
@@ -108,6 +149,16 @@ class RuntimeTests(unittest.TestCase):
         record = {'intent': first['intent'], 'response': {'isError': True, 'structuredContent': {
             'error_code': 'INVALID_ARGUMENT', 'error_data': {'reason': 'INVALID_PARAMETERS'}}}}
         path.write_text(json.dumps(record), encoding='utf-8')
+        self.project.job_update(first['intent'], 'submission_rejected', path.name)
+        retry = self.project.prepare_render('clip1', payload(), 'narration')
+        self.assertNotEqual(first['intent'], retry['intent'])
+
+    def test_integer_duration_validation_rejection_can_retry(self):
+        self.ready()
+        first = self.project.prepare_render('clip1', payload(), 'narration')
+        path = Path(self.temp.name, 'typed-rejection.json')
+        path.write_text(json.dumps({'intent': first['intent'], 'response': {'isError': True,
+            'content': [{'type': 'text', 'text': '1 validation error for call[video_generate]\nduration\nInput should be a valid integer [type=int_from_float]'}]}}), encoding='utf-8')
         self.project.job_update(first['intent'], 'submission_rejected', path.name)
         retry = self.project.prepare_render('clip1', payload(), 'narration')
         self.assertNotEqual(first['intent'], retry['intent'])
@@ -228,7 +279,12 @@ class RuntimeTests(unittest.TestCase):
 
     def test_repair_limit(self):
         self.ready()
-        for attempt in range(3):
+        # Existing projects may retain the old setting; the current policy still caps retries.
+        config = self.project.config()
+        config['max_replacements'] = 2
+        with self.project.db:
+            self.project.db.execute('UPDATE settings SET value=? WHERE key=?', (json.dumps(config), 'config'))
+        for attempt in range(2):
             task = self.project.prepare_render('clip1', payload(), 'narration')
             self.project.job_update(task['intent'], 'queued', 'Provider response', f'job{attempt}')
             self.project.job_update(task['intent'], 'needs_fix', 'Observed blocking defect')

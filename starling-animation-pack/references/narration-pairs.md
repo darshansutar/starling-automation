@@ -1,21 +1,27 @@
-# Two related shots per storyboard
+# Narration storyboard production
 
-Applies to narration, filler/B-roll and all establishing/ending storyboard coverage. Dialogue follows its clean-scene route. Every storyboard is one column with exactly two vertically stacked panels. Top is Shot 1; bottom is Shot 2. They are two related compositions separated by one measured hard cut.
+Narration, filler, establishing and ending coverage use a black-and-white 1x2 line-drawing storyboard: two related shots stacked upper then lower. Each shot is an independent composition illustrating the same narration beat. Dialogue retains its clean-scene and accepted reference-audio workflow.
 
-## Plan from source and audio
+## Plan and draw
 
-Read the whole canonical script and branches. Map source-supported visual beats to accepted audio/cues: location, visible cast/props, information, action and branch state. One script segment may require several boards. Give the second shot a useful purpose: related detail, supported reaction, changed view or progression. Choose wide/medium/detail framing for what the viewer needs to understand.
+Map both shots to canonical source lines, branch facts and measured narration. Record visual_format=storyboard_1x2, shot_count=2 and exactly one cut_times value inside the used interval. Budget render duration within live provider limits; round up to whole seconds when required and reserve surplus as a final hold. Preserve original audio speed and complete source coverage. Split long narration at measured cues.
 
-Keep both shots readable within the measured interval; revise beat grouping when two shots would be rushed. The cut need not be halfway. Show essential action within a shot or additional coverage; a change of pose across a cut alone does not establish that an action occurred. Separate source offsets from assembly offsets.
+Create final-colour character, environment and prop references first. Build each storyboard with two wide illustrated picture areas at the target video aspect. Put a white caption strip BELOW each picture containing SHOT number, time range, CAMERA and ACTION. Keep the artwork itself free of planning text, arrows, motion symbols and gesture marks. Record picture-area boxes separately from caption strips and sheet boundaries. Captions and saved timings/actions must agree.
 
-## Image specification
+Plan restrained, visible, source-supported character action where appropriate. Describe its beginning, movement and settling pose; avoid freezing active characters. For a genuinely quiet shot, use a subtle 3–5 percent push-in or a small pan within established content. Camera movement alone preserves subject and object states. Keep identities, hairstyles, PPE, physical contact, object orientation, scale, weather and lighting consistent with the source. Each shot carries an exact visible cast and object inventory, including zero people for an empty insert.
 
-Each panel has the intended output aspect. At 16:9, two panels form an 8:9 sheet. Record integer panel boxes and actual dimensions. Use final colour, full-bleed adjacent panels with no border, gutter, outer margin, blank cell, label, timestamp, camera text or speech bubble. Camera/action/cut timing belongs in metadata and the animation prompt.
+## Inspect then prompt
 
-Attach relevant approved character, environment and prop references. The board defines the exact visible cast, composition, lighting and state; sheets supply identity/material only. Apply [spatial fidelity](../../starling-cinematography/references/spatial-fidelity.md) to each panel and the cross-panel relationship. Introductions show recognizable faces; narration subjects remain silent. Keep supported natural activity and truthful branch outcomes.
+Inspect both actual pictures and labels against accepted source/audio and identity references before writing the animation prompt. Apply the spatial fidelity checklist, including perspective, depth, supported contact, clearance, front/back faces and occlusion. Repair observed defects and recheck the whole board.
 
-## Handoff
+Attach only references needed by the inspected storyboard, in this order: character, environment, prop, storyboard. Omit unused categories while preserving relative order. Multiple views on a reference sheet supply appearance, not additional cast. Record exact attachment indexes, roles, paths and hashes; rebuild indexes after any change.
 
-For each board record source/node/branch IDs, audio file/hash and offsets, reference roles/hashes, panel boxes, shot purposes/compositions, visible inventory, permitted motion within each shot, cut time, duration and reviews. Inspect both actual panels before animation. Correct sources first when the requested action cannot occur from their staging.
+Use the five-section template in animation-template.md. Select 2D, 2.5D or 3D animation from the approved colour references; the planning drawing does not change the intended output style. Write affirmative instructions describing the desired result rather than negative-prompt lists. For presentation use: “Render each illustrated scene individually as an edge-to-edge, full-frame colour shot. At the specified time, switch directly to the next fully formed shot using a hard cut. Treat the storyboard layout and caption strips exclusively as production guidance.”
 
-Upload relevant character -> environment -> prop references -> complete verified board. Download the returned upload, compare actual bytes/hash and inspect it. One board normally produces one EN2 reference-mode video with exactly two full-screen shots. Narration stays external. Neither the stacked sheet nor a split screen appears in the output. Use Shot 1, one hard cut, Shot 2; each camera stays locked. See [visual routing](visual-routing.md) and [scene preservation](scene-preservation.md).
+Specify observable action and camera motion separately for each timed shot. Use the storyboard's exact visible inventory. Unassigned machinery, gates, cargo and lighting retain their depicted state. Narration characters have naturally relaxed, closed mouths. Prepare a silent visual sequence for the accepted narration added at assembly.
+
+## Submit and review
+
+Upload the inspected board and relevant colour references, verify returned bytes, then submit refs in the recorded order with Fast quality=false. Keep narration external. Save exact payload, prompt, audio mapping, picture boxes, shot inventory review, upload evidence, intent and provider ID.
+
+Review the complete video: two sequential full-frame shots, one hard cut at the planned time, source-faithful action and consistent identity/geometry. Reject fades, dissolves, overlays, mixed panels, white borders/frames, printed labels or storyboard layout appearing in the output. These are review criteria; generation prompts express the affirmative target above. Inspect all motion and sound; a contact sheet cannot certify the result. Follow Animation Pack's single scene-redesign replacement limit under the same logical clip ID. Preserve original media and paid-job history.

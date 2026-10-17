@@ -65,7 +65,7 @@ def positive(value):
 def validate_render(payload, content_kind, reference_seconds=None):
     """Validate the observed MCP input contract; live provider limits still need review."""
     allowed = {'prompt', 'duration', 'folder', 'height', 'width', 'quality', 'refs',
-               'ref_videos', 'ref_audios', 'audio', 'image', 'clip', 'seed'}
+               'ref_videos', 'ref_audios', 'audio', 'image', 'end', 'clip', 'seed'}
     require(isinstance(payload, dict) and not set(payload) - allowed, 'Unknown EN2 fields')
     require(payload.get('quality') is False, 'EN2 must explicitly use quality=false')
     require(isinstance(payload.get('prompt'), str) and payload['prompt'].strip(), 'Missing prompt')
@@ -73,6 +73,16 @@ def validate_render(payload, content_kind, reference_seconds=None):
     for field in ('height', 'width'):
         require(type(payload.get(field)) is int and payload[field] > 0, f'Invalid {field}')
     require(content_kind in {'narration', 'speech_free', 'dialogue'}, 'Unknown content kind')
+    if 'end' in payload:
+        require(content_kind != 'dialogue', 'First/last frames keep speech external')
+        require(all(isinstance(payload.get(k), str) and payload[k].strip() for k in ('image', 'end')), 'Both uploaded endpoint frames required')
+        require(not any(k in payload for k in ('refs', 'ref_videos', 'ref_audios', 'audio', 'clip')), 'Endpoint frames cannot mix with reference inputs')
+        require(4 <= payload['duration'] <= 15, 'Endpoint duration must be 4-15 seconds')
+        require(reference_seconds is None or (type(reference_seconds) in (int, float) and reference_seconds == 0), 'Endpoint frames have no reference audio')
+        headings = re.findall(r'^([a-z_]+):', payload['prompt'], re.MULTILINE)
+        require(headings == ['integrated_multimodal_description', 'overall_soundscape', 'non_diegetic_music'], 'Endpoint prompt requires live base-guide sections')
+        require(payload['prompt'].startswith('How the reference pictures align with the target video'), 'Endpoint alignment instruction required')
+        return
     require('refs' in payload, 'Current production requires reference-to-video inputs')
     require(not any(k in payload for k in ('image', 'clip', 'audio', 'ref_videos')), 'Use scene/board refs with dialogue audio only when applicable')
     for field in ('refs',):
@@ -98,6 +108,13 @@ def validate_plan(plan):
     if plan['content_kind'] == 'dialogue':
         require(plan.get('visual_format') == 'dialogue_scene', 'Dialogue requires a clean scene')
     else:
+        if 'end' in plan['payload']:
+            require(plan.get('visual_format') == 'first_last_frames', 'Endpoint frame format required')
+            require(plan.get('shot_count') == 1, 'Narration endpoints require one continuous shot')
+            cuts = plan.get('cut_times')
+            require(isinstance(cuts, list) and len(cuts) == plan['shot_count'] - 1, 'Endpoint cuts must match shot count')
+            require(all(positive(t) and t < plan['payload']['duration'] for t in cuts), 'Endpoint cuts must be inside duration')
+            return
         require(plan.get('visual_format') == 'storyboard_1x2' and plan.get('shot_count') == 2, 'Storyboard requires two related shots')
         cuts = plan.get('cut_times')
         require(isinstance(cuts, list) and len(cuts) == 1 and positive(cuts[0]) and cuts[0] < plan['payload']['duration'], 'Exactly one measured hard cut inside duration is required')
@@ -131,7 +148,7 @@ class Project:
                     'aspect': '16:9', 'execution': 'chatgpt_session', 'monitor': 'not_active',
                     'image_provider': 'chatgpt_imagegen', 'audio_provider': 'elevenlabs',
                     'audio_model': 'eleven_v3', 'video_provider': 'en2_video_mcp',
-                    'max_replacements': 2, 'submission_policy': 'all_ready_once',
+                    'max_replacements': 1, 'submission_policy': 'all_ready_once',
                     'workflow_version': '2026-10-16', 'intake_required': True
                 })))
                 self.db.executemany('INSERT INTO stages VALUES (?,NULL)', [(s,) for s in STAGES])
@@ -288,8 +305,9 @@ class Project:
             self.db.execute('UPDATE stages SET receipt=? WHERE name=?', (json.dumps(saved), stage))
             self.event('accept', saved)
 
-    def prepare_render(self, clip, payload, content_kind, reference_seconds=None, review_boundary_waiver=None):
+    def prepare_render(self, clip, payload, content_kind, reference_seconds=None, review_boundary_waiver=None, replacement_authorization=None):
         self.require_intake()
+        require('end' not in payload and 'image' not in payload, 'New production uses storyboard refs for narration and clean-scene refs for dialogue')
         require(re.fullmatch(r'[a-zA-Z0-9_-]+', clip or ''), 'Invalid clip ID')
         validate_render(payload, content_kind, reference_seconds)
         with self.db:
@@ -299,7 +317,19 @@ class Project:
             rows = self.db.execute('SELECT * FROM jobs WHERE clip=? ORDER BY attempt', (clip,)).fetchall()
             require(not rows or rows[-1]['state'] in {'needs_fix', 'submission_rejected'}, 'Existing job must be reconciled/reviewed; do not resubmit')
             attempt = len(rows)
-            require(attempt <= self.config()['max_replacements'], 'Automatic replacement limit reached')
+            replacement_record = None
+            if replacement_authorization:
+                authorization_file = self.file(replacement_authorization)
+                authorization = json.loads(authorization_file.read_text(encoding='utf-8'))
+                entry = authorization.get('clips', {}).get(clip, {})
+                require(authorization.get('authorized_by') == 'user'
+                        and isinstance(authorization.get('user_instruction'), str)
+                        and authorization['user_instruction'].strip()
+                        and entry.get('attempt') == attempt
+                        and entry.get('payload_sha256') == canonical_hash(payload),
+                        'Explicit user authorization must match clip, attempt and exact payload')
+                replacement_record = {'path': replacement_authorization, 'sha256': digest(authorization_file)}
+            require(replacement_record or attempt <= min(self.config()['max_replacements'], 1), 'Automatic replacement limit reached; stop for user review')
             scope = self.scope('renders')
             index = scope.index(clip)
             batch_start = (index // 10) * 10
@@ -328,8 +358,9 @@ class Project:
             self.db.execute('INSERT INTO jobs VALUES (?,?,?,?,?,?,?,?)',
                             (intent, clip, attempt, json.dumps(payload), fingerprint, 'submitting', None, canonical_hash(preflight)))
             self.event('prepare_render', {'intent': intent, 'content_kind': content_kind,
-                                          'review_boundary_waiver': waiver_record})
-            return {'intent': intent, 'tool': 'mcp__codex_apps__en2_video_generate_video', 'arguments': payload,
+                                          'review_boundary_waiver': waiver_record,
+                                          'replacement_authorization': replacement_record})
+            return {'intent': intent, 'tool': 'mcp__en2_video__video_generate' if 'end' in payload else 'mcp__codex_apps__en2_video_generate_video', 'arguments': payload,
                     'warning': 'Intent saved before external call. On uncertainty, reconcile instead of submitting again.'}
 
     def job_update(self, intent, state, evidence, provider_id=None):
@@ -348,9 +379,14 @@ class Project:
                 rejection = json.loads(self.file(evidence).read_text(encoding='utf-8'))
                 response = rejection.get('response', {})
                 error = response.get('structuredContent', {})
+                typed_error = any(x.get('type') == 'text' and
+                                  'validation error for call[video_generate]' in x.get('text', '') and
+                                  'type=int_from_float' in x.get('text', '')
+                                  for x in response.get('content', []))
+                structured_error = (error.get('error_code') == 'INVALID_ARGUMENT' and
+                                    error.get('error_data', {}).get('reason') == 'INVALID_PARAMETERS')
                 require(rejection.get('intent') == intent and not actual_id and response.get('isError') is True
-                        and error.get('error_code') == 'INVALID_ARGUMENT'
-                        and error.get('error_data', {}).get('reason') == 'INVALID_PARAMETERS',
+                        and (structured_error or typed_error),
                         'Explicit connector parameter rejection without a provider job required')
             require(state in {'submission_unknown', 'submission_rejected'} or actual_id, 'Provider job ID required')
             require(not row['provider_id'] or actual_id == row['provider_id'], 'Provider job ID cannot change')
