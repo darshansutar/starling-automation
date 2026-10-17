@@ -5,7 +5,7 @@ description: Create source-bound animation prompts, submit approved labelled nar
 
 # Starling Animation Pack
 
-Follow the [required reference bundle](../starling-animation-pack/references/reference-bundle.md): character sheets, matching environment, prop sheets, then the narration storyboard or existing clean dialogue scene. Generate and inspect missing sheets/environments before submission; retain the existing dialogue audio route.
+Follow the [required reference bundle](../starling-animation-pack/references/reference-bundle.md): character sheets, matching environment, prop sheets, then the narration storyboard or existing clean dialogue scene. Generate and inspect missing sheets/environments before submission; retain the existing dialogue audio route. Repair-only exception: after a generated animation is reviewed as needs_fix, use scene-specific single-character, individual prop and matching environment references for that failed clip, following the repair procedure in the shared reference bundle. Normal first submissions use sheets; dialogue keeps its clean scene and accepted speech.
 
 Check completed [intake](../pipeline/INTAKE.md). Read [visual routing](references/visual-routing.md), [scene preservation](references/scene-preservation.md) and [submission](references/en2-submission.md). Use [the handoff contract](../starling-prompt-pack/references/handoff-contract.md) for durable versions and IDs. Honor the requested endpoint; prompt-only work does not submit jobs.
 

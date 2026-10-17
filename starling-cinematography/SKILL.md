@@ -5,7 +5,7 @@ description: Plan and verify Starling shot geometry, perspective, scale, physica
 
 # Starling Cinematography
 
-Follow the [required reference bundle](../starling-animation-pack/references/reference-bundle.md): character sheets, matching environment, prop sheets, then the narration storyboard or existing clean dialogue scene. Check that production owners have generated and inspected missing sheets/environments before submission; retain the existing dialogue audio route.
+Follow the [required reference bundle](../starling-animation-pack/references/reference-bundle.md): character sheets, matching environment, prop sheets, then the narration storyboard or existing clean dialogue scene. Check that production owners have generated and inspected missing sheets/environments before submission; retain the existing dialogue audio route. Repair-only exception: after a generated animation is reviewed as needs_fix, use scene-specific single-character, individual prop and matching environment references for that failed clip, following the repair procedure in the shared reference bundle. Normal first submissions use sheets; dialogue keeps its clean scene and accepted speech.
 
 Read [visual routing](../starling-animation-pack/references/visual-routing.md), [narration storyboards](../starling-animation-pack/references/narration-pairs.md) and the authoritative [spatial fidelity checklist](references/spatial-fidelity.md). Own framing, geometry, depth and shot continuity. Preserve source meaning and approved design.
 

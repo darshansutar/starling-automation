@@ -3,7 +3,7 @@
     "name": "starling-production-master",
     "title": "Starling Production Master",
     "source": "C:\\Users\\darsh\\Downloads\\roleplay\\starling-production-master\\SKILL.md",
-    "sha256": "6da232868b538e4123b5ee19a7e4fe320f24c414ec47be4fbe2850426f71fd21",
+    "sha256": "386db66c76d14acf9883a9dda24a42e8bf0877ef342371f627213fc3b9f1d0f1",
     "output": "C:\\Users\\darsh\\Downloads\\roleplay\\deliveries\\workflow-explanation-2026-10-17\\skill-documents\\starling-production-master.docx",
     "render": "C:\\Users\\darsh\\Downloads\\roleplay\\tmp\\pdfs\\workflow-explanation\\starling-production-master.pdf"
   },
@@ -27,7 +27,7 @@
     "name": "starling-prompt-pack",
     "title": "Starling Prompt Pack",
     "source": "C:\\Users\\darsh\\Downloads\\roleplay\\starling-prompt-pack\\SKILL.md",
-    "sha256": "5bb0ca64242a650272c224f7ffde224985b300c911873f68cc74201c7687a9c7",
+    "sha256": "0f39c0f6db7eeef2f6aa9dee742506ea92eb893f8436019ad51d61add73cc822",
     "output": "C:\\Users\\darsh\\Downloads\\roleplay\\deliveries\\workflow-explanation-2026-10-17\\skill-documents\\starling-prompt-pack.docx",
     "render": "C:\\Users\\darsh\\Downloads\\roleplay\\tmp\\pdfs\\workflow-explanation\\starling-prompt-pack.pdf"
   },
@@ -35,7 +35,7 @@
     "name": "starling-director",
     "title": "Starling Director",
     "source": "C:\\Users\\darsh\\Downloads\\roleplay\\starling-director\\SKILL.md",
-    "sha256": "fb0ffad022edc1cf1ae6df3ab41a5a313a5e89ca02df1eed1cbf8b6078b32e6a",
+    "sha256": "48242571444f566833a9dd89babc7d5a0bc6a9fafa47816d385af9dce6ebbdbf",
     "output": "C:\\Users\\darsh\\Downloads\\roleplay\\deliveries\\workflow-explanation-2026-10-17\\skill-documents\\starling-director.docx",
     "render": "C:\\Users\\darsh\\Downloads\\roleplay\\tmp\\pdfs\\workflow-explanation\\starling-director.pdf"
   },
@@ -43,7 +43,7 @@
     "name": "starling-cinematography",
     "title": "Starling Cinematography",
     "source": "C:\\Users\\darsh\\Downloads\\roleplay\\starling-cinematography\\SKILL.md",
-    "sha256": "80ad5fff04bd5a323fbccb912023d934b2287df0f635e3fe61498b1619aa730b",
+    "sha256": "3f4a96707bbf1854c66f3374310a1e13a01e71a4d9d3f5e51bd030d698407daf",
     "output": "C:\\Users\\darsh\\Downloads\\roleplay\\deliveries\\workflow-explanation-2026-10-17\\skill-documents\\starling-cinematography.docx",
     "render": "C:\\Users\\darsh\\Downloads\\roleplay\\tmp\\pdfs\\workflow-explanation\\starling-cinematography.pdf"
   },
@@ -51,7 +51,7 @@
     "name": "starling-image-pack-generator",
     "title": "Starling Image Pack Generator",
     "source": "C:\\Users\\darsh\\Downloads\\roleplay\\starling-image-pack-generator\\SKILL.md",
-    "sha256": "9b321fcf99caceea721e65bb4a3c17206795e1056469ff70e190406fc0986c55",
+    "sha256": "6e576d5938f3abcdae25b13b996eff135ac1fccb42989061f612369775a05b00",
     "output": "C:\\Users\\darsh\\Downloads\\roleplay\\deliveries\\workflow-explanation-2026-10-17\\skill-documents\\starling-image-pack-generator.docx",
     "render": "C:\\Users\\darsh\\Downloads\\roleplay\\tmp\\pdfs\\workflow-explanation\\starling-image-pack-generator.pdf"
   },
@@ -59,7 +59,7 @@
     "name": "starling-panel-corrector",
     "title": "Starling Panel Corrector",
     "source": "C:\\Users\\darsh\\Downloads\\roleplay\\starling-panel-corrector\\SKILL.md",
-    "sha256": "b61a58546ac31e09daea136afcbe4de5b00f643a03d66f9e4bf893f5452ccf1a",
+    "sha256": "e5b5f800f7db0398f19c4c2592c55c627e31ee19c62b13a51e035cfa3d3d1c0f",
     "output": "C:\\Users\\darsh\\Downloads\\roleplay\\deliveries\\workflow-explanation-2026-10-17\\skill-documents\\starling-panel-corrector.docx",
     "render": "C:\\Users\\darsh\\Downloads\\roleplay\\tmp\\pdfs\\workflow-explanation\\starling-panel-corrector.pdf"
   },
@@ -67,7 +67,7 @@
     "name": "starling-animation-pack",
     "title": "Starling Animation Pack",
     "source": "C:\\Users\\darsh\\Downloads\\roleplay\\starling-animation-pack\\SKILL.md",
-    "sha256": "7b66ff8073d946a83aac7565e6460a479b0d7c921e0441c26632b05c02ec4414",
+    "sha256": "d707947d4054b06c1d1d11fa3e63e031cfc28e971a1ae3eefe94a5ccbbc965a8",
     "output": "C:\\Users\\darsh\\Downloads\\roleplay\\deliveries\\workflow-explanation-2026-10-17\\skill-documents\\starling-animation-pack.docx",
     "render": "C:\\Users\\darsh\\Downloads\\roleplay\\tmp\\pdfs\\workflow-explanation\\starling-animation-pack.pdf"
   },
@@ -83,7 +83,7 @@
     "name": "starling-verification",
     "title": "Starling Verification",
     "source": "C:\\Users\\darsh\\Downloads\\roleplay\\starling-verification\\SKILL.md",
-    "sha256": "c427acef615f2a1ffe2c4950f5ce040438acaad76e960da7eefed3f9e576ea1e",
+    "sha256": "66e60812761f49369a98acdabe19eb28e2f876df75283cbb480706dba2d8776b",
     "output": "C:\\Users\\darsh\\Downloads\\roleplay\\deliveries\\workflow-explanation-2026-10-17\\skill-documents\\starling-verification.docx",
     "render": "C:\\Users\\darsh\\Downloads\\roleplay\\tmp\\pdfs\\workflow-explanation\\starling-verification.pdf"
   }

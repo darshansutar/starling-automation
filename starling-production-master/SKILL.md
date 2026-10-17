@@ -5,7 +5,7 @@ description: Coordinate Starling production from mandatory intake through script
 
 # Starling Production Master
 
-Follow the [required reference bundle](../starling-animation-pack/references/reference-bundle.md): character sheets, matching environment, prop sheets, then the narration storyboard or existing clean dialogue scene. Generate and inspect missing sheets/environments before submission; retain the existing dialogue audio route.
+Follow the [required reference bundle](../starling-animation-pack/references/reference-bundle.md): character sheets, matching environment, prop sheets, then the narration storyboard or existing clean dialogue scene. Generate and inspect missing sheets/environments before submission; retain the existing dialogue audio route. Repair-only exception: after a generated animation is reviewed as needs_fix, use scene-specific single-character, individual prop and matching environment references for that failed clip, following the repair procedure in the shared reference bundle. Normal first submissions use sheets; dialogue keeps its clean scene and accepted speech.
 
 Read [the workflow](../pipeline/WORKFLOW.md) and use its runtime for scopes, evidence, handoffs and job history. ChatGPT executes connected tools in the active session. Instructions do not run background work. Infrastructure edits and review-only requests do not authorize generation.
 
