@@ -6,7 +6,7 @@ Discover live EN2 upload, generation, status and reference-guide tools in the ac
 
 Check completed intake, source/audio acceptance, inspected images, spatial/director/cinematography reviews and measured timing. Save shot_inventory_match and real uploaded-byte evidence. Follow [routing](visual-routing.md).
 
-Narration plans use visual_format=storyboard_1x2, shot_count=2 and one measured cut_times value inside the used interval. Upload relevant character, environment, prop and labelled storyboard images in that order; use refs and the five-section template. Keep narration external. Dialogue retains visual_format=dialogue_scene, refs and accepted ref_audios, explicit speaker/turn mapping and five-section reference prompting. Record actual reference_seconds and live provider limits. All requests use Fast quality=false. Local manifest fields stay outside the API payload.
+Narration plans use visual_format=storyboard_1x2, shot_count=2 and one measured cut_times value inside the used interval. Require all groups in [the reference bundle](reference-bundle.md); upload character sheets, matching environment, prop sheets and labelled storyboard in that order; use refs and the five-section template. Keep narration external. Dialogue retains visual_format=dialogue_scene, refs and accepted ref_audios, explicit speaker/turn mapping and five-section reference prompting. Record actual reference_seconds and live provider limits. All requests use Fast quality=false. Local manifest fields stay outside the API payload.
 
 Submit whole-second render durations within the live limits, rounding up when needed. Complete the planned action within the source interval and budget the surplus as a final hold for later conform; preserve exact narration timing in the manifest.
 

@@ -45,4 +45,4 @@ The CLI records state and prepares handoffs. It does not run MCP calls or a back
 
 Original production media, paid-job IDs, credentials, historical exports and local connector-link IDs are not included in this repository. No production run is triggered by cloning or pushing it.
 
-Current narration uses relevant character, environment, prop and storyboard references in that order, affirmative five-section prompts and a measured hard cut between edge-to-edge colour shots. Dialogue keeps its clean-scene/reference-audio generation route. Assembly uses the selected video’s embedded dialogue audio and blocks a timeline that would shorten it. Reconcile a longer dialogue interval and shift following material before assembly.
+Narration requires character sheets, matching environment, prop sheets and the labelled storyboard in that order. Generate missing sheets first; preserve clear space between adjacent people. Dialogue keeps its clean scene and accepted speech. Before narration or establishing assembly, discard generated sound and subtitle streams; correct unwanted burned-in text before approval. Dialogue retains complete embedded speech.

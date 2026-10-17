@@ -5,6 +5,8 @@ description: Plan audio-timed labelled narration storyboards and clean dialogue 
 
 # Starling Prompt Pack
 
+Follow the [required reference bundle](../starling-animation-pack/references/reference-bundle.md): character sheets, matching environment, prop sheets, then the narration storyboard or existing clean dialogue scene. Check that production owners have generated and inspected missing sheets/environments before submission; retain the existing dialogue audio route.
+
 For quiet narration, plan a subtle camera-only zoom or pan within each quiet shot and unchanged subject/object states. State the sole permitted movement and the fixed visible inventory. Keep time of day, sky, lighting and shadows consistent throughout; add a time transition only when explicitly required by the script.
 
 Check completed [intake](../pipeline/INTAKE.md) and read [the handoff contract](references/handoff-contract.md). Own visual planning and image prompts. Read Director and Cinematography for their review responsibilities. Accepted audio and actual style images are required for generation-ready planning.

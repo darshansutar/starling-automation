@@ -5,6 +5,8 @@ description: Coordinate Starling production from mandatory intake through script
 
 # Starling Production Master
 
+Follow the [required reference bundle](../starling-animation-pack/references/reference-bundle.md): character sheets, matching environment, prop sheets, then the narration storyboard or existing clean dialogue scene. Generate and inspect missing sheets/environments before submission; retain the existing dialogue audio route.
+
 Read [the workflow](../pipeline/WORKFLOW.md) and use its runtime for scopes, evidence, handoffs and job history. ChatGPT executes connected tools in the active session. Instructions do not run background work. Infrastructure edits and review-only requests do not authorize generation.
 
 ## Intake before building

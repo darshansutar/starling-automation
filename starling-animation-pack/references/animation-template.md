@@ -2,7 +2,7 @@
 
 Adapted from the user's Home-Palliative Care prompt pack. Both production routes use these five headings. Write affirmative instructions describing the desired result; keep defect lists in review checklists. Read [narration storyboard production](narration-pairs.md) for the current narration method.
 
-Inspect the approved clean scene and accepted speech first. Record visible cast, positions, object ownership/contact, background, lighting and supported movement. Attach only references needed by those visible subjects. Character sheets supply identity, not extra occupants; the clean scene controls composition. Save actual sequential Picture/Audio indexes and file hashes outside the prompt. Rebuild indexes when attachments change.
+Inspect the approved clean scene and accepted speech first. Record visible cast, positions, object ownership/contact, background, lighting and supported movement. Attach the complete ordered bundle from [reference-bundle.md](reference-bundle.md), ending with the existing clean dialogue scene and retaining accepted reference audio. Character sheets supply identity, not extra occupants; the clean scene controls composition. Save actual sequential Picture/Audio indexes and file hashes outside the prompt. Rebuild indexes when attachments change.
 
 ## Dialogue template
 
@@ -37,13 +37,14 @@ Compare every prompted person, object, entry/exit, sound source and movement wit
 
 ## Narration template
 
-Inspect the actual storyboard first. Attach only relevant references in character, environment, prop, storyboard order. Omit unused categories; match every Picture index to its real upload. The example has one character reference, one environment reference and one storyboard; adapt actions to the inspected artwork.
+Inspect the actual storyboard first. Require character sheets, matching environment, prop sheets and storyboard in that order; follow reference-bundle.md and match every Picture index to its real upload. The example uses all four groups.
 
 ```text
 subject_definitions:
 <Picture 1> supplies Meera's appearance: white hardhat, clear goggles, low dark bun, navy shirt and orange vest.
-<Picture 2> supplies the workshop colours, lighting and machine materials.
-<Picture 3> is the labelled 1x2 storyboard. Its upper picture defines Shot 1; its lower picture defines Shot 2. Each picture determines the visible cast, objects, placement and composition. Labels below the pictures provide timing, camera and action instructions.
+<Picture 2> supplies the matching workshop environment and steady lighting.
+<Picture 3> is the machine prop sheet, supplying consistent control-housing geometry and materials.
+<Picture 4> is the labelled 1x2 storyboard. Its upper picture defines Shot 1; its lower picture defines Shot 2. Each picture determines the visible cast, objects, placement and composition. Labels below the pictures provide timing, camera and action instructions.
 
 summary:
 [reference generation] An 8-second coloured 2D illustrated animation with two related shots. Meera inspects the machine, then considers what she notices. A direct hard cut at 4 seconds connects the shots.
@@ -51,7 +52,8 @@ summary:
 retention_analysis:
 <Picture 1>: partially_preserved - apply Meera's identity, hairstyle, clothing and proportions to the storyboard character.
 <Picture 2>: partially_preserved - apply its appearance to the workshop and machine regions drawn in each shot.
-<Picture 3>: fully_preserved - follow both illustrated compositions, visible inventories and action instructions. Render each illustrated scene individually as an edge-to-edge, full-frame colour shot. Treat the storyboard layout and caption strips exclusively as production guidance.
+<Picture 3>: partially_preserved - apply the machine sheet geometry to the pictured housing only.
+<Picture 4>: fully_preserved - follow both illustrated compositions, visible inventories and action instructions. Render each illustrated scene individually as an edge-to-edge, full-frame colour shot. Treat the storyboard layout and caption strips exclusively as production guidance.
 
 detailed_description:
 Clean outlines, softly painted shading and warm colours match the supplied appearance references.

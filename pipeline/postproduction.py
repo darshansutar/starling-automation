@@ -453,7 +453,7 @@ class Postproduction:
         parts=[]
         for n,(c,s) in enumerate(zip(node['clips'],selected)):
             frames=round(c['end']*30)-round(c['start']*30); target=home/f'visual-{n:02}.mp4'
-            execute(['ffmpeg','-v','error','-y','-i',str(self.file(s['path'])),'-vf','scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720,setsar=1,fps=30,tpad=stop_mode=clone:stop_duration=0.034','-frames:v',str(frames),'-an','-c:v','libx264','-crf','18','-preset','fast','-pix_fmt','yuv420p',str(target)])
+            execute(['ffmpeg','-v','error','-y','-i',str(self.file(s['path'])),'-map','0:v:0','-vf','scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720,setsar=1,fps=30,tpad=stop_mode=clone:stop_duration=0.034','-frames:v',str(frames),'-an','-sn','-dn','-c:v','libx264','-crf','18','-preset','fast','-pix_fmt','yuv420p',str(target)])
             require(int(probe(target)['streams'][0]['nb_frames'])==frames,'Insufficient visual frames');parts.append(target)
         visual=home/'visual.mp4';self.concat_video(parts,visual)
         pcm=home/'original-audio.wav'

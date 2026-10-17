@@ -5,6 +5,8 @@ description: Plan and verify Starling shot geometry, perspective, scale, physica
 
 # Starling Cinematography
 
+Follow the [required reference bundle](../starling-animation-pack/references/reference-bundle.md): character sheets, matching environment, prop sheets, then the narration storyboard or existing clean dialogue scene. Check that production owners have generated and inspected missing sheets/environments before submission; retain the existing dialogue audio route.
+
 Read [visual routing](../starling-animation-pack/references/visual-routing.md), [narration storyboards](../starling-animation-pack/references/narration-pairs.md) and the authoritative [spatial fidelity checklist](references/spatial-fidelity.md). Own framing, geometry, depth and shot continuity. Preserve source meaning and approved design.
 
 Record output aspect/dimensions and both illustrated picture-area boxes separately from caption strips. Narration uses two related compositions in a labelled 1x2 line storyboard. Camera/action/time labels sit below the pictures. Final video displays each picture as an edge-to-edge colour shot with a direct hard cut. Dialogue is a clean full-frame scene. Verify geometry on actual files.

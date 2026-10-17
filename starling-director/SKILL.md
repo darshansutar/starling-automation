@@ -5,6 +5,8 @@ description: Plan and review source meaning, supported action and branch continu
 
 # Starling Director
 
+Follow the [required reference bundle](../starling-animation-pack/references/reference-bundle.md): character sheets, matching environment, prop sheets, then the narration storyboard or existing clean dialogue scene. Check that production owners have generated and inspected missing sheets/environments before submission; retain the existing dialogue audio route.
+
 Read [the handoff](../starling-prompt-pack/references/handoff-contract.md), [narration storyboard planning](../starling-animation-pack/references/narration-pairs.md) and [spatial fidelity](../starling-cinematography/references/spatial-fidelity.md). Own meaning, staging and action continuity; generation remains with production owners.
 
 Map all semantic beats to source lines and measured audio. Specify visible people/objects, intention, starting state, required action and actual outcome. Preserve the full cast, branch differences and proposed-versus-completed work. Keep finalized-document content authoritative.

@@ -5,6 +5,8 @@ description: Review Starling images, labelled narration storyboards, complete EN
 
 # Starling Verification
 
+Follow the [required reference bundle](../starling-animation-pack/references/reference-bundle.md): character sheets, matching environment, prop sheets, then the narration storyboard or existing clean dialogue scene. Check that production owners have generated and inspected missing sheets/environments before submission; retain the existing dialogue audio route.
+
 Check temporal and lighting continuity throughout each clip: sky colour, sun position, exposure, artificial lights and shadow direction/length remain consistent with the approved scene. Flag unplanned timelapse, day/night cycling, changing weather or light flicker, even if the opening and closing frames match. Permit a time transition only when explicitly supported by the source and approved shot plan.
 
 Review only the requested scope. Read [the handoff](../starling-prompt-pack/references/handoff-contract.md), [visual routing](../starling-animation-pack/references/visual-routing.md) and [spatial fidelity](../starling-cinematography/references/spatial-fidelity.md). Use Panel Corrector for still criteria, Animation Pack for video/assembly criteria and Director/Cinematography for their required verdicts. This review skill does not generate repairs, submit jobs, publish or activate monitoring.
@@ -26,3 +28,5 @@ For final nodes check selected EN2 provenance, complete words/pauses at original
 Use [review-record.md](references/review-record.md). Required checks are pass, fail or unverified; not_applicable requires a reason. Overall needs_fix if any required check fails, unverified when evidence is missing without an observed failure, verified only when all required checks pass or are justified inapplicable. Record exact observations, panel/region or actual time range, expected state, severity and smallest repair owner.
 
 Return verification_report.json and counts for the declared scope. Production owners perform authorized image/prompt/EN2 repairs and return replacements for complete review. Preserve originals and review history. Never approve a render merely because the provider completed it.
+
+Before stitching narration, filler, establishing or ending clips, remove the complete generated audio track, including background voices, and discard subtitle/text streams. Use only the accepted external narration for those intervals. Inspect the full picture for unwanted captions, labels and overlays. Burned-in text is part of the pixels: correct/regenerate the affected scene and re-review it before assembly; dropping a subtitle track does not erase it. Preserve source-required real-world signage. Dialogue retains its verified embedded speech and lip-sync.
