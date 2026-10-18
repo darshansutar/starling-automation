@@ -5,7 +5,9 @@ description: Generate and review foundational assets, labelled narration storybo
 
 # Starling Image Pack Generator
 
-Follow the [required reference bundle](../starling-animation-pack/references/reference-bundle.md): character sheets, matching environment, prop sheets, then the narration storyboard or existing clean dialogue scene. Generate and inspect missing sheets/environments before submission; retain the existing dialogue audio route. Repair-only exception: after a generated animation is reviewed as needs_fix, use scene-specific single-character, individual prop and matching environment references for that failed clip, following the repair procedure in the shared reference bundle. Normal first submissions use sheets; dialogue keeps its clean scene and accepted speech.
+Apply [buffered timing and visual review](../starling-animation-pack/references/timing-and-visual-review.md) for storyboard/prompt timing, per-output visual checks, bounded repair and the user-owned manual lip-sync check.
+
+Follow the [required reference bundle](../starling-animation-pack/references/reference-bundle.md), including its failed-output repair exception.
 
 Check [mandatory intake](../pipeline/INTAKE.md), accepted audio and the approved Prompt Pack. Read [visual routing](../starling-animation-pack/references/visual-routing.md), [narration storyboards](../starling-animation-pack/references/narration-pairs.md) and [spatial fidelity](../starling-cinematography/references/spatial-fidelity.md). Use native ChatGPT image generation/editing and the installed imagegen skill. Own image production, not video or script rewriting.
 

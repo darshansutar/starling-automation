@@ -10,16 +10,20 @@ Use exactly these five headings. The indexes below are illustrative; match actua
 
 ```text
 subject_definitions:
-<Picture 1> is the approved clean scene: [exact visible cast, positions and objects]. It controls framing, inventory and lighting.
-<Picture 2> supplies [visible character]'s identity only: [retained traits].
+<Picture 1> supplies the visible character identity only: [retained traits].
+<Picture 2> supplies the matching environment.
+<Picture 3> supplies the scene props.
+<Picture 4> is the approved clean scene: [exact visible cast, positions and objects]. It controls framing, inventory and lighting.
 <Audio 1> supplies [speaker]'s accepted speech and selected voice.
 
 summary:
-[reference generation] The target video runs [duration] seconds. [Concrete scene action.] Follow <Picture 1> with exactly [visible cast]. [Speaker] delivers the supplied speech while [listener] listens.
+[reference generation] The target video runs [duration] seconds. [Concrete scene action.] Follow <Picture 4> with exactly [visible cast]. [Speaker] delivers the supplied speech while [listener] listens.
 
 retention_analysis:
-<Picture 1>: fully_preserved - [composition, cast, supported contact, background and lighting].
-<Picture 2>: [fully_preserved/partially_preserved] - [assigned identity traits; explicit scene-grounded exceptions].
+<Picture 1>: partially_preserved - [assigned identity traits only].
+<Picture 2>: partially_preserved - [approved visible environment only].
+<Picture 3>: partially_preserved - [approved visible props only].
+<Picture 4>: fully_preserved - [composition, cast, supported contact, background and lighting].
 <Audio 1>: fully_preserved - [exact speaker, voice and original words].
 
 detailed_description:
@@ -57,12 +61,14 @@ retention_analysis:
 
 detailed_description:
 Clean outlines, softly painted shading and warm colours match the supplied appearance references.
-[Shot 1] 0-4 seconds: Begin immediately with the fully formed upper-panel scene, a medium shot of Meera beside the control housing. ACTION: She leans her head slightly forward to inspect it, hands comfortably behind her back, then settles. CAMERA: A gentle three-percent push-in. The machine remains stationary and lighting stays constant.
-[Shot 2] 4-8 seconds: At exactly 4 seconds, switch directly to the fully formed lower-panel scene using a hard cut, a close-up of Meera and the housing. ACTION: Her gaze moves down the housing; she tilts her head slightly, blinks once naturally and settles. CAMERA: Static.
+[Shot 1] 0-4 seconds: Begin immediately with the fully formed upper-panel scene, a medium shot of Meera beside the control housing. ACTION 0-3: She leans her head slightly forward to inspect it, hands comfortably behind her back, then settles by 3 seconds. BUFFER 3-4: Hold the settled pose. CAMERA: A gentle three-percent push-in during 0-3, then hold framing. The machine remains stationary and lighting stays constant.
+[Shot 2] 4-8 seconds: At exactly 4 seconds, switch directly to the fully formed lower-panel scene using a hard cut, a close-up of Meera and the housing. ACTION 4-7: Her gaze moves down the housing; she tilts her head slightly, blinks once naturally and settles by 7 seconds. BUFFER 7-8: Hold the settled pose. CAMERA: Static.
 Each shot occupies the entire canvas, with scene imagery extending to every edge. Display one complete scene at a time. Preserve the pictured cast count, identity, hairstyle, object scale, contact and spatial relationships. Meera's mouth stays naturally relaxed and closed.
 
 overall_soundscape:
 Silent visual sequence prepared for the approved narration track to be added during assembly.
 ```
+
+In this 8-second example each shot needs 3 seconds plus a 1-second settled hold: action 0–3, hold 3–4; action 4–7, hold 7–8. Print those same ranges below the storyboard panels and state them explicitly in detailed_description. Generate 8 seconds; retain source_spans [[0,3],[4,7]] for a 6-second edit. Follow [the timing contract](timing-and-visual-review.md).
 
 Replace example cast, props, actions, timings and animation style with the inspected storyboard and measured audio plan. Use 2D, 2.5D or 3D according to approved colour references. Captions and prompt must agree. Record geometry and review evidence outside the prompt.

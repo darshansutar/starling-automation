@@ -3,7 +3,7 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
-from postproduction import Postproduction, write, execute, probe
+from postproduction import Postproduction, write, execute, probe, visual_spans
 from runtime import Project, PipelineError, digest, STAGES
 from test_intake import complete_intake
 from test_runtime import payload
@@ -12,6 +12,34 @@ SPATIAL={key:{"verdict":"pass","evidence":"Synthetic fixture only, not productio
 
 
 class PostproductionTests(unittest.TestCase):
+    def test_buffered_shots_trim_each_hold_and_preserve_audio(self):
+        import subprocess
+        execute(['ffmpeg','-v','error','-y','-f','lavfi','-i',
+                 'color=red:s=1280x720:d=0.2:r=30[r];color=green:s=1280x720:d=0.2:r=30[g];color=blue:s=1280x720:d=0.2:r=30[b];color=yellow:s=1280x720:d=0.2:r=30[y];[r][g][b][y]concat=n=4:v=1:a=0',
+                 '-an','-c:v','libx264','-pix_fmt','yuv420p',str(self.root/'buffered.mp4')])
+        r=self.engine.attach('a','buffered.mp4','test_a')
+        r.update(reviewer='OFFLINE SYNTHETIC TEST ONLY',status='verified',observations=['Synthetic only'],
+                 full_picture_reviewed=True,full_audio_reviewed=True,scene_fidelity='pass',spatial_checks=SPATIAL)
+        write(self.root/'a.json',r);self.engine.record_review('a.json');self.accept_fixture('b')
+        self.engine.timeline[0]['clips'][0]['source_spans']=[[0,.2],[.4,.6]]
+        result=self.engine.assemble('node');output=self.root/result['path']
+        self.assertAlmostEqual(float(probe(output)['format']['duration']),.8,delta=.05)
+        self.assertEqual(result['audio_units'][0]['sha256'],digest(self.root/'voice.wav'))
+        for time,channel in ((.1,0),(.3,2)):
+            pixel=subprocess.run(['ffmpeg','-v','error','-ss',str(time),'-i',str(output),
+                                  '-frames:v','1','-vf','scale=1:1','-pix_fmt','rgb24','-f','rawvideo','-'],
+                                 capture_output=True,check=True).stdout
+            self.assertGreater(pixel[channel],180)
+            self.assertLess(max(pixel[i] for i in range(3) if i!=channel),60)
+
+    def test_invalid_buffer_spans_block_assembly(self):
+        clip={'start':0,'end':6,'source_spans':[[0,3],[4,7]]}
+        self.assertEqual(visual_spans(clip,'narration',8),clip['source_spans'])
+        with self.assertRaisesRegex(PipelineError,'never dialogue'):visual_spans(clip,'dialogue',8)
+        for spans in ([[0,3],[2,5]], [[0,3],[6,9]], [[0,2],[4,7]], [], [[0,float('nan')]]):
+            with self.subTest(spans=spans), self.assertRaises(PipelineError):
+                visual_spans(dict(clip,source_spans=spans),'narration',8)
+
     def test_dialogue_uses_embedded_audio_and_blocks_short_timeline(self):
         from unittest.mock import patch
         self.engine.clips['a']['content_kind']='dialogue'

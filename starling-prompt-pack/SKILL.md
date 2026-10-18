@@ -5,7 +5,9 @@ description: Plan audio-timed labelled narration storyboards and clean dialogue 
 
 # Starling Prompt Pack
 
-Follow the [required reference bundle](../starling-animation-pack/references/reference-bundle.md): character sheets, matching environment, prop sheets, then the narration storyboard or existing clean dialogue scene. Check that production owners have generated and inspected missing sheets/environments before submission; retain the existing dialogue audio route. Repair-only exception: after a generated animation is reviewed as needs_fix, use scene-specific single-character, individual prop and matching environment references for that failed clip, following the repair procedure in the shared reference bundle. Normal first submissions use sheets; dialogue keeps its clean scene and accepted speech.
+Apply [buffered timing and visual review](../starling-animation-pack/references/timing-and-visual-review.md) for storyboard/prompt timing, per-output visual checks, bounded repair and the user-owned manual lip-sync check.
+
+Follow the [required reference bundle](../starling-animation-pack/references/reference-bundle.md), including its failed-output repair exception.
 
 For quiet narration, plan a subtle camera-only zoom or pan within each quiet shot and unchanged subject/object states. State the sole permitted movement and the fixed visible inventory. Keep time of day, sky, lighting and shadows consistent throughout; add a time transition only when explicitly required by the script.
 

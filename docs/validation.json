@@ -1,0 +1,15 @@
+{
+  "date": "2026-10-18",
+  "offline_tests": 44,
+  "offline_tests_passed": true,
+  "pdf_pages": 19,
+  "word_documents": 11,
+  "rendered_pages": 45,
+  "source_text_checks": "passed",
+  "page_bounds": "passed",
+  "visual_page_review": "All 45 final pages inspected; two trailing-page layout issues corrected",
+  "word_renderer": "Microsoft Word ExportAsFixedFormat; packaged renderer unavailable because LibreOffice is absent",
+  "production_media_reviewed": false,
+  "production_run_started": false,
+  "background_reviewer_active": false
+}

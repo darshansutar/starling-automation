@@ -4,7 +4,7 @@ Narration, filler, establishing and ending coverage use a black-and-white 1x2 li
 
 ## Plan and draw
 
-Map both shots to canonical source lines, branch facts and measured narration. Record visual_format=storyboard_1x2, shot_count=2 and exactly one cut_times value inside the used interval. Budget render duration within live provider limits; round up to whole seconds when required and reserve surplus as a final hold. Preserve original audio speed and complete source coverage. Split long narration at measured cues.
+Map both shots to canonical source lines, branch facts and measured narration. Record visual_format=storyboard_1x2, shot_count=2 and exactly one cut_times value inside the generated interval. Follow [buffered timing and visual review](timing-and-visual-review.md): add 1–2 seconds per shot before drawing, print generated ranges and action/hold durations below both panels, repeat those exact timings and hard cut in the prompt, and save per-shot assembly source_spans. Keep generated duration and required edit duration separate. Check live provider limits and split if needed. Preserve original audio speed and complete source coverage. Split long narration at measured cues.
 
 Create and inspect final-colour character sheets, matching environments and prop sheets first, following [the required reference bundle](reference-bundle.md). Build each storyboard with two wide illustrated picture areas at the target video aspect. Put a white caption strip BELOW each picture containing SHOT number, time range, CAMERA and ACTION. Keep the artwork itself free of planning text, arrows, motion symbols and gesture marks. Record picture-area boxes separately from caption strips and sheet boundaries. Captions and saved timings/actions must agree.
 

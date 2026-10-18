@@ -5,7 +5,9 @@ description: Inspect and repair Starling assets, labelled narration storyboards 
 
 # Starling Panel Corrector
 
-Follow the [required reference bundle](../starling-animation-pack/references/reference-bundle.md): character sheets, matching environment, prop sheets, then the narration storyboard or existing clean dialogue scene. Check that production owners have generated and inspected missing sheets/environments before submission; retain the existing dialogue audio route. Repair-only exception: after a generated animation is reviewed as needs_fix, use scene-specific single-character, individual prop and matching environment references for that failed clip, following the repair procedure in the shared reference bundle. Normal first submissions use sheets; dialogue keeps its clean scene and accepted speech.
+Apply [buffered timing and visual review](../starling-animation-pack/references/timing-and-visual-review.md) for storyboard/prompt timing, per-output visual checks, bounded repair and the user-owned manual lip-sync check.
+
+Follow the [required reference bundle](../starling-animation-pack/references/reference-bundle.md), including its failed-output repair exception.
 
 Read [visual routing](../starling-animation-pack/references/visual-routing.md) and [spatial fidelity](../starling-cinematography/references/spatial-fidelity.md). Compare the actual image against canonical source, approved style/assets and shot plan. Review-only invocation returns findings; image edits require an authorized production/repair scope and completed intake.
 

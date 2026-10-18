@@ -14,7 +14,7 @@ Use pending, needs_fix, unverified, verified, blocked or stale with concrete evi
 
 ## Current production order
 
-Completed intake -> source-faithful script -> accepted measured audio -> visual plan -> reviewed assets/boards/scenes -> animation preflight -> submit all ready once -> collect -> complete picture/sound review -> targeted EN2 repairs -> re-review -> node stitching -> final review/ZIP.
+Completed intake -> source-faithful script -> accepted measured audio -> buffered visual plan -> reviewed assets/boards/scenes -> animation preflight -> submit all ready once -> collect and review each completed output -> targeted EN2 repairs -> re-review -> node stitching -> final review/ZIP. Follow [buffered timing and visual review](../../starling-animation-pack/references/timing-and-visual-review.md) for identical storyboard/prompt timings, generated versus edit clocks, per-shot source_spans and the separate user-owned manual lip-sync verdict.
 
 Foundational assets pass before dependent scenes. Both narration storyboard pictures, below-picture labels and shot mapping pass before animation. Relevant refs are mapped explicitly; only dialogue passes speech to EN2. Raw narration review and final assembled-audio review are distinct. Complete output review cannot be replaced by sampled frames, metadata or provider completion.
 

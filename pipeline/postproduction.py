@@ -41,6 +41,30 @@ def probe(path):
 POLL_INTERVAL_SECONDS = 600
 
 
+def visual_spans(clip, kind, source_duration):
+    """Validate explicit narration trims without changing historical unbuffered plans."""
+    spans = clip.get('source_spans')
+    if spans is None:
+        return None
+    require(kind in ('narration', 'filler', 'establishing', 'ending'),
+            'source_spans are only supported for narration/establishing coverage, never dialogue')
+    require(isinstance(spans, list) and len(spans) > 0, 'source_spans must be a nonempty list')
+    previous = 0.0
+    duration = 0.0
+    for span in spans:
+        require(isinstance(span, list) and len(span) == 2, 'Invalid source span')
+        require(all(type(v) in (int, float) and math.isfinite(v) for v in span),
+                'Source span values must be finite seconds')
+        start, end = span
+        require(start >= previous and end > start and end <= source_duration + .001,
+                'Source spans overlap, are unordered, or exceed video duration')
+        previous = end
+        duration += end - start
+    require(abs(duration - (clip['end'] - clip['start'])) < .001,
+            'Source spans must cover exactly the edit interval')
+    return spans
+
+
 def unwrap_mcp(value):
     """Read saved MCP results without relying on a text block's presentation."""
     if isinstance(value, dict) and 'structuredContent' in value:
@@ -445,7 +469,7 @@ class Postproduction:
         require(abs(cursor-node['duration'])<.001, 'Timeline duration mismatch')
         require(abs(sum(u['duration'] for u in node['audio_units'])-node['duration'])<.001, 'Audio coverage gap')
         audio_units = self.assembly_audio(node, selected)
-        fingerprint = hashlib.sha256(json.dumps(['full-frame-embedded-dialogue-v1', node, selected, audio_units],sort_keys=True).encode()).hexdigest()
+        fingerprint = hashlib.sha256(json.dumps(['buffered-shots-embedded-dialogue-v2', node, selected, audio_units],sort_keys=True).encode()).hexdigest()
         previous = self.db.execute('SELECT * FROM nodes WHERE node=?', (node_id,)).fetchone()
         if previous and previous['fingerprint']==fingerprint and (self.root/previous['path']).is_file() and digest(self.root/previous['path'])==previous['sha']:
             return dict(previous)
@@ -453,7 +477,22 @@ class Postproduction:
         parts=[]
         for n,(c,s) in enumerate(zip(node['clips'],selected)):
             frames=round(c['end']*30)-round(c['start']*30); target=home/f'visual-{n:02}.mp4'
-            execute(['ffmpeg','-v','error','-y','-i',str(self.file(s['path'])),'-map','0:v:0','-vf','scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720,setsar=1,fps=30,tpad=stop_mode=clone:stop_duration=0.034','-frames:v',str(frames),'-an','-sn','-dn','-c:v','libx264','-crf','18','-preset','fast','-pix_fmt','yuv420p',str(target)])
+            source = self.file(s['path'])
+            video = next(v for v in probe(source)['streams'] if v['codec_type'] == 'video')
+            spans = visual_spans(c, self.clips[c['clip_id']]['content_kind'], float(video['duration']))
+            normal = 'scale=1280:720:force_original_aspect_ratio=increase,crop=1280:720,setsar=1,fps=30,tpad=stop_mode=clone:stop_duration=0.034'
+            filters = ['-map','0:v:0','-vf',normal]
+            if spans is not None:
+                graph=[];cursor=c['start'];labels=[]
+                for index,(start,end) in enumerate(spans):
+                    count=round((cursor+end-start)*30)-round(cursor*30)
+                    require(count > 0, 'Source span is shorter than one output frame')
+                    label=f'shot{index}';labels.append(f'[{label}]')
+                    graph.append(f'[0:v:0]trim=start={start}:end={end},setpts=PTS-STARTPTS,{normal},trim=end_frame={count},setpts=PTS-STARTPTS[{label}]')
+                    cursor+=end-start
+                graph.append(''.join(labels)+f'concat=n={len(spans)}:v=1:a=0[outv]')
+                filters=['-filter_complex',';'.join(graph),'-map','[outv]']
+            execute(['ffmpeg','-v','error','-y','-i',str(source),*filters,'-frames:v',str(frames),'-an','-sn','-dn','-c:v','libx264','-crf','18','-preset','fast','-pix_fmt','yuv420p',str(target)])
             require(int(probe(target)['streams'][0]['nb_frames'])==frames,'Insufficient visual frames');parts.append(target)
         visual=home/'visual.mp4';self.concat_video(parts,visual)
         pcm=home/'original-audio.wav'
