@@ -7,7 +7,7 @@ description: Plan and verify Starling shot geometry, perspective, scale, physica
 
 Apply [buffered timing and visual review](../starling-animation-pack/references/timing-and-visual-review.md) for storyboard/prompt timing, per-output visual checks, bounded repair and the user-owned manual lip-sync check.
 
-Follow the [required reference bundle](../starling-animation-pack/references/reference-bundle.md), including its failed-output repair exception.
+Follow the [scene-matched reference selection](../starling-animation-pack/references/reference-bundle.md), including its failed-output repair exception.
 
 Read [visual routing](../starling-animation-pack/references/visual-routing.md), [narration storyboards](../starling-animation-pack/references/narration-pairs.md) and the authoritative [spatial fidelity checklist](references/spatial-fidelity.md). Own framing, geometry, depth and shot continuity. Preserve source meaning and approved design.
 
@@ -17,6 +17,6 @@ For quiet narration prefer a slow zoom-in of about 3-5 percent; use a small pan 
 
 Choose useful shot sizes/angles, clear introductions and readable relevant detail. Maintain room axis, eyelines, screen direction, proportional scale, depth ordering, movement clearance and supported body/object contact. Different viewpoints may change apparent size legitimately; compare actual reference geometry and perspective. Preserve coherent front/back object faces and occlusion.
 
-For subject action, keep the camera fixed unless another move is explicitly planned. For quiet narration without subject action, use the subtle camera-only move defined in storyboard planning; preserve scene geometry and object states. Each narration board defines two full-screen shots and one measured hard cut. Keep scene geometry and identities coherent across views. Put matching action timing in the below-picture labels, metadata and animation prompt. Verify full-frame presentation: fades, overlays, borders, mixed panels and printed labels are defects.
+For subject action, keep the camera fixed unless another move is explicitly planned. For quiet narration without subject action, use the subtle camera-only move defined in storyboard planning; preserve scene geometry and object states. Each narration board defines two full-screen shots and one measured hard cut. Keep scene geometry and identities coherent across views. In the [detailed shot description](../starling-animation-pack/references/scene-preservation.md), state the actual camera side, seating/left-right relationships, depth, prop orientation and support. Prefer top-down coverage for document-only inserts when it makes the layout clearer; pages face their intended reader. Put matching action timing in the below-picture labels, metadata and animation prompt. Verify full-frame presentation: fades, overlays, borders, mixed panels and printed labels are defects.
 
 Review both pictures, labels and their relationship, then complete animation for camera stability, timing, spatial continuity and physically plausible movement. Sampled frames cannot establish whole-clip correctness. Record cinematography_review.json with source/output hashes, dimensions, shot roles and picture boxes, actual inspected intervals, findings and minimum corrections. Repairs return to the owning production skill.

@@ -100,7 +100,8 @@ def validate_render(payload, content_kind, reference_seconds=None):
                 'Visual-only bookends have no reference audio duration')
     sections = ['subject_definitions', 'summary', 'retention_analysis', 'detailed_description', 'overall_soundscape']
     headings = re.findall(r'^([a-z_]+):', payload['prompt'], re.MULTILINE)
-    require(headings == sections, 'Reference prompt requires exactly five sections in order')
+    require(headings in (sections, sections + ['non_diegetic_music']),
+            'Reference prompt requires five legacy sections or six current provider sections in order')
 
 
 def validate_plan(plan):

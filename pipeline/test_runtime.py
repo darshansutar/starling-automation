@@ -117,9 +117,11 @@ class RuntimeTests(unittest.TestCase):
     def test_dependency_gate(self):
         with self.assertRaises(PipelineError): self.project.accept(self.receipt('audio'))
 
-    def test_five_section_animation_contract(self):
+    def test_legacy_and_current_reference_section_contract(self):
         validate_render(payload(), 'narration')
-        for prompt in (reference_prompt()+'\nnon_diegetic_music: N/A',
+        current = payload(); current['prompt'] += '\nnon_diegetic_music: N/A'
+        validate_render(current, 'narration')
+        for prompt in (reference_prompt()+'\nunknown_section: N/A',
                        reference_prompt().replace('summary:', 'subject_definitions:'),
                        reference_prompt().replace('retention_analysis:', 'unmapped:')):
             with self.subTest(prompt=prompt):

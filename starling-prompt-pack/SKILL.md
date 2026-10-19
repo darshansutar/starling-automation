@@ -7,7 +7,7 @@ description: Plan audio-timed labelled narration storyboards and clean dialogue 
 
 Apply [buffered timing and visual review](../starling-animation-pack/references/timing-and-visual-review.md) for storyboard/prompt timing, per-output visual checks, bounded repair and the user-owned manual lip-sync check.
 
-Follow the [required reference bundle](../starling-animation-pack/references/reference-bundle.md), including its failed-output repair exception.
+Follow the [scene-matched reference selection](../starling-animation-pack/references/reference-bundle.md), including its failed-output repair exception.
 
 For quiet narration, plan a subtle camera-only zoom or pan within each quiet shot and unchanged subject/object states. State the sole permitted movement and the fixed visible inventory. Keep time of day, sky, lighting and shadows consistent throughout; add a time transition only when explicitly required by the script.
 
@@ -25,7 +25,7 @@ Introduce named characters with recognizable faces. Plan distinct source-support
 
 When Animation Pack requests its single scene redesign after a failed initial animation, choose different, simpler staging that still communicates the same script beat. Retain the approved visual style, identities, branch facts and audio interval. Generate fresh labelled storyboards or the clean dialogue scene for inspection before rebuilding the animation prompt; retain the logical clip ID and existing attempt history. The replacement animation is the final automatic attempt.
 
-Order the pack: character sheets, environments, props, labelled narration storyboards, dialogue scenes. Define style and assigned reference roles, actual visible cast/count, set/lighting, composition, relevant object states and supported action staging. Keep the spoken narration in metadata; write matching camera/action/time labels below both storyboard pictures. Use affirmative image and animation instructions. Use [spatial fidelity](../starling-cinematography/references/spatial-fidelity.md) to specify only relevant scale, depth, clearance, orientation and contact relationships. Avoid repeated negative lists and generic cinematic embellishment.
+Plan only the character and prop assets required by the visible inventory, followed by labelled narration storyboards and clean dialogue scenes. Use the shared reference-selection rules for each request, rather than attaching the complete project asset pack. Define style and assigned reference roles, actual visible cast/count, set/lighting, composition, relevant object states and supported action staging. Keep the spoken narration in metadata; write matching camera/action/time labels below both storyboard pictures. Use affirmative image and animation instructions. Use [spatial fidelity](../starling-cinematography/references/spatial-fidelity.md) to specify only relevant scale, depth, clearance, orientation and contact relationships. Avoid repeated negative lists and generic cinematic embellishment.
 
 Inspect/reuse approved identities and environments. Character sheets can show multiple views of one person; those views do not authorize extra cast. Changing carried objects belong in prop references. Keep clear ownership and state. Do not add people to empty inserts merely to create movement.
 

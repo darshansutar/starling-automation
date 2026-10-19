@@ -4,13 +4,21 @@ Read [visual routing](visual-routing.md), [narration storyboards](narration-pair
 
 ## Plan each shot from the inspected image
 
-Record visible actor/object IDs, counts, positions, ownership and contact; permitted action with start/movement/end and measured interval; preserved identity, proportions, set/light and background state; locked camera; cut timing. Required motion must be possible from the actual staging. Repair an incompatible image upstream. State relevant relationships clearly rather than repeating generic failure lists.
+Write a concrete description of each actual picture in detailed_description, not just "follow the storyboard" or a summary of the story. Map the upper picture to Shot 1 and the lower picture to Shot 2. For a clean dialogue scene, describe that single composition. Include the scene-relevant facts:
+
+- Visible cast and count, including zero people; identity, expression, posture, gaze and left/right placement.
+- Framing and camera side; relative depth, background landmarks, time of day and lighting.
+- Visible objects and their states, positions, ownership, orientation and physical support. For documents, describe which way the pages face and how the book, papers and file lie on the table; for seated people, preserve their side of the table, chairs and spacing across cuts.
+- The printed ACTION as a timed start, movement and final pose. Describe what visibly changes and what stays fixed; a broad emotion alone is not an action.
+- The printed CAMERA instruction, separately from subject action, plus exact generated ranges, hard cut and settling buffers from the timing plan.
+
+Select references using [the visible-inventory rules](reference-bundle.md). Include only relevant detail: an empty landscape needs landscape geometry and supported environmental movement, not facial, clothing or tabletop instructions. Required motion must be possible from the depicted pose and contacts. If the actual image, printed labels and saved plan disagree, repair/reconcile them before submission; do not conceal the mismatch by inventing content in the prompt. Source words and branch outcomes remain authoritative.
 
 Movement stays within each shot and follows source meaning. Quiet object coverage may remain still. Human activity should be restrained and supported, not repeated gestures added to fill time. Preserve contact, balance, clearance, depth, scale and object orientation through the complete action. All unassigned background elements retain their approved state.
 
 ## Mode-specific prompt
 
-Both routes use the [five-section reference template](animation-template.md). Narration follows [storyboard planning](narration-pairs.md): two related full-frame colour shots, one measured hard cut and relevant ordered refs. Caption strips guide production. Express the target positively. Dialogue retains approved speech and exact turn mapping. Save shot_inventory_match for both routes; inspect all motion before acceptance.
+Both routes use the [reference template](animation-template.md) aligned with the live provider guide. Narration follows [storyboard planning](narration-pairs.md): two related full-frame colour shots, one measured hard cut and relevant ordered refs. Caption strips guide production. Express the target positively. Dialogue retains approved speech and exact turn mapping. Save shot_inventory_match by comparing each written shot description, action and camera instruction against the corresponding actual picture and labels. Detailed prompting does not establish output fidelity; inspect all motion before acceptance.
 
 ## Complete review and targeted repair
 
