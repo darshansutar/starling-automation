@@ -2,7 +2,7 @@ param([string]$OnlySkill = '')
 $ErrorActionPreference = 'Stop'
 $root = Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
 $records = Get-Content -LiteralPath "$root\tmp\pdfs\workflow-explanation\word-inputs.json" -Raw -Encoding UTF8 | ConvertFrom-Json
-New-Item -ItemType Directory -Force -Path "$root\deliveries\workflow-explanation-2026-10-18\skill-documents" | Out-Null
+New-Item -ItemType Directory -Force -Path "$root\deliveries\workflow-explanation-2026-10-21\skill-documents" | Out-Null
 $word = New-Object -ComObject Word.Application
 $word.Visible = $false
 $word.DisplayAlerts = 0
@@ -25,9 +25,9 @@ try {
             $normal.ParagraphFormat.SpaceAfter = 5
             if ($record.name -in @('starling-cinematography', 'starling-animation-monitor')) { $normal.ParagraphFormat.SpaceAfter = 4 }
             $normal.ParagraphFormat.LineSpacingRule = 0
-            $intro = $record.title + "`r" + 'Complete current SKILL.md source' + "`r" + 'Snapshot 18 October 2026' + "`r" + 'Original file: ' + $record.source + "`r" + 'SHA256: ' + $record.sha256 + "`r" + 'The source text below is reproduced in full for manual review. Markdown syntax and reference paths are retained.' + "`r`r"
+            $intro = $record.title + "`r" + 'Complete current SKILL.md source' + "`r" + 'Snapshot 21 October 2026' + "`r" + 'Original file: ' + $record.source + "`r" + 'SHA256: ' + $record.sha256 + "`r" + 'The source text below is reproduced in full for manual review. Markdown syntax and reference paths are retained.' + "`r`r"
             $sourceText = $record.content.Replace("`r`n", "`n").Replace("`n", "`r")
-            $appendix = if ($record.shared_contract) { "`r`r# Shared timing and visual review contract`r" + $record.shared_contract.Replace("`r`n", "`n").Replace("`n", "`r") } else { "" }
+            $appendix = if ($record.shared_contract) { "`r`r# Shared production contracts`r" + $record.shared_contract.Replace("`r`n", "`n").Replace("`n", "`r") } else { "" }
             $doc.Content.Text = $intro + $sourceText + $appendix
             $doc.Paragraphs.Item(1).Range.Style = $doc.Styles.Item(-63)
             $doc.Paragraphs.Item(1).Range.Font.Name = 'Arial'

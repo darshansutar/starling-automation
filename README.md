@@ -1,6 +1,6 @@
 # Starling automation
 
-Source-faithful branching video workflow: script, accepted audio, labelled black-and-white two-shot narration storyboards, EN2 animation, review and final assembly.
+Source-faithful branching video workflow: script, accepted audio, labelled black-and-white two- or three-shot narration storyboards, EN2 animation, review and final assembly.
 
 ## Contents
 
@@ -45,7 +45,7 @@ Run `python tools/reports/audit_workflow.py` to check active skill links and exp
 
 ## Rebuild the documents
 
-The report tools use Windows Arial/Consolas fonts, Python ReportLab, PyMuPDF and Pillow, plus Microsoft Word for DOCX export and rendering. Run `build_explanation_report.py`, then `create_skill_docs.ps1`, then `verify_explanation_report.py` from `tools/reports/`. Outputs go to `deliveries/workflow-explanation-2026-10-18`; intermediate page images go to `tmp/pdfs/workflow-explanation`. Inspect every rendered page before replacing the files in `docs/`. The legacy flow-report commands route to these current builders.
+The report tools use Windows Arial/Consolas fonts, Python ReportLab, PyMuPDF and Pillow, plus Microsoft Word for DOCX export and rendering. Run `build_explanation_report.py`, then `create_skill_docs.ps1`, then `verify_explanation_report.py` from `tools/reports/`. Outputs go to `deliveries/workflow-explanation-2026-10-21`; intermediate page images go to `tmp/pdfs/workflow-explanation`. Inspect every rendered page before replacing the files in `docs/`. The legacy flow-report commands route to these current builders.
 
 ## Execution limits
 

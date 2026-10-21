@@ -8,9 +8,15 @@ Discover the live EN2 reference guide before submission. Its current format has 
 
 Define reusable identities, environments and props as <Subject N> sourced from their actual <Picture N>. Give the storyboard or clean scene its own <Picture N> entry as the composition anchor. Use <Audio N> for accepted dialogue recordings. Number each label category consistently and rebuild indexes after attachments change. Define only selected references; save filenames, hashes, upload names and per-shot visibility outside the prompt.
 
-For narration, explicitly map the upper storyboard picture to Shot 1 and lower picture to Shot 2. Asset sheets supply appearance; the storyboard supplies composition, visible inventory, shot order and the printed action/camera/timing plan. Final footage presents each picture as one edge-to-edge colour shot. The board layout and caption strips remain production guidance.
+For narration, explicitly map the storyboard pictures in top-to-bottom order to Shot 1, Shot 2 and, for 1x3, Shot 3. Asset sheets supply appearance; the storyboard supplies composition, visible inventory, shot order and the printed action/camera/timing plan. Final footage presents each picture as one edge-to-edge colour shot. The board layout and caption strips remain production guidance.
 
 ## Narration structure
+
+Use the official [MiniMax H3 reference guide](https://huggingface.co/MiniMaxAI/MiniMax-H3/blob/main/docs/VIDEO_PROMPT_WRITING_GUIDE_ref_en.md) for the six-section reference structure and its shared [base guide speaker rules](https://huggingface.co/MiniMaxAI/MiniMax-H3/blob/main/docs/VIDEO_PROMPT_WRITING_GUIDE_base_en.md#44-speakers-dialogue-and-singing) for voiceover. Default narration remains external: do not put narration speech or audio into a silent EN2 render. In each shot name the visible characters and state that they stay silent, lips completely closed, with no speech-like mouth/jaw movement. Silent characters get no speaker ID.
+
+Only when generated voiceover is explicitly requested, use `says in an off-screen voiceover` for every line. Put only the language tag and exact spoken words inside `<d>...</d>`; put speaker description, stable ID, action and delivery outside. Immediately after every voiceover block state that each visible character's lips remain completely closed. Describe the vocal identity on first use and retain its ID across shots. For speech crossing a cut, put `<scenetrans>` at both connecting points and state that it continues seamlessly. Preserve the complete script; do not impose a word-count cap. Keep speech out of overall_soundscape. The official guide specifies `non_diegetic_music: N/A` for no music. If prompt rewriting is used, inspect the rewritten result for these per-line constraints.
+
+The following two-shot example also supports three shots: map the third picture, add its full shot description and second timed hard cut, and update all counts and retention entries.
 
 Replace the placeholders with inspected scene facts and measured timing. Definitions and indexes vary with the selected bundle; an environment-only sequence has no character or prop-sheet definitions.
 
@@ -28,8 +34,8 @@ retention_analysis:
 
 detailed_description:
 [Animation style, colours, materials, depth and lighting from the inspected colour references.]
-[Shot 1] [Generated range.] [Detailed upper-picture composition: visible cast, positions, expression/pose/gaze, props and support/orientation, background and camera side.] ACTION [interval]: [exact supported movement from the label, starting state and final pose]. CAMERA: [printed move and extent, or static]. BUFFER [interval]: [settled state]. [Scene-specific relationships that remain unchanged.]
-[Shot 2] At [MM:SS.mmm], hard cut to [generated range and detailed lower-picture composition]. ACTION [interval]: [labelled movement and final pose]. CAMERA: [printed instruction]. BUFFER [interval]: [settled state]. [Continuity with Shot 1 and any explicit final provider-rounding hold.]
+[Shot 1] [Generated range.] [Detailed upper-picture composition: visible cast, positions, expression/pose/gaze, props and support/orientation, background and camera side.] ACTION [interval]: [exact supported movement from the label, starting state and final pose]. CAMERA: [printed move and extent, or static]. BUFFER [interval]: [settled state]. [Scene-specific relationships that remain unchanged. Explicitly name every visible character whose lips stay completely closed; no speaking or lip-sync.]
+[Shot 2] At [MM:SS.mmm], hard cut to [generated range and detailed lower-picture composition]. ACTION [interval]: [labelled movement and final pose]. CAMERA: [printed instruction]. BUFFER [interval]: [settled state]. [Continuity with Shot 1 and any explicit final provider-rounding hold. Repeat the visible-character silence and closed-lips rule.]
 
 overall_soundscape:
 Silent visual sequence; approved original narration is added during assembly.

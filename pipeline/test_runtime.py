@@ -15,6 +15,17 @@ def payload():
 
 
 class RuntimeTests(unittest.TestCase):
+    def test_three_shot_storyboard_and_cut_validation(self):
+        plan = {'payload': dict(payload(), quality=True, duration=12), 'content_kind': 'narration',
+                'visual_format': 'storyboard_1x3', 'shot_count': 3, 'cut_times': [4, 8]}
+        validate_plan(plan)
+        validate_plan(dict(plan, visual_format='storyboard_1x2', shot_count=2, cut_times=[6]))
+        for changes in ({'cut_times': [8, 4]}, {'cut_times': [4, 4]}, {'cut_times': [4]},
+                        {'cut_times': [4, 12]}, {'cut_times': [0, 8]}, {'visual_format': 'storyboard_1x2'},
+                        {'shot_count': 4}):
+            with self.subTest(changes=changes), self.assertRaises(PipelineError):
+                validate_plan(dict(plan, **changes))
+
     def test_explicit_replacement_authorization_is_payload_and_attempt_bound(self):
         from runtime import canonical_hash
         self.ready()
@@ -209,7 +220,8 @@ class RuntimeTests(unittest.TestCase):
         p['ref_audios'] = None
         with self.assertRaises(PipelineError): validate_render(p, 'narration')
         p = payload(); p['quality'] = True
-        with self.assertRaises(PipelineError): validate_render(p, 'narration')
+        validate_render(p, 'narration')
+        with self.assertRaises(PipelineError): validate_render(dict(p, quality='true'), 'narration')
 
     def test_dialogue_reference_budget(self):
         p = payload(); p.update(prompt=reference_prompt(), refs=['grid.jpg'], ref_audios=['speech.wav'])
@@ -234,7 +246,7 @@ class RuntimeTests(unittest.TestCase):
                     validate_render(dict(p, ref_audios=audio), 'narration')
         with self.assertRaises(PipelineError): validate_render(dict(p, image='scene.jpg'), 'speech_free')
         with self.assertRaises(PipelineError): validate_render(dict(p, refs=[]), 'speech_free')
-        with self.assertRaises(PipelineError): validate_render(dict(p, quality=True), 'speech_free')
+        validate_render(dict(p, quality=True), 'speech_free')
         with self.assertRaises(PipelineError): validate_render(dict(p, prompt='For the target video'), 'speech_free')
         with self.assertRaises(PipelineError): validate_render(p, 'speech_free', 2)
 

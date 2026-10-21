@@ -67,7 +67,7 @@ def validate_render(payload, content_kind, reference_seconds=None):
     allowed = {'prompt', 'duration', 'folder', 'height', 'width', 'quality', 'refs',
                'ref_videos', 'ref_audios', 'audio', 'image', 'end', 'clip', 'seed'}
     require(isinstance(payload, dict) and not set(payload) - allowed, 'Unknown EN2 fields')
-    require(payload.get('quality') is False, 'EN2 must explicitly use quality=false')
+    require(isinstance(payload.get('quality'), bool), 'EN2 quality must be explicit; new requests default to Ultra quality=true, historical Fast remains readable')
     require(isinstance(payload.get('prompt'), str) and payload['prompt'].strip(), 'Missing prompt')
     require(positive(payload.get('duration')), 'A positive render duration is required')
     for field in ('height', 'width'):
@@ -116,9 +116,10 @@ def validate_plan(plan):
             require(isinstance(cuts, list) and len(cuts) == plan['shot_count'] - 1, 'Endpoint cuts must match shot count')
             require(all(positive(t) and t < plan['payload']['duration'] for t in cuts), 'Endpoint cuts must be inside duration')
             return
-        require(plan.get('visual_format') == 'storyboard_1x2' and plan.get('shot_count') == 2, 'Storyboard requires two related shots')
+        count = plan.get('shot_count')
+        require(count in (2, 3) and plan.get('visual_format') == f'storyboard_1x{count}', 'Storyboard requires matching two or three shot format')
         cuts = plan.get('cut_times')
-        require(isinstance(cuts, list) and len(cuts) == 1 and positive(cuts[0]) and cuts[0] < plan['payload']['duration'], 'Exactly one measured hard cut inside duration is required')
+        require(isinstance(cuts, list) and len(cuts) == count - 1 and all(positive(t) and t < plan['payload']['duration'] for t in cuts) and all(a < b for a, b in zip(cuts, cuts[1:])), 'Storyboard cuts must match shot count and increase strictly inside duration')
 
 
 class Project:

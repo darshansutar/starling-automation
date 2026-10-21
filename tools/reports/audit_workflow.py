@@ -27,7 +27,7 @@ for path in sorted(markdown):
                   'Account for the full initial submission pass, then hand',
                   'Once the initial pass is accounted for, inspect'):
         assert stale not in text, (path, stale)
-out = ROOT/'deliveries/workflow-explanation-2026-10-18'
+out = ROOT/'deliveries/workflow-explanation-2026-10-21'
 if not out.exists(): out = ROOT/'docs'
 records = json.loads((out/'source-index.json').read_text(encoding='utf-8'))
 for record in records:

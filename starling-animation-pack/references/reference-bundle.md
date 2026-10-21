@@ -11,7 +11,7 @@ Inspect the actual storyboard pictures or clean dialogue scene before choosing r
 
 Preserve this order among the applicable groups: character sheets, environment, prop sheets, storyboard or clean dialogue scene. Dialogue also retains the accepted reference audio and speaker mapping, including a source-required off-screen voice without adding its character sheet to the image bundle. Omit absent groups rather than supplying unrelated context sheets.
 
-References apply to the entire render request. For a two-shot clip, take the union of the visible identities and relevant props across its two pictures and explicitly record visibility per shot. A character visible only in Shot 1 supplies a reference for Shot 1, not permission to appear in an empty Shot 2. Separate requests use their own inventories; do not inherit the whole scene's cast. Keep the approved two-shot timing unless a source-supported replan is needed.
+References apply to the entire render request. For a two- or three-shot clip, take the union of the visible identities and relevant props across all its pictures and explicitly record visibility per shot. A character visible only in Shot 1 supplies a reference for Shot 1, not permission to appear in an empty Shot 2. Separate requests use their own inventories; do not inherit the whole scene's cast. Keep the approved shot timing unless a source-supported replan is needed.
 
 For first submissions, use approved sheets for the selected visible characters and props. A sheet's multiple views describe one identity/object. Reuse suitable assets; generate and inspect a missing reference only when the visible scene needs it. The repair exception below allows individual references after an incorrect animation output.
 

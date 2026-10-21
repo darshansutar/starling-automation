@@ -4,10 +4,10 @@ from xml.etree import ElementTree as ET
 ROOT=Path(__file__).resolve().parents[2];sys.path.insert(0,str(ROOT/'tmp/pdf-deps'))
 import fitz
 from PIL import Image,ImageDraw
-OUT=ROOT/'deliveries/workflow-explanation-2026-10-18';QA=ROOT/'tmp/pdfs/workflow-explanation'
+OUT=ROOT/'deliveries/workflow-explanation-2026-10-21';QA=ROOT/'tmp/pdfs/workflow-explanation'
 records=json.loads((QA/'word-inputs.json').read_text(encoding='utf-8'))
 report=fitz.open(OUT/'Starling_Workflow_Explained.pdf')
-assert len(report)==19
+assert len(report)==20
 text='\n'.join(p.get_text() for p in report)
 for term in ['intake.json','canonical-script.json','state.sqlite3','darshan@en2.ai','FFmpeg','ElevenLabs','Starling MCP','EN2','shot_inventory_match','retention_analysis','44 offline']:
     assert term in text,term

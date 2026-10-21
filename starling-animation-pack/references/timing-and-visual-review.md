@@ -10,7 +10,7 @@ Use one timing table as the source for the storyboard captions, animation prompt
 
 Example: two shots each need 3 seconds in the edit. With a 1-second buffer each, storyboard and prompt say Shot 1 0–4 seconds (action 0–3, hold 3–4), Shot 2 4–8 seconds (action 4–7, hold 7–8), hard cut exactly at 4 seconds, render duration 8 seconds. Assembly keeps source_spans [[0,3],[4,7]], yielding 6 seconds and an edit cut at 3 seconds. The approved narration stays at its original speed. A 2-second buffer would instead produce ranges 0–5 and 5–10. Do not stretch narration to fill generated footage.
 
-Round only when required by the live provider; record any extra rounding hold explicitly. Check current provider duration limits before submission and split/replan coverage if necessary. Never silently drop buffers or truncate source coverage. Existing plans without buffers need explicit reconciliation before new generation.
+Storyboard labels display whole seconds only, never decimals. Choose whole-second generated shot ranges and labelled action/hold boundaries before drawing; reserve sufficient hold so required action is never shortened. Store exact measured audio cues, required edit durations and assembly source_spans separately, including fractional seconds. Label timings and prompt timings refer to the same generated clock; provider syntax such as 00:05.000 may express the same whole-second cut. Record any extra hold introduced by rounding. Do not round the accepted audio or its assembly cues. Check current provider duration limits before submission and split/replan coverage if necessary. Never silently drop buffers or truncate source coverage. Existing plans without buffers need explicit reconciliation before new generation.
 
 ## Review each completed output
 

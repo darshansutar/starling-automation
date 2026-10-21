@@ -1,4 +1,16 @@
-# Workflow audit 18 October 2026
+# Workflow audit 21 October 2026
+
+## Narration and dialogue update
+
+Dialogue TTS now uses a separately saved transliteration input: first 2-3 words in Hindi/Devanagari, remaining words in Roman/English script, with canonical wording preserved. Narration planning listens to accepted audio and covers each semantic beat using 1x2 or 1x3 boards. The shared storyboard contract owns monochrome style fidelity, white label backgrounds, whole-second printed timings, side/three-quarter action staging without back shots, and silent closed-lip characters.
+
+The animation template links the official MiniMax H3 reference and base guides. It distinguishes external narration from explicitly requested generated voiceover, which uses the official per-line phrase and closed-lips statement. Reference prompts retain six sections. New animation instructions use the selected Ultra quality=true default; the runtime accepts explicit boolean quality so historical Fast records remain readable. Two- and three-shot plans require matching format/count and strictly increasing internal cuts.
+
+Updated entrypoints: starling-audio-pack, starling-prompt-pack, starling-director, starling-cinematography, starling-image-pack-generator, starling-panel-corrector, starling-animation-pack, starling-animation-monitor, starling-production-master and starling-verification. Script Rebuilder's source responsibilities are unchanged; its document was refreshed with the other exports.
+
+Validation: 45 offline tests passed, including valid 1x3 and malformed cut plans, Ultra inputs and historical compatibility. Eleven skill entrypoints passed the skill validator. The source audit checked 29 Markdown files and 103 local links. The 20-page workflow PDF and eleven Word exports passed full source-text/hash and page-bound checks; all 63 rendered pages were inspected. Microsoft Word rendered the DOCX files because the packaged renderer reported missing LibreOffice. No production media was generated or accepted by this update.
+
+## Previous audit 18 October 2026
 
 The current skills and supporting references use one shared [timing and visual review contract](../starling-animation-pack/references/timing-and-visual-review.md). Nine downstream skill entrypoints link to it. Script Rebuilder and Audio Pack retain their source and audio responsibilities; their Word exports were refreshed without adding animation responsibilities.
 
