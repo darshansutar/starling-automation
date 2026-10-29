@@ -21,6 +21,8 @@ Movement stays within each shot and follows source meaning. Quiet object coverag
 
 Default narration to one continuous full-frame scene. Use two or three related shots only when every hard cut has a recorded semantic purpose. A closer duplicate of the same table, people or object is not a new beat; prefer a restrained continuous camera move. Dialogue uses exactly one approved clean scene plus its accepted speech.
 
+Additional narration shots are person-free B-roll, not new human subjects or alternate conversation angles. When narration precedes dialogue, record and inspect the final-panel-to-dialogue handoff: same scene master, environment/time, lighting, camera axis, set geometry, prop state and character screen-position map. A B-roll insert may precede dialogue only through a motivated spatial cut that returns to the established dialogue composition.
+
 Both routes use the [reference template](animation-template.md) aligned with the live provider guide. Narration follows [storyboard planning](narration-pairs.md): two or three related full-frame colour shots, one or two measured hard cuts and relevant ordered refs. Caption strips guide production. Express the target positively. Dialogue retains approved speech and exact turn mapping. Save shot_inventory_match by comparing each written shot description, action and camera instruction against the corresponding actual picture and labels. Detailed prompting does not establish output fidelity; inspect all motion before acceptance.
 
 ## Complete review and targeted repair

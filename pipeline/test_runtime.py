@@ -248,6 +248,16 @@ class RuntimeTests(unittest.TestCase):
                                     'camera_side': 'window-facing side',
                                     'screen_positions': {'Ravi': 'left', 'Kamala': 'right'}}
         validate_plan(plan)
+        plan['preceding_narration_clip_id'] = 'narration-1'
+        with self.assertRaises(PipelineError):
+            validate_plan(plan)
+        plan['narration_dialogue_handoff'] = {
+            'review': 'pass', 'scene_master_sha256': 'a' * 64,
+            'final_narration_panel_sha256': 'b' * 64,
+            'dialogue_scene_sha256': 'c' * 64,
+            'camera_axis_match': 'pass', 'set_and_lighting_match': 'pass',
+            'screen_positions_match': 'pass'}
+        validate_plan(plan)
 
     def test_bookend_reference_without_dummy_audio(self):
         p = payload()

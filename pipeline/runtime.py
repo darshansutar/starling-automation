@@ -113,6 +113,16 @@ def validate_plan(plan):
         require(continuity.get('review') == 'pass' and continuity.get('scene_master_sha256')
                 and continuity.get('camera_side') and continuity.get('screen_positions'),
                 'Dialogue requires an approved scene master, camera side and stable screen positions')
+        if plan.get('preceding_narration_clip_id'):
+            handoff = plan.get('narration_dialogue_handoff', {})
+            require(handoff.get('review') == 'pass'
+                    and handoff.get('scene_master_sha256') == continuity.get('scene_master_sha256')
+                    and handoff.get('final_narration_panel_sha256')
+                    and handoff.get('dialogue_scene_sha256')
+                    and handoff.get('camera_axis_match') == 'pass'
+                    and handoff.get('set_and_lighting_match') == 'pass'
+                    and handoff.get('screen_positions_match') == 'pass',
+                    'Narration before dialogue requires a passed visual continuity handoff')
     else:
         if 'end' in plan['payload']:
             require(plan.get('visual_format') == 'first_last_frames', 'Endpoint frame format required')
