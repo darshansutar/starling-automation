@@ -19,7 +19,7 @@ For a source Starling link, retrieve all beats, branches, recovery content, cons
 
 ## Execute the requested scope
 
-Before related panels, require one approved scene master and a continuity map for camera axis, named left/right positions, seating/furniture geometry, fixed landmarks, props and lighting. Generate later panels from that authority and reject swaps, mirrors, changed sitting orientation, furniture growth and background drift before animation. Use one narration composition when it covers the beat; every additional cut requires a recorded semantic purpose. Dialogue animation receives exactly one approved clean scene plus accepted audio. Immediate same-moment continuation may instead use one inspected last frame; continuation and multi-reference modes are mutually exclusive.
+Before related panels, require one approved scene master and a continuity map for camera axis, named left/right positions, seating/furniture geometry, fixed landmarks, props and lighting. Generate later panels from that authority and reject swaps, mirrors, changed sitting orientation, furniture growth and background drift before animation. Use one narration composition when it covers the beat; every additional cut requires a recorded semantic purpose. Dialogue animation receives exactly one approved clean scene plus accepted audio. New production follows approved storyboard/scene inputs and does not use extracted video frames as replacements.
 
 All production references use original files stored through the confirmed `darshan@en2.ai` Drive connection. Record Drive IDs, fetchable URLs, hashes, EN2 upload names and a visual-match check before paid submission. Apply the fixed order: visible characters, matching environment, visible props, composition authority last.
 

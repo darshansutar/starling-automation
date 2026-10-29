@@ -249,17 +249,6 @@ class RuntimeTests(unittest.TestCase):
                                     'screen_positions': {'Ravi': 'left', 'Kamala': 'right'}}
         validate_plan(plan)
 
-    def test_inspected_last_frame_continuation(self):
-        p = {'prompt': 'How the reference pictures align with the target video - Picture 1 continues the approved scene.\n\nintegrated_multimodal_description: Continue the same moment.\n\noverall_soundscape: Silence.\n\nnon_diegetic_music: N/A',
-             'image': 'last-frame.png', 'duration': 5, 'width': 1344, 'height': 768, 'quality': True}
-        plan = {'payload': p, 'content_kind': 'narration', 'visual_format': 'continuation_frame',
-                'shot_count': 1, 'cut_times': [], 'continuation_source': {
-                    'inspection': 'pass', 'provider_id': 'video_previous',
-                    'frame_upload_name': 'last-frame.png', 'scene_master_match': 'pass'}}
-        validate_plan(plan)
-        with self.assertRaises(PipelineError):
-            validate_plan(dict(plan, continuation_source=dict(plan['continuation_source'], inspection='pending')))
-
     def test_bookend_reference_without_dummy_audio(self):
         p = payload()
         p.update(prompt=reference_prompt(), refs=['cast.jpg', 'set.jpg', 'board.jpg'])

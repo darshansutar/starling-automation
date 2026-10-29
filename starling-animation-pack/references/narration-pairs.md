@@ -30,8 +30,6 @@ Write each actual panel as a detailed scene description using [scene preservatio
 
 Upload the inspected scene/board and relevant colour references from their recorded Google Drive URLs, verify the returned image visually, then submit EN2 upload names in the recorded role order. A Drive preview webpage is not a valid image upload.
 
-For an immediate continuation of the same moment, a completed preceding render may supply its last frame as the next request's single starting `image`. Inspect it against the scene master for identity, hands/faces, seating, furniture, props, lighting and camera side. Record the source provider ID and frame upload name. Do not use a defective or motion-blurred frame, do not use continuation across a deliberate scene/time change, and do not mix starting-image continuation with the multi-reference bundle.
-
 Upload the inspected board and relevant colour references, verify returned bytes, then submit refs in the recorded order with Ultra quality=true. Keep narration external. Save exact payload, prompt, audio mapping, picture boxes, shot inventory review, upload evidence, intent and provider ID.
 
 Review the complete video: the planned two or three sequential full-frame shots and every hard cut at its planned time, source-faithful action and consistent identity/geometry. Reject fades, dissolves, overlays, mixed panels, white borders/frames, printed labels or storyboard layout appearing in the output. These are review criteria; generation prompts express the affirmative target above. Inspect all motion and sound; a contact sheet cannot certify the result. Follow Animation Pack's single scene-redesign replacement limit under the same logical clip ID. Preserve original media and paid-job history.

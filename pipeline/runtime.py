@@ -73,11 +73,9 @@ def validate_render(payload, content_kind, reference_seconds=None):
     for field in ('height', 'width'):
         require(type(payload.get(field)) is int and payload[field] > 0, f'Invalid {field}')
     require(content_kind in {'narration', 'speech_free', 'dialogue'}, 'Unknown content kind')
-    if 'image' in payload:
+    if 'end' in payload:
         require(content_kind != 'dialogue', 'First/last frames keep speech external')
-        require(isinstance(payload.get('image'), str) and payload['image'].strip(), 'Uploaded starting frame required')
-        if 'end' in payload:
-            require(isinstance(payload.get('end'), str) and payload['end'].strip(), 'Uploaded ending frame required')
+        require(all(isinstance(payload.get(k), str) and payload[k].strip() for k in ('image', 'end')), 'Both uploaded endpoint frames required')
         require(not any(k in payload for k in ('refs', 'ref_videos', 'ref_audios', 'audio', 'clip')), 'Endpoint frames cannot mix with reference inputs')
         require(4 <= payload['duration'] <= 15, 'Endpoint duration must be 4-15 seconds')
         require(reference_seconds is None or (type(reference_seconds) in (int, float) and reference_seconds == 0), 'Endpoint frames have no reference audio')
@@ -116,19 +114,12 @@ def validate_plan(plan):
                 and continuity.get('camera_side') and continuity.get('screen_positions'),
                 'Dialogue requires an approved scene master, camera side and stable screen positions')
     else:
-        if 'image' in plan['payload']:
-            expected_format = 'first_last_frames' if 'end' in plan['payload'] else 'continuation_frame'
-            require(plan.get('visual_format') == expected_format, 'Endpoint/continuation frame format required')
+        if 'end' in plan['payload']:
+            require(plan.get('visual_format') == 'first_last_frames', 'Endpoint frame format required')
             require(plan.get('shot_count') == 1, 'Narration endpoints require one continuous shot')
             cuts = plan.get('cut_times')
             require(isinstance(cuts, list) and len(cuts) == plan['shot_count'] - 1, 'Endpoint cuts must match shot count')
             require(all(positive(t) and t < plan['payload']['duration'] for t in cuts), 'Endpoint cuts must be inside duration')
-            if expected_format == 'continuation_frame':
-                source = plan.get('continuation_source', {})
-                require(source.get('inspection') == 'pass' and source.get('provider_id')
-                        and source.get('frame_upload_name') == plan['payload']['image']
-                        and source.get('scene_master_match') == 'pass',
-                        'Continuation requires an inspected last frame matched to the scene master')
             return
         count = plan.get('shot_count')
         if count == 1:
@@ -326,7 +317,7 @@ class Project:
 
     def prepare_render(self, clip, payload, content_kind, reference_seconds=None, review_boundary_waiver=None, replacement_authorization=None):
         self.require_intake()
-        require('end' not in payload, 'New production does not use paired endpoint frames')
+        require('end' not in payload and 'image' not in payload, 'New production uses approved scene/storyboard refs and clean-scene refs for dialogue')
         require(re.fullmatch(r'[a-zA-Z0-9_-]+', clip or ''), 'Invalid clip ID')
         validate_render(payload, content_kind, reference_seconds)
         with self.db:
