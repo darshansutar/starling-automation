@@ -1,8 +1,14 @@
 # Narration storyboard production
 
-Narration, filler, establishing and ending coverage use a black-and-white 1x2 or 1x3 storyboard: two or three related shots stacked in one column, in playback order. Each shot is an independent composition illustrating its mapped narration beat. Dialogue retains its clean-scene and accepted reference-audio workflow.
+Narration, filler, establishing and ending coverage use the fewest meaningful compositions: one approved full-frame scene when the beat can play continuously, otherwise a black-and-white 1x2 or 1x3 storyboard with two or three related shots. Dialogue retains its clean-scene and accepted reference-audio workflow.
 
 ## Plan and draw
+
+Default to one continuous composition. Use two or three compositions only when every cut has a written purpose: reveal a different subject, action, evidence/detail, location/time, or meaningful reaction that the current composition cannot show clearly. Record `visual_format=narration_scene`, `shot_count=1` and `cut_times=[]` for a continuous shot; otherwise use `storyboard_1x2` or `storyboard_1x3` with exactly shot_count minus one strictly increasing cut times.
+
+Do not cut from a table scene to a closer view of the same table merely for variety; use one restrained 3-5 percent push-in instead. A detail insert is justified only when the narration specifically requires that evidence and it is composed as a clear insert rather than a resized duplicate of the preceding shot.
+
+Build related panels from an approved scene master. Preserve the camera axis, seating orientation, character screen sides, furniture scale, background landmarks, prop state and lighting across cuts. Reject hallucinated furniture growth, flipped seating, moved doors/windows, impossible contact or inconsistent table orientation before animation.
 
 Listen to the complete accepted narration and inspect its measured cues before choosing shots. Map every distinct situation, action and B-roll beat to canonical lines, branch facts and an exact audio interval. A 13-second narration with three distinct situations needs coverage of all three; do not stretch one or two generic views over missing beats. Choose two or three panels by semantic coverage and pacing, not duration alone; split into additional boards if needed. Record visual_format=storyboard_1x2 or storyboard_1x3, matching shot_count=2 or 3 and exactly shot_count minus one strictly increasing cut_times values inside the generated interval. Follow [buffered timing and visual review](timing-and-visual-review.md): add 1–2 seconds per shot before drawing, print generated ranges and action/hold durations below every panel, repeat those exact timings and hard cut in the prompt, and save per-shot assembly source_spans. Keep generated duration and required edit duration separate. Check live provider limits and split if needed. Preserve original audio speed and complete source coverage. Split long narration at measured cues.
 
@@ -21,6 +27,10 @@ Use the reference template in animation-template.md. Select 2D, 2.5D or 3D anima
 Write each actual panel as a detailed scene description using [scene preservation](scene-preservation.md), then specify its printed action and camera movement separately with exact timing. Include placement, posture/gaze, physical support, object orientation and background details only where visible. Do not substitute a plot summary or generic instruction to follow the storyboard. Unassigned machinery, gates, cargo and lighting retain their depicted state. In every narration shot explicitly state that visible characters remain silent, with lips completely closed and no speech-like mouth or jaw movement. See animation-template.md for the official per-line rule if generated voiceover is explicitly requested. Prepare a silent visual sequence for the accepted narration added at assembly.
 
 ## Submit and review
+
+Upload the inspected scene/board and relevant colour references from their recorded Google Drive URLs, verify the returned image visually, then submit EN2 upload names in the recorded role order. A Drive preview webpage is not a valid image upload.
+
+For an immediate continuation of the same moment, a completed preceding render may supply its last frame as the next request's single starting `image`. Inspect it against the scene master for identity, hands/faces, seating, furniture, props, lighting and camera side. Record the source provider ID and frame upload name. Do not use a defective or motion-blurred frame, do not use continuation across a deliberate scene/time change, and do not mix starting-image continuation with the multi-reference bundle.
 
 Upload the inspected board and relevant colour references, verify returned bytes, then submit refs in the recorded order with Ultra quality=true. Keep narration external. Save exact payload, prompt, audio mapping, picture boxes, shot inventory review, upload evidence, intent and provider ID.
 

@@ -11,12 +11,15 @@ Write a concrete description of each actual picture in detailed_description, not
 - Visible objects and their states, positions, ownership, orientation and physical support. For documents, describe which way the pages face and how the book, papers and file lie on the table; for seated people, preserve their side of the table, chairs and spacing across cuts.
 - The printed ACTION as a timed start, movement and final pose. Describe what visibly changes and what stays fixed; a broad emotion alone is not an action.
 - The printed CAMERA instruction, separately from subject action, plus exact generated ranges, hard cut and settling buffers from the timing plan.
+- The approved scene-master relationships: camera axis, named character screen sides, seating orientation, furniture dimensions/proportion, fixed landmarks, prop locations and lighting direction.
 
 Select references using [the visible-inventory rules](reference-bundle.md). Include only relevant detail: an empty landscape needs landscape geometry and supported environmental movement, not facial, clothing or tabletop instructions. Required motion must be possible from the depicted pose and contacts. If the actual image, printed labels and saved plan disagree, repair/reconcile them before submission; do not conceal the mismatch by inventing content in the prompt. Source words and branch outcomes remain authoritative.
 
 Movement stays within each shot and follows source meaning. Quiet object coverage may remain still. Human activity should be restrained and supported, not repeated gestures added to fill time. Preserve contact, balance, clearance, depth, scale and object orientation through the complete action. All unassigned background elements retain their approved state.
 
 ## Mode-specific prompt
+
+Default narration to one continuous full-frame scene. Use two or three related shots only when every hard cut has a recorded semantic purpose. A closer duplicate of the same table, people or object is not a new beat; prefer a restrained continuous camera move. Dialogue uses exactly one approved clean scene plus its accepted speech.
 
 Both routes use the [reference template](animation-template.md) aligned with the live provider guide. Narration follows [storyboard planning](narration-pairs.md): two or three related full-frame colour shots, one or two measured hard cuts and relevant ordered refs. Caption strips guide production. Express the target positively. Dialogue retains approved speech and exact turn mapping. Save shot_inventory_match by comparing each written shot description, action and camera instruction against the corresponding actual picture and labels. Detailed prompting does not establish output fidelity; inspect all motion before acceptance.
 

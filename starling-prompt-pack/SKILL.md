@@ -17,9 +17,13 @@ Follow [narration storyboard production](../starling-animation-pack/references/n
 
 ## Plan the coverage
 
+Before drawing panels for a continuous location, create and approve one full-frame scene master. Record the camera axis, character screen-position map, seating/standing orientation, furniture dimensions and placement, fixed background landmarks, prop state and lighting direction. The first panel uses required appearance references with the scene master last; later panels use the same master or previous approved panel last as composition anchor. Reject mirrored/swapped characters, changed seating, furniture growth, moved landmarks and unjustified perspective changes before animation.
+
+Use one continuous approved narration scene by default. Add a storyboard shot only when it reveals a distinct subject, action, evidence, location/time or reaction that cannot be communicated in the current composition. A closer duplicate of the same table or scene is not a meaningful new shot.
+
 Read all source branches and accepted audio/cues. Map each meaningful beat to exact lines, speakers, node/branch, audio source/assembly intervals and required visual information. Classify narration, dialogue and speech-free coverage. Inventory every visible character, environment and prop. Use extracted Starling style references when selected; a finalized document controls story content over any reference link.
 
-Apply [narration storyboard planning](../starling-animation-pack/references/narration-pairs.md). For narration plan a black-and-white 1x2 or 1x3 storyboard containing two or three related shots with a measured hard cut between successive shots. Put SHOT, time range, CAMERA and ACTION labels below each picture; keep arrows and planning marks out of the artwork. Preserve every essential beat and measured audio interval. Dialogue uses a clean full-frame scene. Mixed nodes retain canonical order.
+Apply [narration storyboard planning](../starling-animation-pack/references/narration-pairs.md). Use one approved full-frame narration scene when no meaningful cut is required. Otherwise plan a black-and-white 1x2 or 1x3 storyboard with a measured hard cut between distinct beats. Put SHOT, time range, CAMERA and ACTION labels below each picture; keep arrows and planning marks out of the artwork. Preserve every essential beat and measured audio interval. Dialogue uses one clean full-frame scene derived from the approved scene master. Mixed nodes retain canonical order.
 
 Introduce named characters with recognizable faces. Plan distinct source-supported setting/task B-roll where useful. Include opening orientation, orientation at meaningful location changes and closing coverage for actual endings and completed Bad Outcomes. Mark additional coverage production_staging within existing nodes; preserve the actual proposed/completed state. Fit under meaningful narration or explicitly budget a brief speech-free interval.
 

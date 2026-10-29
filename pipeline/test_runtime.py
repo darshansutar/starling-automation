@@ -20,6 +20,7 @@ class RuntimeTests(unittest.TestCase):
                 'visual_format': 'storyboard_1x3', 'shot_count': 3, 'cut_times': [4, 8]}
         validate_plan(plan)
         validate_plan(dict(plan, visual_format='storyboard_1x2', shot_count=2, cut_times=[6]))
+        validate_plan(dict(plan, visual_format='narration_scene', shot_count=1, cut_times=[]))
         for changes in ({'cut_times': [8, 4]}, {'cut_times': [4, 4]}, {'cut_times': [4]},
                         {'cut_times': [4, 12]}, {'cut_times': [0, 8]}, {'visual_format': 'storyboard_1x2'},
                         {'shot_count': 4}):
@@ -234,6 +235,30 @@ class RuntimeTests(unittest.TestCase):
         with self.assertRaises(PipelineError): validate_render(p, 'dialogue')
         p['ref_audios'] = ['conversation.wav']
         validate_render(p, 'dialogue', 8.5)
+        with self.assertRaises(PipelineError):
+            validate_render(dict(p, refs=['scene.jpg', 'character-sheet.jpg']), 'dialogue', 8.5)
+
+    def test_dialogue_plan_requires_scene_continuity(self):
+        p = dict(payload(), refs=['scene.jpg'], ref_audios=['conversation.wav'])
+        plan = {'payload': p, 'content_kind': 'dialogue', 'reference_seconds': 8.5,
+                'visual_format': 'dialogue_scene'}
+        with self.assertRaises(PipelineError):
+            validate_plan(plan)
+        plan['scene_continuity'] = {'review': 'pass', 'scene_master_sha256': 'a' * 64,
+                                    'camera_side': 'window-facing side',
+                                    'screen_positions': {'Ravi': 'left', 'Kamala': 'right'}}
+        validate_plan(plan)
+
+    def test_inspected_last_frame_continuation(self):
+        p = {'prompt': 'How the reference pictures align with the target video - Picture 1 continues the approved scene.\n\nintegrated_multimodal_description: Continue the same moment.\n\noverall_soundscape: Silence.\n\nnon_diegetic_music: N/A',
+             'image': 'last-frame.png', 'duration': 5, 'width': 1344, 'height': 768, 'quality': True}
+        plan = {'payload': p, 'content_kind': 'narration', 'visual_format': 'continuation_frame',
+                'shot_count': 1, 'cut_times': [], 'continuation_source': {
+                    'inspection': 'pass', 'provider_id': 'video_previous',
+                    'frame_upload_name': 'last-frame.png', 'scene_master_match': 'pass'}}
+        validate_plan(plan)
+        with self.assertRaises(PipelineError):
+            validate_plan(dict(plan, continuation_source=dict(plan['continuation_source'], inspection='pending')))
 
     def test_bookend_reference_without_dummy_audio(self):
         p = payload()
@@ -263,6 +288,18 @@ class RuntimeTests(unittest.TestCase):
         self.assertTrue(task['intent'])
         self.project.job_update(task['intent'], 'submission_unknown', 'Synthetic timeout')
         with self.assertRaises(PipelineError): self.project.prepare_render('bookend', p, 'speech_free')
+
+    def test_explicit_capacity_rejection_without_job(self):
+        self.ready()
+        task = self.project.prepare_render('clip1', payload(), 'narration')
+        rejection = {'intent': task['intent'], 'response': {'isError': True, 'content': [
+            {'type': 'text', 'text': 'the render line is about 35 minutes long and the box drops renders that wait past 40 — let it drain first'}]}}
+        path = Path(self.temp.name, 'capacity-rejection.json')
+        path.write_text(json.dumps(rejection), encoding='utf-8')
+        self.project.job_update(task['intent'], 'submission_rejected', path.name)
+        row = self.project.db.execute('SELECT state,provider_id FROM jobs WHERE intent=?', (task['intent'],)).fetchone()
+        self.assertEqual(row['state'], 'submission_rejected')
+        self.assertIsNone(row['provider_id'])
 
     def test_unknown_submission_never_duplicates(self):
         self.ready()

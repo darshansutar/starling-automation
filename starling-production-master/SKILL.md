@@ -19,13 +19,17 @@ For a source Starling link, retrieve all beats, branches, recovery content, cons
 
 ## Execute the requested scope
 
+Before related panels, require one approved scene master and a continuity map for camera axis, named left/right positions, seating/furniture geometry, fixed landmarks, props and lighting. Generate later panels from that authority and reject swaps, mirrors, changed sitting orientation, furniture growth and background drift before animation. Use one narration composition when it covers the beat; every additional cut requires a recorded semantic purpose. Dialogue animation receives exactly one approved clean scene plus accepted audio. Immediate same-moment continuation may instead use one inspected last frame; continuation and multi-reference modes are mutually exclusive.
+
+All production references use original files stored through the confirmed `darshan@en2.ai` Drive connection. Record Drive IDs, fetchable URLs, hashes, EN2 upload names and a visual-match check before paid submission. Apply the fixed order: visible characters, matching environment, visible props, composition authority last.
+
 | Stage | Owner | Exit evidence |
 |---|---|---|
 | Script | starling-script-rebuilder | Source ledger, stable graph, matching Word/JSON and source comparison |
 | Docs | Google Drive and Google Docs skills | Confirmed darshan@en2.ai account, real native document ID/URL and matching readback |
 | Audio | starling-audio-pack | Complete accepted speech, speakers, listening and measured cues |
 | Visual plan | starling-prompt-pack, director, cinematography | Full inventory and audio-timed source coverage |
-| Images | image-pack-generator, panel-corrector | Approved assets, labelled two- or three-shot narration boards and clean dialogue scenes |
+| Images | image-pack-generator, panel-corrector | Approved scene masters, continuity maps, single narration scenes or justified multi-shot boards, and clean dialogue scenes |
 | Animation preflight | starling-animation-pack | Exact approved inputs/uploads, prompts, shot mapping and measured timing |
 | Submit and collect | animation-pack, animation-monitor | All ready clips submitted once, real IDs and downloaded outputs or explicit failures |
 | Review and repair | verification, director, cinematography | Complete visual and audio reviews; user-owned lip-sync; targeted replacements rechecked |

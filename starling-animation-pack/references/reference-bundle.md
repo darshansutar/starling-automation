@@ -9,13 +9,27 @@ Inspect the actual storyboard pictures or clean dialogue scene before choosing r
 | Environment only | Matching environment and storyboard; omit character and prop sheets. Describe the visible landscape, fixed structures, lighting and supported environmental movement. |
 | Person-free prop/document insert | Matching environment or surface, relevant prop sheets and storyboard; omit character sheets. An insert of a book or file is not an environment-only shot. |
 
-Preserve this order among the applicable groups: character sheets, environment, prop sheets, storyboard or clean dialogue scene. Dialogue also retains the accepted reference audio and speaker mapping, including a source-required off-screen voice without adding its character sheet to the image bundle. Omit absent groups rather than supplying unrelated context sheets.
+Preserve this order among the applicable groups: visible character sheets in stable cast order, matching environment, relevant visible prop sheets, then the composition authority last. The composition authority is the approved scene master or previous approved panel during panel generation, and the approved full-frame scene or storyboard during animation. Appearance references never override its seating, left/right placement, camera side, furniture geometry or object layout. Omit absent groups rather than supplying unrelated context sheets.
+
+Dialogue animation is the strict exception: pass exactly one approved clean full-frame dialogue scene plus accepted reference audio and speaker/turn mapping. Do not also attach character sheets, environment sheets, props or a storyboard; the clean scene already resolves those facts. A source-required off-screen speaker supplies audio without adding a visual character.
+
+## Google Drive transport
+
+Store each approved original reference in Google Drive under the confirmed `darshan@en2.ai` connection. Record the Drive file ID, a fetchable HTTPS image URL, original filename and SHA-256. Send that URL through the EN2 media uploader, record the returned upload name, and visually compare the uploaded result with the approved original before any paid batch. A Drive preview page is not an image. Do not convert or recompress a reference merely to make transport succeed. The EN2 payload uses the returned upload names in the same role order recorded above.
+
+Save one transport record per input: role, Drive file ID/URL, local hash, EN2 upload name, upload evidence and visual-match verdict. Rebuild Picture/Subject indexes after any omission or reorder.
 
 References apply to the entire render request. For a two- or three-shot clip, take the union of the visible identities and relevant props across all its pictures and explicitly record visibility per shot. A character visible only in Shot 1 supplies a reference for Shot 1, not permission to appear in an empty Shot 2. Separate requests use their own inventories; do not inherit the whole scene's cast. Keep the approved shot timing unless a source-supported replan is needed.
 
 For first submissions, use approved sheets for the selected visible characters and props. A sheet's multiple views describe one identity/object. Reuse suitable assets; generate and inspect a missing reference only when the visible scene needs it. The repair exception below allows individual references after an incorrect animation output.
 
 Save ordered roles, filenames, hashes, upload names and per-shot visibility. After any attachment change, rebuild all Picture/Subject indexes and remove definitions and prose for omitted subjects. Check every prompted identity/object against the actual pictures. If the selected bundle exceeds the provider limit, consolidate compatible references or split at a source-supported cue while preserving coverage and timing. Preserve already-submitted payloads and paid IDs; a revised reference plan does not alter a queued job or authorize a duplicate.
+
+## Scene master and panel continuity
+
+Before the first panel of a continuous location, approve a full-frame scene master that fixes room/landscape geometry, furniture dimensions and orientation, character seats or standing marks, camera side, background landmarks, prop locations and lighting direction. Record a stable screen-position map. Generate the first panel from visible character references, environment, relevant props and the scene master last. Generate later panels from the same required appearance references with the previous approved panel or scene master last as composition anchor.
+
+Do not mirror or swap characters between panels. A speaker does not move to the preferred side or centre merely because their turn begins. Change only the source-required expression, gesture or action. Reject a panel before animation if it crosses the camera axis, changes seating orientation, resizes furniture without perspective justification, moves fixed props/background landmarks, or breaks the recorded screen-position map.
 
 ## People standing together
 

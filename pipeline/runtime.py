@@ -73,9 +73,11 @@ def validate_render(payload, content_kind, reference_seconds=None):
     for field in ('height', 'width'):
         require(type(payload.get(field)) is int and payload[field] > 0, f'Invalid {field}')
     require(content_kind in {'narration', 'speech_free', 'dialogue'}, 'Unknown content kind')
-    if 'end' in payload:
+    if 'image' in payload:
         require(content_kind != 'dialogue', 'First/last frames keep speech external')
-        require(all(isinstance(payload.get(k), str) and payload[k].strip() for k in ('image', 'end')), 'Both uploaded endpoint frames required')
+        require(isinstance(payload.get('image'), str) and payload['image'].strip(), 'Uploaded starting frame required')
+        if 'end' in payload:
+            require(isinstance(payload.get('end'), str) and payload['end'].strip(), 'Uploaded ending frame required')
         require(not any(k in payload for k in ('refs', 'ref_videos', 'ref_audios', 'audio', 'clip')), 'Endpoint frames cannot mix with reference inputs')
         require(4 <= payload['duration'] <= 15, 'Endpoint duration must be 4-15 seconds')
         require(reference_seconds is None or (type(reference_seconds) in (int, float) and reference_seconds == 0), 'Endpoint frames have no reference audio')
@@ -90,6 +92,7 @@ def validate_render(payload, content_kind, reference_seconds=None):
         require(isinstance(values, list) and values and all(isinstance(v, str) and v for v in values),
                 f'Missing uploaded {field}')
     if content_kind == 'dialogue':
+        require(len(payload['refs']) == 1, 'Dialogue requires exactly one approved clean scene reference')
         values = payload.get('ref_audios')
         require(isinstance(values, list) and values and all(isinstance(v, str) and v for v in values),
                 'Missing uploaded ref_audios')
@@ -108,16 +111,30 @@ def validate_plan(plan):
     validate_render(plan['payload'], plan['content_kind'], plan.get('reference_seconds'))
     if plan['content_kind'] == 'dialogue':
         require(plan.get('visual_format') == 'dialogue_scene', 'Dialogue requires a clean scene')
+        continuity = plan.get('scene_continuity', {})
+        require(continuity.get('review') == 'pass' and continuity.get('scene_master_sha256')
+                and continuity.get('camera_side') and continuity.get('screen_positions'),
+                'Dialogue requires an approved scene master, camera side and stable screen positions')
     else:
-        if 'end' in plan['payload']:
-            require(plan.get('visual_format') == 'first_last_frames', 'Endpoint frame format required')
+        if 'image' in plan['payload']:
+            expected_format = 'first_last_frames' if 'end' in plan['payload'] else 'continuation_frame'
+            require(plan.get('visual_format') == expected_format, 'Endpoint/continuation frame format required')
             require(plan.get('shot_count') == 1, 'Narration endpoints require one continuous shot')
             cuts = plan.get('cut_times')
             require(isinstance(cuts, list) and len(cuts) == plan['shot_count'] - 1, 'Endpoint cuts must match shot count')
             require(all(positive(t) and t < plan['payload']['duration'] for t in cuts), 'Endpoint cuts must be inside duration')
+            if expected_format == 'continuation_frame':
+                source = plan.get('continuation_source', {})
+                require(source.get('inspection') == 'pass' and source.get('provider_id')
+                        and source.get('frame_upload_name') == plan['payload']['image']
+                        and source.get('scene_master_match') == 'pass',
+                        'Continuation requires an inspected last frame matched to the scene master')
             return
         count = plan.get('shot_count')
-        require(count in (2, 3) and plan.get('visual_format') == f'storyboard_1x{count}', 'Storyboard requires matching two or three shot format')
+        if count == 1:
+            require(plan.get('visual_format') == 'narration_scene', 'Single-shot narration requires one approved full-frame scene')
+        else:
+            require(count in (2, 3) and plan.get('visual_format') == f'storyboard_1x{count}', 'Storyboard requires matching two or three shot format')
         cuts = plan.get('cut_times')
         require(isinstance(cuts, list) and len(cuts) == count - 1 and all(positive(t) and t < plan['payload']['duration'] for t in cuts) and all(a < b for a, b in zip(cuts, cuts[1:])), 'Storyboard cuts must match shot count and increase strictly inside duration')
 
@@ -309,7 +326,7 @@ class Project:
 
     def prepare_render(self, clip, payload, content_kind, reference_seconds=None, review_boundary_waiver=None, replacement_authorization=None):
         self.require_intake()
-        require('end' not in payload and 'image' not in payload, 'New production uses storyboard refs for narration and clean-scene refs for dialogue')
+        require('end' not in payload, 'New production does not use paired endpoint frames')
         require(re.fullmatch(r'[a-zA-Z0-9_-]+', clip or ''), 'Invalid clip ID')
         validate_render(payload, content_kind, reference_seconds)
         with self.db:
@@ -317,7 +334,7 @@ class Project:
             require(self.status()['animation_prompts']['state'] == 'verified', 'Animation preflight must pass')
             require(clip in (self.scope('renders') or []), 'Clip not in approved render inventory')
             rows = self.db.execute('SELECT * FROM jobs WHERE clip=? ORDER BY attempt', (clip,)).fetchall()
-            require(not rows or rows[-1]['state'] in {'needs_fix', 'submission_rejected'}, 'Existing job must be reconciled/reviewed; do not resubmit')
+            require(not rows or rows[-1]['state'] in {'needs_fix', 'submission_rejected', 'cancelled_before_call'}, 'Existing job must be reconciled/reviewed; do not resubmit')
             attempt = len(rows)
             replacement_record = None
             if replacement_authorization:
@@ -366,7 +383,8 @@ class Project:
                     'warning': 'Intent saved before external call. On uncertainty, reconcile instead of submitting again.'}
 
     def job_update(self, intent, state, evidence, provider_id=None):
-        transitions = {'submitting': {'queued', 'submission_unknown', 'submission_rejected'}, 'submission_unknown': {'queued'},
+        transitions = {'submitting': {'queued', 'submission_unknown', 'submission_rejected', 'cancelled_before_call'}, 'submission_unknown': {'queued'},
+                       'cancelled_before_call': set(),
                        'submission_rejected': set(),
                        'queued': {'running', 'review_pending', 'needs_fix'},
                        'running': {'review_pending', 'needs_fix'},
@@ -387,15 +405,24 @@ class Project:
                                   for x in response.get('content', []))
                 structured_error = (error.get('error_code') == 'INVALID_ARGUMENT' and
                                     error.get('error_data', {}).get('reason') == 'INVALID_PARAMETERS')
+                capacity_error = any(x.get('type') == 'text' and
+                                     'the render line is about ' in x.get('text', '') and
+                                     'the box drops renders that wait past ' in x.get('text', '') and
+                                     'let it drain first' in x.get('text', '')
+                                     for x in response.get('content', []))
                 require(rejection.get('intent') == intent and not actual_id and response.get('isError') is True
-                        and (structured_error or typed_error),
-                        'Explicit connector parameter rejection without a provider job required')
-            require(state in {'submission_unknown', 'submission_rejected'} or actual_id, 'Provider job ID required')
+                        and (structured_error or typed_error or capacity_error),
+                        'Explicit connector parameter or capacity rejection without a provider job required')
+            require(state in {'submission_unknown', 'submission_rejected', 'cancelled_before_call'} or actual_id, 'Provider job ID required')
             require(not row['provider_id'] or actual_id == row['provider_id'], 'Provider job ID cannot change')
             if state == 'verified':
                 require(self.status()['animation_prompts']['state'] == 'verified', 'Source preflight is stale')
                 preflight = self.db.execute("SELECT receipt FROM stages WHERE name='animation_prompts'").fetchone()[0]
-                require(canonical_hash(preflight) == row['preflight_hash'], 'Job belongs to an older preflight; review affected changes')
+                if canonical_hash(preflight) != row['preflight_hash']:
+                    current_plan = json.loads(preflight).get('render_plans', {}).get(row['clip'])
+                    require(current_plan is not None
+                            and canonical_hash(current_plan.get('payload')) == row['fingerprint'],
+                            'Job belongs to an older preflight and its clip payload changed')
                 review = json.loads(self.file(evidence).read_text(encoding='utf-8'))
                 require(review.get('status') == 'verified' and review.get('provider_id') == actual_id, 'Verified job review required')
                 require(review.get('full_picture_reviewed') is True and review.get('full_audio_reviewed') is True, 'Full picture and sound review required')
@@ -425,6 +452,7 @@ def main():
     invalidate = commands.add_parser('invalidate'); invalidate.add_argument('stage', choices=STAGES); invalidate.add_argument('--reason', required=True)
     prepare = commands.add_parser('prepare-render'); prepare.add_argument('clip'); prepare.add_argument('payload'); prepare.add_argument('--kind', choices=['narration', 'dialogue', 'speech_free'], required=True); prepare.add_argument('--reference-seconds', type=float)
     prepare.add_argument('--review-boundary-waiver', help='Project-relative scoped user authorization; submission only, never output acceptance')
+    prepare.add_argument('--replacement-authorization', help='Project-relative user authorization for an exact additional replacement payload')
     update = commands.add_parser('job'); update.add_argument('intent'); update.add_argument('state'); update.add_argument('--evidence', required=True); update.add_argument('--provider-id')
     args = parser.parse_args()
     project = None
@@ -439,7 +467,7 @@ def main():
         elif args.command == 'accept': project.accept(json.loads(Path(args.receipt).read_text(encoding='utf-8')))
         elif args.command == 'invalidate':
             with project.db: project.invalidate(args.stage, args.reason)
-        elif args.command == 'prepare-render': result = project.prepare_render(args.clip, json.loads(Path(args.payload).read_text(encoding='utf-8')), args.kind, args.reference_seconds, args.review_boundary_waiver)
+        elif args.command == 'prepare-render': result = project.prepare_render(args.clip, json.loads(Path(args.payload).read_text(encoding='utf-8')), args.kind, args.reference_seconds, args.review_boundary_waiver, args.replacement_authorization)
         elif args.command == 'job': project.job_update(args.intent, args.state, args.evidence, args.provider_id)
         print(json.dumps(result if result is not None else {'ok': True}, indent=2))
     except (PipelineError, OSError, KeyError, TypeError, sqlite3.Error, json.JSONDecodeError) as exc:
