@@ -4,7 +4,7 @@ ChatGPT calls EN2 and downloads outputs during an active session or a demonstrat
 
 ## Reconcile inputs before collection
 
-The current animation/animation-manifest.json and animation/assembly-plan.json must cover the whole production, including retained dialogue. Each clip has clip_id, explicit runtime_clip_id (or identical canonical ID), content_kind, visual_format, approved inputs/hashes and used_duration_seconds. Boards use storyboard_1x2 with two shots and one measured cut. Store source/audio/image manifest hashes. Do not automatically infer a new pairs ID from an old clip ID or split a timeline by filename.
+The current animation/animation-manifest.json and animation/assembly-plan.json must cover the whole production, including retained dialogue. Each clip has clip_id, explicit runtime_clip_id (or identical canonical ID), content_kind, visual_format, approved inputs/hashes and used_duration_seconds. Narration boards use storyboard_1x2 with two shots and one measured cut, or storyboard_1x3 with three shots and two. Store source/audio/image manifest hashes. Do not automatically infer a new pairs ID from an old clip ID or split a timeline by filename.
 
 Existing projects require a reviewed, versioned migration of these files before collecting a changed scope. Preserve prior manifests and job IDs. known_jobs rejects an unmapped scoped job. The manifest/timeline clip inventories must match. A workflow edit does not migrate production artifacts.
 

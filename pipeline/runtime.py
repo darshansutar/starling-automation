@@ -125,15 +125,20 @@ def validate_plan(plan):
                     'Narration before dialogue requires a passed visual continuity handoff')
     else:
         if 'end' in plan['payload']:
+            # Historical endpoint receipts stay readable; prepare_render rejects the route for new submissions.
             require(plan.get('visual_format') == 'first_last_frames', 'Endpoint frame format required')
-            require(plan.get('shot_count') == 1, 'Narration endpoints require one continuous shot')
+            require(plan.get('shot_count') == 1, 'Endpoints require one continuous shot')
             cuts = plan.get('cut_times')
             require(isinstance(cuts, list) and len(cuts) == plan['shot_count'] - 1, 'Endpoint cuts must match shot count')
             require(all(positive(t) and t < plan['payload']['duration'] for t in cuts), 'Endpoint cuts must be inside duration')
             return
         count = plan.get('shot_count')
-        if count == 1:
-            require(plan.get('visual_format') == 'narration_scene', 'Single-shot narration requires one approved full-frame scene')
+        if plan['content_kind'] == 'narration':
+            require(count in (2, 3) and plan.get('visual_format') == f'storyboard_1x{count}',
+                    'Narration requires a matching labelled two- or three-panel storyboard')
+            # Narration after dialogue is B-roll/subject action; only the narration-before-dialogue handoff is enforced, on the dialogue plan.
+        elif count == 1:
+            require(plan.get('visual_format') == 'narration_scene', 'Single-shot speech-free coverage requires one approved full-frame scene')
         else:
             require(count in (2, 3) and plan.get('visual_format') == f'storyboard_1x{count}', 'Storyboard requires matching two or three shot format')
         cuts = plan.get('cut_times')

@@ -1,6 +1,6 @@
 # Starling automation
 
-Source-faithful branching video workflow: script, accepted audio, labelled black-and-white two- or three-shot narration storyboards, EN2 animation, review and final assembly.
+Source-faithful branching video workflow: script, accepted audio, mandatory labelled black-and-white two- or three-shot narration storyboards, EN2 animation, review and final assembly.
 
 ## Contents
 

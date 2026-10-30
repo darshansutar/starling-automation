@@ -4,7 +4,7 @@ Discover live EN2 upload, generation, status and reference-guide tools in the ac
 
 ## Before submission
 
-Narration uses `visual_format=narration_scene`, `shot_count=1`, `cut_times=[]` when one composition covers the beat. Use storyboard_1x2/storyboard_1x3 only when each cut has a recorded semantic purpose. Dialogue uses `visual_format=dialogue_scene`, exactly one approved clean-scene ref, accepted ref_audios, and a passed scene-continuity record containing scene-master hash, camera side and named screen positions.
+Narration always uses the mandatory storyboard method: `visual_format=storyboard_1x2` or `storyboard_1x3`, `shot_count=2` or `3`, and exactly shot_count minus one measured cut times. A single-scene narration plan is invalid. Every panel must have a distinct source-supported purpose while preserving continuous scene geography and the required dialogue-boundary handoffs. Dialogue uses `visual_format=dialogue_scene`, exactly one approved clean-scene ref, accepted ref_audios, and a passed scene-continuity record containing scene-master hash, camera side and named screen positions.
 
 Reference transport is Drive-backed: confirm `darshan@en2.ai`, preserve the original image, record Drive file ID/fetchable URL/hash, upload through EN2, and visually compare the returned upload with the original. Use returned upload names in character, environment, visible-prop, composition-anchor order. Do not replace an approved storyboard/scene input with an extracted video frame.
 

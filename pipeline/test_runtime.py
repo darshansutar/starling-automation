@@ -20,7 +20,9 @@ class RuntimeTests(unittest.TestCase):
                 'visual_format': 'storyboard_1x3', 'shot_count': 3, 'cut_times': [4, 8]}
         validate_plan(plan)
         validate_plan(dict(plan, visual_format='storyboard_1x2', shot_count=2, cut_times=[6]))
-        validate_plan(dict(plan, visual_format='narration_scene', shot_count=1, cut_times=[]))
+        with self.assertRaises(PipelineError):
+            validate_plan(dict(plan, visual_format='narration_scene', shot_count=1, cut_times=[]))
+        validate_plan(dict(plan, content_kind='speech_free', visual_format='narration_scene', shot_count=1, cut_times=[]))
         for changes in ({'cut_times': [8, 4]}, {'cut_times': [4, 4]}, {'cut_times': [4]},
                         {'cut_times': [4, 12]}, {'cut_times': [0, 8]}, {'visual_format': 'storyboard_1x2'},
                         {'shot_count': 4}):
@@ -258,6 +260,14 @@ class RuntimeTests(unittest.TestCase):
             'camera_axis_match': 'pass', 'set_and_lighting_match': 'pass',
             'screen_positions_match': 'pass'}
         validate_plan(plan)
+
+    def test_narration_after_dialogue_needs_no_handoff(self):
+        plan = {'payload': dict(payload(), quality=True, duration=8), 'content_kind': 'narration',
+                'visual_format': 'storyboard_1x2', 'shot_count': 2, 'cut_times': [4],
+                'preceding_dialogue_clip_id': 'dialogue-1'}
+        validate_plan(plan)
+        with self.assertRaises(PipelineError):
+            validate_plan(dict(plan, visual_format='narration_scene', shot_count=1, cut_times=[]))
 
     def test_bookend_reference_without_dummy_audio(self):
         p = payload()
