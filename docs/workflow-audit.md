@@ -1,3 +1,11 @@
+# Workflow audit 30 October 2026
+
+## Mandatory narration storyboards
+
+Every narration clip now uses a labelled 1x2 or 1x3 storyboard planned from the accepted narration audio; single full-frame narration is invalid and the runtime rejects it for new plans. Narration before dialogue ends on a panel that hands off to the clean dialogue scene (upcoming speakers in their dialogue positions, same scene master, set, lighting and camera side) for continuous lip-sync; the dialogue render plan enforces that handoff. Narration after dialogue is mainly B-roll and subject action with no handoff requirement. Narration between dialogues applies both rules at its ends. Opening and ending narration use the normal storyboard method. Dialogue keeps exactly one clean scene plus accepted audio.
+
+Validation: 48 offline tests passed. The audit checked 11 skill entrypoints, 29 Markdown files and 103 local links, and all source hashes match the rebuilt exports. The 20-page workflow PDF and eleven Word documents were rebuilt, passed source-text and page-bound checks, and all 66 rendered pages were visually inspected. No production media was generated or accepted.
+
 # Workflow audit 21 October 2026
 
 ## Narration and dialogue update

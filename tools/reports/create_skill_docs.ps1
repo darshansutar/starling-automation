@@ -25,7 +25,7 @@ try {
             $normal.ParagraphFormat.SpaceAfter = 5
             if ($record.name -in @('starling-cinematography', 'starling-animation-monitor')) { $normal.ParagraphFormat.SpaceAfter = 4 }
             $normal.ParagraphFormat.LineSpacingRule = 0
-            $intro = $record.title + "`r" + 'Complete current SKILL.md source' + "`r" + 'Snapshot 21 October 2026' + "`r" + 'Original file: ' + $record.source + "`r" + 'SHA256: ' + $record.sha256 + "`r" + 'The source text below is reproduced in full for manual review. Markdown syntax and reference paths are retained.' + "`r`r"
+            $intro = $record.title + "`r" + 'Complete current SKILL.md source' + "`r" + 'Snapshot 30 October 2026' + "`r" + 'Original file: ' + $record.source + "`r" + 'SHA256: ' + $record.sha256 + "`r" + 'The source text below is reproduced in full for manual review. Markdown syntax and reference paths are retained.' + "`r`r"
             $sourceText = $record.content.Replace("`r`n", "`n").Replace("`n", "`r")
             $appendix = if ($record.shared_contract) { "`r`r# Shared production contracts`r" + $record.shared_contract.Replace("`r`n", "`n").Replace("`n", "`r") } else { "" }
             $doc.Content.Text = $intro + $sourceText + $appendix
