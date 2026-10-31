@@ -8,7 +8,7 @@ Discover the live EN2 reference guide before submission. Its current format has 
 
 Define reusable identities, environments and props as <Subject N> sourced from their actual <Picture N>. Give the storyboard or clean scene its own <Picture N> entry as the composition anchor. Use <Audio N> for accepted dialogue recordings. Number each label category consistently and rebuild indexes after attachments change. Define only selected references; save filenames, hashes, upload names and per-shot visibility outside the prompt.
 
-For narration, explicitly map the storyboard pictures in top-to-bottom order to Shot 1, Shot 2 and, for 1x3, Shot 3. Asset sheets supply appearance; the storyboard supplies composition, visible inventory, shot order and the printed action/camera/timing plan. Final footage presents each picture as one edge-to-edge colour shot. The board layout and caption strips remain production guidance.
+For narration, explicitly map the storyboard pictures in top-to-bottom order to Shot 1, Shot 2 and, for 1x3, Shot 3. State in the prompt that the "storyboard is the per-shot composition authority," that asset sheets provide "identity and material only," and that the last shot must match the "final storyboard panel." The storyboard supplies the complete environment, blocking, relative depth, visible inventory, shot order and printed action/camera/timing plan. Never describe a sheet, turnaround, neutral-background group or prop plate as a scene. Final footage presents each storyboard picture as one edge-to-edge colour shot. The board layout and caption strips remain production guidance.
 
 ## Narration structure
 
@@ -30,7 +30,7 @@ summary:
 
 retention_analysis:
 [For each selected Subject, state its assigned appearance role and the shots where it is visible.]
-<Picture N>: fully_preserved - preserve the two compositions, visible inventories, spatial relationships and planned actions. Render one edge-to-edge colour scene at a time; the sheet layout and captions serve only as production guidance.
+<Picture N>: fully_preserved - the storyboard is the per-shot composition authority. Preserve the two compositions, visible inventories, spatial relationships and planned actions. Other references provide identity and material only. Render one edge-to-edge colour scene at a time; the sheet layout and captions serve only as production guidance. The last shot matches the final storyboard panel.
 
 detailed_description:
 [Animation style, colours, materials, depth and lighting from the inspected colour references.]
@@ -50,7 +50,7 @@ For an eight-second example with three seconds of required action per shot and o
 
 ## Dialogue adaptation
 
-Use the same six sections, with the inspected clean scene as the composition anchor and the accepted speech as reference audio. Describe the actual visible participants, their separate positions and hand/prop contacts. The single-shot or approved multi-shot description preserves the complete turn, expression, listener response and camera plan. Do not impose a static camera when the approved scene plan specifies a move.
+Use the same six sections, with the inspected clean scene as the composition anchor and the accepted speech as reference audio. Describe the actual visible participants, their separate positions and hand/prop contacts. Every spoken line uses a pixel-locked static tripod for its entire duration. Repeat "static tripod," "zero camera movement" and "no automatic reframing" in the summary, retention analysis and detailed description. Prohibit pan, tilt, zoom/push/pull, dolly, track, orbit, crane, handheld/stabilization drift, automatic recentering/reframing and focal-length changes. Preserve subject scale, framing and background landmarks; only mouth, eyes, blinks, breathing and restrained source-supported gestures move.
 
 Assign speaker IDs in order of actual vocal events. An example binding is: `<Audio 1> is the approved speech for <Subject 1> (S1).` In detailed_description use `<Subject 1> (S1) says, <d>[English] Exact approved words.</d>`, keeping the original language and all source words. Preserve source-required off-screen speech without adding an unseen person to the image bundle.
 

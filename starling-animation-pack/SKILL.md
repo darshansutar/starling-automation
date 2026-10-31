@@ -15,6 +15,8 @@ Follow [narration storyboard production](../starling-animation-pack/references/n
 
 ## Prepare from accepted inputs
 
+Dialogue camera is a hard lock: every spoken line uses a pixel-locked static tripod for its entire duration, with zero pan, tilt, zoom, push/pull, dolly, track, orbit, crane, handheld/stabilization drift, automatic recentering/reframing or focal-length change. Only facial/lip motion, blinking, breathing and restrained source-supported gestures may move. Any camera movement or reframing is a blocking failure even when identity and lip-sync are correct.
+
 Inspect the approved visuals and explicitly name the matching animation style in each prompt: 2D animation for flat drawn artwork, 2.5D animation for layered illustrated artwork with depth, or 3D animation for volumetric rendered artwork. Choose one based on the actual images; preserve their outlines, shading, materials and depth rather than converting their style. Put this in detailed_description. Style wording does not guarantee artifact-free motion.
 
 For narration with no supported subject movement, animate only a subtle slow zoom-in (about 3-5 percent) or a small planned pan within existing scene content. Define the move independently within its storyboard shot. Keep people, machinery, cargo and door/gate angles unchanged; never invent activity to fill time. Preserve time of day, sky, exposure, light sources and shadows throughout. Time transitions require explicit script support. Check the complete render for these constraints before acceptance.
@@ -26,6 +28,8 @@ Reference transport is Drive-backed under confirmed `darshan@en2.ai`: preserve o
 Save exact prompt/payload, source hashes, refs and audio mappings, picture-area boxes, printed generated timing, per-shot required duration and 1–2 second buffer, shot_count, generated cut_times, assembly cut times, duration/used duration, source_spans and review evidence. Inspect returned uploaded bytes as well as local originals before render acceptance. Use EN2 reference mode for narration and dialogue, both Ultra quality=true.
 
 ## Submit collect verify repair
+
+Compare every narration shot to its corresponding storyboard panel as the full composition authority, including the final shot. Appearance sheets provide identity/material only and must never become rendered scenes. Reject sheet, turnaround, neutral-background group or prop-plate leakage, missing environments, wrong shot order and final-panel substitution.
 
 Submit all preflight-approved clips once in an ordered pass respecting provider capacity. Record intents before tool calls and actual job IDs immediately afterward. Reconcile uncertain outcomes and existing jobs before retrying. Collect completed outputs and account for pending/failed jobs. Immediately hand each downloaded output to Verification with Director/Cinematography for complete visual review and required sound checks; technical decode and sampled sheets do not certify quality.
 

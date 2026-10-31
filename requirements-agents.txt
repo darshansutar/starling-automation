@@ -1,0 +1,3 @@
+# Optional agent-facing layer. The deterministic pipeline remains stdlib-only.
+openai-agents>=0.4,<1
+

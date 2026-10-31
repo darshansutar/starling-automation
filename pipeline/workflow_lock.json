@@ -1,0 +1,78 @@
+{
+  "schema_version": "1.0",
+  "workflow_id": "starling-production-locked",
+  "workflow_version": "2026-10-31",
+  "execution_model": "code_orchestrated_agents_sdk",
+  "stage_order": [
+    "intake",
+    "script",
+    "docs",
+    "audio",
+    "prompts",
+    "images",
+    "animation_prompts",
+    "renders",
+    "review",
+    "assembly"
+  ],
+  "providers": {
+    "source": "starling_mcp_or_finalized_document",
+    "documents": "google_docs_darshan_en2_ai",
+    "audio": "elevenlabs_eleven_v3",
+    "images": "chatgpt_imagegen",
+    "video": "en2_reference_to_video_ultra",
+    "assembly": "local_ffmpeg"
+  },
+  "render_defaults": {
+    "quality": true,
+    "width": 1344,
+    "height": 768,
+    "image_resolution_class": "1k",
+    "batch_size": 10,
+    "max_visual_replacements": 1
+  },
+  "hard_rules": [
+    "finalized_source_is_authoritative",
+    "source_words_speakers_routes_corrections_and_ending_are_immutable",
+    "style_reference_never_replaces_story_or_cast",
+    "only_user_approved_3d_reference_art_is_allowed_when_3d_is_selected",
+    "selected_voice_ids_cannot_be_substituted",
+    "scene_master_precedes_continuous_panels",
+    "camera_axis_screen_positions_geometry_props_and_light_are_locked",
+    "physical_action_geometry_must_be_valid",
+    "narration_requires_labelled_storyboard_1x2_or_1x3",
+    "narration_audio_is_external_and_never_sent_to_en2",
+    "narration_references_are_ordered_characters_environment_props_composition_last",
+    "narration_storyboard_is_the_per_shot_composition_authority",
+    "narration_reference_sheets_are_identity_and_material_only_never_scenes",
+    "narration_final_shot_must_match_the_final_storyboard_panel",
+    "narration_before_dialogue_requires_a_passed_visual_handoff",
+    "dialogue_uses_exactly_one_clean_scene_and_matching_approved_audio",
+    "dialogue_camera_is_pixel_locked_for_the_entire_spoken_line",
+    "dialogue_camera_motion_or_reframing_is_a_blocking_failure",
+    "dialogue_embedded_audio_is_preserved_during_assembly",
+    "provider_done_is_not_visual_acceptance",
+    "full_picture_and_sound_review_are_required",
+    "lip_sync_requires_user_review",
+    "unknown_submission_outcomes_cannot_be_retried",
+    "paid_submission_requires_human_approval",
+    "publication_requires_separate_explicit_user_action"
+  ],
+  "approval_boundaries": [
+    "source_style_voice_intake",
+    "prompt_pack",
+    "generated_images",
+    "paid_animation_submission",
+    "visual_replacement_after_failure",
+    "live_publication"
+  ],
+  "agent_roles": {
+    "manager": "owns user interaction and reads deterministic state",
+    "script": "produces source-faithful script artifacts only",
+    "audio": "produces and validates mapped speech only",
+    "visual": "plans and validates scene masters references and storyboards only",
+    "animation": "prepares approved payloads and records provider jobs only",
+    "verification": "reviews completed outputs and cannot submit replacements",
+    "assembly": "assembles only verified selected outputs"
+  }
+}

@@ -20,6 +20,8 @@ During narration prefer purposeful, source-supported character activity staged i
 
 ## Inspect then prompt
 
+The storyboard is the per-shot composition authority; sheets provide identity and material only and must never become shots. Each generated shot reproduces its corresponding panel's full environment, blocking, relative depth and visible inventory. The last generated shot must match the final storyboard panel, never a neutral-background group, turnaround or sheet.
+
 Inspect every actual picture and labels against accepted source/audio and identity references before writing the animation prompt. Apply the spatial fidelity checklist, including perspective, depth, supported contact, clearance, front/back faces and occlusion. Repair observed defects and recheck the whole board.
 
 Select and order attachments using reference-bundle.md: only visible character identities, matching environment, relevant visible prop sheets, then storyboard. Environment-only clips use environment and storyboard; person-free document inserts retain the relevant prop references. For a shared multi-shot request, attach the union of needed references and record visibility per shot. Multiple sheet views supply appearance, not additional cast. Keep a visible gap between adjacent people and clearance for their gestures. Record exact attachment indexes, roles, paths and hashes; rebuild indexes after any change.
@@ -29,6 +31,8 @@ Use the reference template in animation-template.md. Select 2D, 2.5D or 3D anima
 Write each actual panel as a detailed scene description using [scene preservation](scene-preservation.md), then specify its printed action and camera movement separately with exact timing. Include placement, posture/gaze, physical support, object orientation and background details only where visible. Do not substitute a plot summary or generic instruction to follow the storyboard. Unassigned machinery, gates, cargo and lighting retain their depicted state. In every narration shot explicitly state that visible characters remain silent, with lips completely closed and no speech-like mouth or jaw movement. See animation-template.md for the official per-line rule if generated voiceover is explicitly requested. Prepare a silent visual sequence for the accepted narration added at assembly.
 
 ## Submit and review
+
+Review panel by panel. Missing environment, wrong shot order, sheet/turnaround/neutral-background group/prop-plate leakage, or substitution of the final panel is a blocking failure.
 
 Upload the inspected scene/board and relevant colour references from their recorded Google Drive URLs, verify the returned image visually, then submit EN2 upload names in the recorded role order. A Drive preview webpage is not a valid image upload.
 

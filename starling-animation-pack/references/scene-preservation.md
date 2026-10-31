@@ -1,5 +1,7 @@
 # Scene preservation and animation prompt contract
 
+Approved panels control the full composition and visible state of their corresponding shots, including environment, blocking, relative depth and inventory. Asset references reinforce only their assigned identities/materials and never serve as scenes or keyframes.
+
 Read [visual routing](visual-routing.md), [narration storyboards](narration-pairs.md) and [spatial fidelity](../../starling-cinematography/references/spatial-fidelity.md). Canonical script/audio control meaning and timing. Approved panels control actual composition and visible state. Asset references reinforce only their assigned identities/materials.
 
 ## Plan each shot from the inspected image
@@ -18,6 +20,8 @@ Select references using [the visible-inventory rules](reference-bundle.md). Incl
 Movement stays within each shot and follows source meaning. Quiet object coverage may remain still. Human activity should be restrained and supported, not repeated gestures added to fill time. Preserve contact, balance, clearance, depth, scale and object orientation through the complete action. All unassigned background elements retain their approved state.
 
 ## Mode-specific prompt
+
+Dialogue uses exactly one approved clean scene plus its accepted speech. Its camera remains a pixel-locked static tripod for the entire spoken line: zero camera movement, stabilization drift, automatic recentering/reframing or focal-length change. Any reframing is a blocking failure.
 
 Every narration clip follows its mandatory 1x2 or 1x3 storyboard: two or three related shots, each with a recorded semantic purpose. A single full-frame narration scene is invalid. A closer duplicate of the same table, people or object is not a new beat; advance supported action, expression, blocking or evidence instead. Dialogue uses exactly one approved clean scene plus its accepted speech.
 

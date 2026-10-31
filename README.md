@@ -53,6 +53,31 @@ The CLI records state and prepares handoffs. It does not run MCP calls or a back
 
 Original production media, paid-job IDs, credentials, historical exports and local connector-link IDs are not included in this repository. No production run is triggered by cloning or pushing it.
 
+## Locked Agents SDK workflow
+
+`pipeline/workflow_lock.json` is the reviewed, immutable production contract. Its
+SHA-256 is pinned in `pipeline/locked_workflow.py`; an unreviewed edit fails closed.
+The lock fixes stage order, providers, Ultra render defaults, narration and dialogue
+routing, approval boundaries, duplicate prevention, review requirements and the
+single-replacement policy.
+
+`LockedProductionController` exposes only code-determined status, next action,
+render-intent preparation and provider-result recording. The optional OpenAI Agents
+SDK manager is created with `build_manager_agent(project_path)`. It may explain and
+invoke typed tools, but it cannot choose a different stage or mutate the contract.
+The paid-render tool uses an Agents SDK human-approval interruption and the existing
+SQLite runtime saves the intent before the host calls EN2.
+
+Install the optional agent layer with:
+
+```powershell
+python -m pip install -r requirements-agents.txt
+```
+
+The connected MCP calls still run in the authenticated host session. Unknown tool
+outcomes remain blocked until provider history is reconciled; they are never retried
+by the agent.
+
 ## Timing and visual review
 
 Narration and establishing shots include 1–2 seconds of extra footage per shot. Storyboard labels and animation prompts use identical generated ranges and exact hard cuts; the edit keeps separate required durations. Ordered `source_spans` remove each shot’s buffer without stretching original narration. Dialogue keeps its complete embedded speech.
