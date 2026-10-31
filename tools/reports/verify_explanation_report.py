@@ -9,7 +9,7 @@ records=json.loads((QA/'word-inputs.json').read_text(encoding='utf-8'))
 report=fitz.open(OUT/'Starling_Workflow_Explained.pdf')
 assert len(report)==20
 text='\n'.join(p.get_text() for p in report)
-for term in ['intake.json','canonical-script.json','state.sqlite3','darshan@en2.ai','FFmpeg','ElevenLabs','Starling MCP','EN2','shot_inventory_match','retention_analysis','48 offline']:
+for term in ['intake.json','canonical-script.json','state.sqlite3','darshan@en2.ai','FFmpeg','ElevenLabs','Starling MCP','EN2','shot_inventory_match','retention_analysis','53 offline','pixel-locked static tripod','composition authority']:
     assert term in text,term
 assert all(term in text for term in ('source_spans', 'manual lip-sync', 'buffer', 'hard cut'))
 pages=[];counts=[]
