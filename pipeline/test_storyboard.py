@@ -1,4 +1,6 @@
 """Offline tests for the fixed-format storyboard compositor and image checks."""
+import contextlib
+import io
 import json
 import random
 import tempfile
@@ -98,7 +100,9 @@ class StoryboardTests(unittest.TestCase):
     def test_cli_reports_errors_as_json(self):
         spec = self.spec(); spec["shots"] = spec["shots"][:2]
         path = self.root / "spec.json"; path.write_text(json.dumps(spec), encoding="utf-8")
-        self.assertEqual(storyboard.main(["compose", str(path)]), 1)
+        with contextlib.redirect_stdout(io.StringIO()) as out:
+            self.assertEqual(storyboard.main(["compose", str(path)]), 1)
+        self.assertIn("exactly 3", out.getvalue())
 
 
 if __name__ == "__main__":
