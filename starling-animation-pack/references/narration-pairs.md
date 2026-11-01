@@ -1,41 +1,62 @@
 # Narration storyboard production
 
-Narration always uses the mandatory storyboard method: a labelled black-and-white 1x2 or 1x3 storyboard with two or three related shots. A single full-frame narration scene is not a valid substitute. Dialogue retains its clean-scene and accepted reference-audio workflow. Speech-free filler, establishing and ending coverage may use one approved full-frame scene only when it contains no narration; when narration is present, the storyboard rule applies.
+Every narration clip uses one fixed-format storyboard sheet. The complete sheet is **1024 x 1536 pixels (2:3 portrait)** and contains **exactly three 16:9 shots stacked vertically**, never side by side. Each shot has an ivory caption strip directly below the picture. A single scene image, a two-shot board, a landscape sheet, or an unlabeled board is not a substitute. Dialogue keeps its separate clean-scene and accepted-audio workflow.
 
-## Plan and draw
+## 1. Understand the narration before drawing
 
-For every narration clip, choose two or three storyboard panels by semantic coverage and pacing. Each panel must carry a distinct, source-supported part of the narrated beat: progression of the same action, a meaningful change in expression or blocking, important evidence/object, environment detail, or a supported location/time change. Preserve one continuous scene when the script stays in one location; storyboard panels may vary framing or advance supported action without resetting geography. Do not introduce an unsupported human subject, portrait, reaction, prop or location. Record `visual_format=storyboard_1x2` or `storyboard_1x3`, `shot_count=2` or `3`, and exactly shot_count minus one strictly increasing cut times. `visual_format=narration_scene`, `shot_count=1` and `cut_times=[]` are invalid for narration.
+Listen to the complete accepted narration, verify the transcript, and inspect measured audio cues before planning images. Divide the narration into three sequential, gap-free semantic intervals whose total required duration is normally 10-15 seconds. If the audio cannot be truthfully covered by three shots or exceeds the provider limit, split it at a measured semantic cue into additional three-shot boards. Never speed up, omit, or rewrite accepted narration to fit.
 
-Do not fill the required storyboard with arbitrary duplicate frames. When narration remains in one conversation scene, use source-supported progression within the same camera axis: an establishing or shared composition followed by a meaningful expression, gesture, prop-state or blocking development. A detail insert is justified only when the narration supports that evidence and it is composed as a clear insert rather than a resized duplicate. Preserve the same scene master throughout.
+Use this narrative progression unless the source requires a more precise equivalent:
 
-Build related panels from an approved scene master. Preserve the camera axis, seating orientation, character screen sides, furniture scale, background landmarks, prop state and lighting across cuts. Reject hallucinated furniture growth, flipped seating, moved doors/windows, impossible contact or inconsistent table orientation before animation.
+1. **Establish** the supported place, people, and situation.
+2. **Develop** the central action, discovery, decision, or change.
+3. **Resolve or hand off** to the supported consequence or following dialogue composition.
 
-For narration immediately before dialogue, treat the final narration panel and clean dialogue scene as one continuity handoff so the cut into lip-synced dialogue is continuous. The final panel shows the upcoming speakers, lips closed, in their dialogue positions and shares the same scene master, environment/time, lighting, camera axis, furniture/prop state and recorded character positions. Inspect them side by side. Earlier panels may cover other supported beats that lead into that scene. For narration immediately after dialogue, use the storyboard mainly for source-supported B-roll and subject action that justify the narrated scene; no handoff with the preceding dialogue scene is required, but identities, style and time of day stay consistent and a panel that returns to the dialogue location keeps its geography. Narration between two dialogues follows the after-dialogue rule at its start and the before-dialogue handoff at its final panel. Opening and ending narration use the normal storyboard method driven by the accepted narration audio.
+Every shot has one distinct defining action. Do not repeat the same composition merely to fill time. A detail insert is justified only when narration identifies that evidence. Do not invent people, props, locations, reactions, signage, or actions.
 
-Listen to the complete accepted narration and inspect its measured cues before choosing shots. Map every distinct situation, action and B-roll beat to canonical lines, branch facts and an exact audio interval. A 13-second narration with three distinct situations needs coverage of all three; do not stretch one or two generic views over missing beats. Choose two or three panels by semantic coverage and pacing, not duration alone; split into additional boards if needed. Record visual_format=storyboard_1x2 or storyboard_1x3, matching shot_count=2 or 3 and exactly shot_count minus one strictly increasing cut_times values inside the generated interval. Follow [buffered timing and visual review](timing-and-visual-review.md): add 1–2 seconds per shot before drawing, print generated ranges and action/hold durations below every panel, repeat those exact timings and hard cut in the prompt, and save per-shot assembly source_spans. Keep generated duration and required edit duration separate. Check live provider limits and split if needed. Preserve original audio speed and complete source coverage. Split long narration at measured cues.
+## 2. Generate only the required assets
 
-Create and inspect only the final-colour identity, environment and prop references required by the visible inventory, following [scene-matched reference selection](reference-bundle.md). Build each storyboard with two or three wide illustrated picture areas at the target video aspect. Preserve the approved design style, identities, proportions, wardrobe, setting and composition in monochrome: black, white and grayscale only, with no colour or tinted accents. Put a white caption strip BELOW each picture containing SHOT number, whole-second time range, CAMERA and ACTION in readable black text. Label backgrounds are always white. Do not add white frames, outer margins or grid gutters around picture areas; the white label strip is the deliberate exception. Describe camera direction, extent and speed and the supported action clearly in the label. Keep the artwork itself free of planning text, arrows, motion symbols and gesture marks. Record picture-area boxes separately from caption strips and sheet boundaries. Captions and saved timings/actions must agree.
+Create and approve assets in this order:
 
-During narration prefer purposeful, source-supported character activity staged in side or three-quarter view, with relaxed closed lips. Do not use back shots or speaking-to-camera poses to avoid lip-sync. Use hands, task details or scenery when those match the narrated beat. Plan restrained, visible, source-supported character action where appropriate. Describe its beginning, movement and settling pose; avoid freezing active characters. For a genuinely quiet shot, use a subtle 3–5 percent push-in or a small pan within established content. Camera movement alone preserves subject and object states. Keep identities, hairstyles, PPE, physical contact, object orientation, scale, weather and lighting consistent with the source. Each shot carries an exact visible cast and object inventory, including zero people for an empty insert.
+1. character sheets for characters visible in the three shots;
+2. one scene-specific environment shown in two useful views;
+3. only the props visibly required by the scene;
+4. the final storyboard sheet.
 
-## Inspect then prompt
+The environment views establish the same place, geometry, time, and lighting; they are not two different locations. Character sheets and prop plates define identity and material only. The storyboard remains the composition authority.
 
-The storyboard is the per-shot composition authority; sheets provide identity and material only and must never become shots. Each generated shot reproduces its corresponding panel's full environment, blocking, relative depth and visible inventory. The last generated shot must match the final storyboard panel, never a neutral-background group, turnaround or sheet.
+## 3. Draw the fixed storyboard sheet
 
-Inspect every actual picture and labels against accepted source/audio and identity references before writing the animation prompt. Apply the spatial fidelity checklist, including perspective, depth, supported contact, clearance, front/back faces and occlusion. Repair observed defects and recheck the whole board.
+The full canvas is 1024 x 1536 portrait. Stack three wide 16:9 picture areas from top to bottom. Keep every picture edge-to-edge within its allotted width. Place a consistent ivory caption strip immediately below each picture, outside the artwork. Use readable uppercase dark text and thin vertical separators in this exact field order:
 
-Select and order attachments using reference-bundle.md: only visible character identities, matching environment, relevant visible prop sheets, then storyboard. Environment-only clips use environment and storyboard; person-free document inserts retain the relevant prop references. For a shared multi-shot request, attach the union of needed references and record visibility per shot. Multiple sheet views supply appearance, not additional cast. Keep a visible gap between adjacent people and clearance for their gestures. Record exact attachment indexes, roles, paths and hashes; rebuild indexes after any change.
+`SHOT 1 | 0.00-3.61 s | SLOW PUSH IN | DEFINING ACTION`
 
-Use the reference template in animation-template.md. Select 2D, 2.5D or 3D animation from the approved colour references; the planning drawing does not change the intended output style. Write affirmative instructions describing the desired result rather than negative-prompt lists. For presentation use: “Render each illustrated scene individually as an edge-to-edge, full-frame colour shot. At the specified time, switch directly to the next fully formed shot using a hard cut. Treat the storyboard layout and caption strips exclusively as production guidance.”
+Every strip contains the shot number, exact start-end time, camera move or `STATIC`, and a short concrete defining action. The next shot starts exactly where the prior shot ends. Names and source-required text use exact spelling. Keep planning marks, arrows, motion symbols, captions, and labels out of the picture areas.
 
-Write each actual panel as a detailed scene description using [scene preservation](scene-preservation.md), then specify its printed action and camera movement separately with exact timing. Include placement, posture/gaze, physical support, object orientation and background details only where visible. Do not substitute a plot summary or generic instruction to follow the storyboard. Unassigned machinery, gates, cargo and lighting retain their depicted state. In every narration shot explicitly state that visible characters remain silent, with lips completely closed and no speech-like mouth or jaw movement. See animation-template.md for the official per-line rule if generated voiceover is explicitly requested. Prepare a silent visual sequence for the accepted narration added at assembly.
+Preserve camera axis, screen direction, character positions, environment geometry, fixed landmarks, lighting, wardrobe, and prop state wherever the scene is continuous. For narration immediately before dialogue, Shot 3 becomes the dialogue handoff: it shows the upcoming speakers, lips closed, in approved dialogue positions with matching axis, lighting, set, and prop state. Inspect the board and clean dialogue scene side by side.
 
-## Submit and review
+## 4. Control difficult physical actions
 
-Review panel by panel. Missing environment, wrong shot order, sheet/turnaround/neutral-background group/prop-plate leakage, or substitution of the final panel is a blocking failure.
+Classify each defining action before drawing it:
 
-Upload the inspected scene/board and relevant colour references from their recorded Google Drive URLs, verify the returned image visually, then submit EN2 upload names in the recorded role order. A Drive preview webpage is not a valid image upload.
+- **stable acting:** expression, posture, gaze, or restrained gesture;
+- **simple movement:** one character or object follows one clear path;
+- **complex interaction:** rapid contact, handoff, projectile, crowd, multi-person coordination, or changing object ownership.
 
-Upload the inspected board and relevant colour references, verify returned bytes, then submit refs in the recorded order with Ultra quality=true. Keep narration external. Save exact payload, prompt, audio mapping, picture boxes, shot inventory review, upload evidence, intent and provider ID.
+Use the simplest source-faithful staging that communicates the beat. When a complex interaction is not essential, represent its clear preparation or consequence as a stable tableau. When it is essential, give it one action axis, one subject-object relationship, an unambiguous starting state, and a settled ending state. Do not combine multiple defining actions in one shot.
 
-Review the complete video: the planned two or three sequential full-frame shots and every hard cut at its planned time, source-faithful action and consistent identity/geometry. Reject fades, dissolves, overlays, mixed panels, white borders/frames, printed labels or storyboard layout appearing in the output. These are review criteria; generation prompts express the affirmative target above. Inspect all motion and sound; a contact sheet cannot certify the result. Follow Animation Pack's single scene-redesign replacement limit under the same logical clip ID. Preserve original media and paid-job history.
+## 5. Inspect before animation prompting
+
+Inspect all three pictures and all caption fields at useful resolution. Confirm source coverage, distinct actions, exact timing, identity, anatomy, perspective, physical support/contact, object orientation, and continuity. Repair observed defects and recheck the entire board.
+
+Select animation references in this fixed order: visible character identities, matching environment, visible props, storyboard last. Preserve originals and create provider-safe upload copies. Decode-check each copy, upload it, retrieve the provider copy when supported, compare SHA-256 where byte preservation is expected, and visually inspect it. Stop if a reference is corrupt, cropped, gray, incomplete, or visually different.
+
+## 6. Analyze the board, then write the animation prompt
+
+Do not draft motion from the script alone. First describe what each approved storyboard shot actually depicts and what its caption requires. Then write one animation prompt for that one scene using the current structured provider sections in `animation-template.md`. Use affirmative target language. Visible narration characters remain silent with relaxed closed lips; accepted narration is added during assembly.
+
+For every shot, define the composition, visible inventory, one defining action, camera behavior, timing range, and settled end state. Render each storyboard picture as an individual edge-to-edge colour shot. Switch to the next complete shot with a hard cut at the printed time. The storyboard layout and caption strips are production guidance only.
+
+## 7. Pilot and review gate
+
+Before a paid batch, render one representative narration pilot using verified references and normal production settings. Review the entire result at normal speed for composition, action, identity, geometry, timing, hard cuts, silence, and transport fidelity. Release the remaining batch only after the pilot is accepted. Provider completion, technical decode, or a contact sheet is not final acceptance.

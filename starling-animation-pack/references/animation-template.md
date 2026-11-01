@@ -16,26 +16,27 @@ Use the official [MiniMax H3 reference guide](https://huggingface.co/MiniMaxAI/M
 
 Only when generated voiceover is explicitly requested, use `says in an off-screen voiceover` for every line. Put only the language tag and exact spoken words inside `<d>...</d>`; put speaker description, stable ID, action and delivery outside. Immediately after every voiceover block state that each visible character's lips remain completely closed. Describe the vocal identity on first use and retain its ID across shots. For speech crossing a cut, put `<scenetrans>` at both connecting points and state that it continues seamlessly. Preserve the complete script; do not impose a word-count cap. Keep speech out of overall_soundscape. The official guide specifies `non_diegetic_music: N/A` for no music. If prompt rewriting is used, inspect the rewritten result for these per-line constraints.
 
-The following two-shot example also supports three shots: map the third picture, add its full shot description and second timed hard cut, and update all counts and retention entries.
+The reusable example below uses the required three shots. Replace every placeholder with inspected scene facts and measured timing.
 
 Replace the placeholders with inspected scene facts and measured timing. Definitions and indexes vary with the selected bundle; an environment-only sequence has no character or prop-sheet definitions.
 
 ```text
 subject_definitions:
 [Define only visible identities and relevant environment/prop subjects from the actual images.]
-<Picture N> is the inspected two-shot storyboard. The upper picture defines Shot 1 and the lower picture defines Shot 2, including composition, visible inventory and printed CAMERA/ACTION/timing instructions.
+<Picture N> is the inspected three-shot storyboard. Its top, middle and bottom pictures define Shots 1, 2 and 3, including composition, visible inventory and printed CAMERA/DEFINING ACTION/timing instructions.
 
 summary:
-[reference generation] [Duration]-second [2D, 2.5D or 3D] sequence showing [source-supported scene]. Two full-frame colour shots follow <Picture N>, with one hard cut at [cut time].
+[reference generation] [Duration]-second [2D, 2.5D or 3D] sequence showing [source-supported scene]. Three full-frame shots follow <Picture N>, with hard cuts at [cut time 1] and [cut time 2].
 
 retention_analysis:
 [For each selected Subject, state its assigned appearance role and the shots where it is visible.]
-<Picture N>: fully_preserved - the storyboard is the per-shot composition authority. Preserve the two compositions, visible inventories, spatial relationships and planned actions. Other references provide identity and material only. Render one edge-to-edge colour scene at a time; the sheet layout and captions serve only as production guidance. The last shot matches the final storyboard panel.
+<Picture N>: fully_preserved - the storyboard is the per-shot composition authority. Preserve all three compositions, visible inventories, spatial relationships and planned actions. Other references provide identity and material only. Render one edge-to-edge scene at a time; the sheet layout and captions serve only as production guidance. The last shot matches the final storyboard panel.
 
 detailed_description:
 [Animation style, colours, materials, depth and lighting from the inspected colour references.]
 [Shot 1] [Generated range.] [Detailed upper-picture composition: visible cast, positions, expression/pose/gaze, props and support/orientation, background and camera side.] ACTION [interval]: [exact supported movement from the label, starting state and final pose]. CAMERA: [printed move and extent, or static]. BUFFER [interval]: [settled state]. [Scene-specific relationships that remain unchanged. Explicitly name every visible character whose lips stay completely closed; no speaking or lip-sync.]
 [Shot 2] At [MM:SS.mmm], hard cut to [generated range and detailed lower-picture composition]. ACTION [interval]: [labelled movement and final pose]. CAMERA: [printed instruction]. BUFFER [interval]: [settled state]. [Continuity with Shot 1 and any explicit final provider-rounding hold. Repeat the visible-character silence and closed-lips rule.]
+[Shot 3] At [MM:SS.mmm], hard cut to [generated range and detailed bottom-picture composition]. ACTION [interval]: [single labelled movement and final pose]. CAMERA: [printed instruction]. BUFFER [interval]: [settled state]. [Continuity or dialogue handoff requirements. Repeat the visible-character silence and closed-lips rule.]
 
 overall_soundscape:
 Silent visual sequence; approved original narration is added during assembly.

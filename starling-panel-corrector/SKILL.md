@@ -19,4 +19,4 @@ Record exact file hash, panel/region, observed versus expected state, severity a
 
 Save panel_qa.json and version lineage; update affected manifests and invalidate dependent prompts for review without changing or resubmitting existing paid jobs. Do not rewrite speech or outcomes to accommodate a visual defect.
 
-Follow [narration storyboard production](../starling-animation-pack/references/narration-pairs.md) for audio-led beat coverage, 1x2/1x3 selection, monochrome style fidelity, white action/camera label backgrounds, whole-second printed timings and active side-view staging without back shots.
+Follow [narration storyboard production](../starling-animation-pack/references/narration-pairs.md) for audio-led beat coverage, the fixed 1024 x 1536 portrait three-shot layout, exact caption fields, one defining action per shot and source-faithful continuity.
