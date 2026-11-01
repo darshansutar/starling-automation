@@ -7,11 +7,15 @@ from runtime import Project, PipelineError, STAGES, digest, validate_render, val
 from test_intake import complete_intake
 
 
-def reference_prompt(description='approved two related shots'):
+LOCK_WORDING = ('The storyboard is the per-shot composition authority; sheets give identity and material only; '
+                'the last shot matches the final storyboard panel. Static tripod, zero camera movement, no automatic reframing.')
+
+
+def reference_prompt(description='approved three related shots. ' + LOCK_WORDING):
     return '\n\n'.join(k+': '+(description if k=='detailed_description' else 'fixture') for k in ('subject_definitions','summary','retention_analysis','detailed_description','overall_soundscape'))
 
 def payload():
-    return {'prompt':reference_prompt(), 'refs':['uploaded-board.jpg'], 'duration':5, 'width':1280, 'height':720, 'quality':False}
+    return {'prompt':reference_prompt(), 'refs':['uploaded-board.jpg'], 'duration':12, 'width':1344, 'height':768, 'quality':True}
 
 
 class RuntimeTests(unittest.TestCase):
@@ -19,7 +23,8 @@ class RuntimeTests(unittest.TestCase):
         plan = {'payload': dict(payload(), quality=True, duration=12), 'content_kind': 'narration',
                 'visual_format': 'storyboard_1x3', 'shot_count': 3, 'cut_times': [4, 8]}
         validate_plan(plan)
-        validate_plan(dict(plan, visual_format='storyboard_1x2', shot_count=2, cut_times=[6]))
+        with self.assertRaisesRegex(PipelineError, 'three-panel'):
+            validate_plan(dict(plan, visual_format='storyboard_1x2', shot_count=2, cut_times=[6]))
         with self.assertRaises(PipelineError):
             validate_plan(dict(plan, visual_format='narration_scene', shot_count=1, cut_times=[]))
         validate_plan(dict(plan, content_kind='speech_free', visual_format='narration_scene', shot_count=1, cut_times=[]))
@@ -92,7 +97,7 @@ class RuntimeTests(unittest.TestCase):
         if stage == 'docs':
             r.update(account_email='darshan@en2.ai', document_url='https://docs.google.com/document/d/offline-test')
         if stage == 'animation_prompts':
-            r['render_plans'] = {c: {'payload': payload(), 'content_kind': 'narration', 'visual_format':'storyboard_1x2', 'shot_count':2, 'cut_times':[2.0]} for c in self.project.scope('renders')}
+            r['render_plans'] = {c: {'payload': payload(), 'content_kind': 'narration', 'visual_format':'storyboard_1x3', 'shot_count':3, 'cut_times':[2.0, 4.0]} for c in self.project.scope('renders')}
         return r
 
     def ready(self, clips=None):
@@ -102,10 +107,12 @@ class RuntimeTests(unittest.TestCase):
 
     def test_first_handoff_and_resume(self):
         self.assertEqual(self.project.handoff()['stage'], 'script')
+        self.assertEqual(self.project.handoff()['owner'], 'chatgpt')
         self.project.accept(self.receipt('script'))
         self.project.close()
         self.project = Project(self.temp.name)
         self.assertEqual(self.project.handoff()['stage'], 'docs')
+        self.assertEqual(self.project.handoff()['owner'], 'claude')
 
     def test_scoped_submission_waiver_preserves_preflight_and_duplicate_gates(self):
         config=self.project.config();config['submission_policy']='review_batches_10'
@@ -261,9 +268,29 @@ class RuntimeTests(unittest.TestCase):
             'screen_positions_match': 'pass'}
         validate_plan(plan)
 
+    def test_narration_render_length_is_10_to_15_seconds(self):
+        plan = {'payload': dict(payload(), duration=12), 'content_kind': 'narration',
+                'visual_format': 'storyboard_1x3', 'shot_count': 3, 'cut_times': [4, 8]}
+        validate_plan(plan)
+        for seconds in (9, 16):
+            with self.subTest(seconds=seconds), self.assertRaisesRegex(PipelineError, '10-15'):
+                validate_plan(dict(plan, payload=dict(payload(), duration=seconds), cut_times=[3, 6]))
+
+    def test_cli_prepare_render_enforces_locked_contract(self):
+        self.ready(['clip1'])
+        cases = (
+            (dict(payload(), quality=False), 'Ultra'),
+            (dict(payload(), width=1280, height=720), '1344x768'),
+            (dict(payload(), prompt=reference_prompt('approved three related shots')), 'storyboard composition'),
+            (dict(payload(), duration=9), '10-15'),
+        )
+        for bad, message in cases:
+            with self.subTest(message=message), self.assertRaisesRegex(PipelineError, message):
+                self.project.prepare_render('clip1', bad, 'narration')
+
     def test_narration_after_dialogue_needs_no_handoff(self):
-        plan = {'payload': dict(payload(), quality=True, duration=8), 'content_kind': 'narration',
-                'visual_format': 'storyboard_1x2', 'shot_count': 2, 'cut_times': [4],
+        plan = {'payload': dict(payload(), quality=True, duration=12), 'content_kind': 'narration',
+                'visual_format': 'storyboard_1x3', 'shot_count': 3, 'cut_times': [3, 6],
                 'preceding_dialogue_clip_id': 'dialogue-1'}
         validate_plan(plan)
         with self.assertRaises(PipelineError):
@@ -382,7 +409,7 @@ class RuntimeTests(unittest.TestCase):
         task=self.project.prepare_render('clip10',payload(),'narration')
         self.assertTrue(task['intent'])
         with self.assertRaises(PipelineError):self.project.prepare_render('clip10',payload(),'narration')
-        plan={'payload':payload(),'content_kind':'narration','visual_format':'storyboard_1x2','shot_count':2,'cut_times':[2]}
+        plan={'payload':payload(),'content_kind':'narration','visual_format':'storyboard_1x3','shot_count':3,'cut_times':[2,4]}
         validate_plan(plan)
         for patch in ({'shot_count':1},{'cut_times':[]},{'cut_times':[5]},{'visual_format':'single_image'}):
             with self.assertRaises(PipelineError):validate_plan(dict(plan,**patch))

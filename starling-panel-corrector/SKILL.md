@@ -5,6 +5,8 @@ description: Inspect and repair Starling assets, labelled narration storyboards 
 
 # Starling Panel Corrector
 
+**Owner:** Claude reviews and writes repair instructions; ChatGPT performs the image edits through `codex exec`. See [roles and handoff](../starling-production-master/SKILL.md#roles-and-handoff).
+
 Apply [buffered timing and visual review](../starling-animation-pack/references/timing-and-visual-review.md) for storyboard/prompt timing, per-output visual checks, bounded repair and the user-owned manual lip-sync check.
 
 Follow the [scene-matched reference selection](../starling-animation-pack/references/reference-bundle.md), including its failed-output repair exception.
@@ -15,8 +17,8 @@ Inspect the complete asset/scene and all storyboard pictures and labels of each 
 
 Check picture-area dimensions, top-to-bottom shot order, readable SHOT/time/CAMERA/ACTION labels below each picture, matching metadata and action-ready staging. Check that artwork contains no arrows or motion symbols. A source-supported action must be possible from the pictured staging. Reconcile mismatches among the picture, printed ACTION/CAMERA labels and the detailed animation description before submission; correct the defective source rather than describing an imaginary fix in the animation prompt. Source image quality and completed animation quality are separate gates.
 
-Record exact file hash, panel/region, observed versus expected state, severity and smallest repair. Use native image editing with the defective version and relevant references. Preserve correct content. Reinspect the entire corrected board/scene and rerun affected Director/Cinematography checks. All pictures, label accuracy and shot-continuity checks must pass. Bound repairs to observed defects; report unresolved problems rather than polishing indefinitely.
+Record exact file hash, panel/region, observed versus expected state, severity and smallest repair. Write each repair as an exact edit instruction in `visuals/image-review.json`; ChatGPT performs it through `codex exec` with the defective version and relevant references attached, preserving correct content. Reinspect the entire corrected board/scene and rerun affected Director/Cinematography checks. All pictures, label accuracy and shot-continuity checks must pass. Bound repairs to observed defects; report unresolved problems rather than polishing indefinitely.
 
 Save panel_qa.json and version lineage; update affected manifests and invalidate dependent prompts for review without changing or resubmitting existing paid jobs. Do not rewrite speech or outcomes to accommodate a visual defect.
 
-Follow [narration storyboard production](../starling-animation-pack/references/narration-pairs.md) for audio-led beat coverage, the fixed 1024 x 1536 portrait three-shot layout, exact caption fields, one defining action per shot and source-faithful continuity.
+Follow [narration storyboard production](../starling-animation-pack/references/narration-pairs.md) for audio-led beat coverage, the fixed three-shot board layout, exact caption fields, one defining action per shot and source-faithful continuity.

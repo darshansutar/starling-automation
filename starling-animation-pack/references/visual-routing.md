@@ -2,7 +2,7 @@
 
 | Content | Images | EN2 inputs | Speech |
 |---|---|---|---|
-| Narration, including narrated establishing and endings | Mandatory fixed 1024 x 1536 portrait three-shot storyboard; every panel has a distinct source-supported purpose while preserving continuous geography | Visible characters, environment, visible props, storyboard last; Ultra quality=true | Accepted narration added during assembly |
+| Narration, including narrated establishing and endings | Mandatory fixed-format three-shot board from `pipeline/storyboard.py`, 10-15 seconds; every panel has a distinct source-supported purpose while preserving continuous geography | Visible characters, environment, visible props, storyboard last; Ultra quality=true | Accepted narration added during assembly |
 | Speech-free filler, establishing and ending | One approved full-frame scene, or a fixed three-shot storyboard when multiple shots are source-supported | Visible characters, environment, visible props, composition anchor last; Ultra quality=true | No speech |
 | Dialogue | One approved clean full-frame scene derived from the scene master | Exactly that one scene ref plus approved ref_audios; Ultra quality=true | Existing speaker, turn and lip-sync workflow |
 

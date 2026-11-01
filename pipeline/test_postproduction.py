@@ -87,7 +87,7 @@ class PostproductionTests(unittest.TestCase):
         execute(['ffmpeg','-v','error','-y','-i',str(self.root/'fixture.mp4'),'-frames:v','1',str(self.root/'still.jpg')])
         write(self.root/'canonical-script.json',{'nodes':[{'id':'node'}]})
         write(self.root/'audio/audio_manifest.json',{'synthetic':True});write(self.root/'visuals/image_manifest.json',{'synthetic':True})
-        clips=[{'clip_id':cid,'content_kind':'narration','visual_format':'storyboard_1x2','used_duration_seconds':.4,'source_visual_sha256':digest(self.root/'still.jpg'),'inputs':[{'path':'still.jpg','sha256':digest(self.root/'still.jpg')}]} for cid in ('a','b')]
+        clips=[{'clip_id':cid,'content_kind':'narration','visual_format':'storyboard_1x3','used_duration_seconds':.4,'source_visual_sha256':digest(self.root/'still.jpg'),'inputs':[{'path':'still.jpg','sha256':digest(self.root/'still.jpg')}]} for cid in ('a','b')]
         write(self.root/'animation/animation-manifest.json',{'clips':clips,'source_sha256':digest(self.root/'canonical-script.json'),'audio_manifest_sha256':digest(self.root/'audio/audio_manifest.json'),'image_manifest_sha256':digest(self.root/'visuals/image_manifest.json')})
         write(self.root/'animation/assembly-plan.json',[{'node_id':'node','duration':.8,'clips':[{'clip_id':'a','start':0,'end':.4},{'clip_id':'b','start':.4,'end':.8}],'audio_units':[{'path':'voice.wav','duration':.8,'sha256':digest(self.root/'voice.wav')}]}])
         self.engine=Postproduction(self.root)
@@ -111,7 +111,7 @@ class PostproductionTests(unittest.TestCase):
             artifacts.append({'id':ident,'path':path.name,'sha256':digest(path)})
         r={'stage':stage,'reviewer':'OFFLINE fixture','artifacts':artifacts,'checks':{key:{'verdict':'pass','evidence':'Synthetic only','artifact_ids':ids} for key in STAGES[stage]['checks']}}
         if stage=='docs':r.update(account_email='darshan@en2.ai',document_url='https://docs.google.com/document/d/offline-test')
-        if stage=='animation_prompts':r['render_plans']={cid:{'payload':payload(),'content_kind':'narration','visual_format':'storyboard_1x2','shot_count':2,'cut_times':[2]} for cid in ('a','b')}
+        if stage=='animation_prompts':r['render_plans']={cid:{'payload':payload(),'content_kind':'narration','visual_format':'storyboard_1x3','shot_count':3,'cut_times':[2,4]} for cid in ('a','b')}
         runtime.accept(r)
 
     def accept_fixture(self,cid):

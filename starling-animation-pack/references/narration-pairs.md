@@ -1,10 +1,23 @@
 # Narration storyboard production
 
-Every narration clip uses one fixed-format storyboard sheet. The complete sheet is **1024 x 1536 pixels (2:3 portrait)** and contains **exactly three 16:9 shots stacked vertically**, never side by side. Each shot has an ivory caption strip directly below the picture. A single scene image, a two-shot board, a landscape sheet, or an unlabeled board is not a substitute. Dialogue keeps its separate clean-scene and accepted-audio workflow.
+Every narration clip uses one fixed-format storyboard board, built by `pipeline/storyboard.py` from three separately generated shot pictures. Every board is identical in layout, caption colour and type:
+
+| Element | Fixed value |
+|---|---|
+| Canvas | 1024 x 1536 pixels, portrait |
+| Blocks | three 512 px blocks stacked top to bottom, never side by side |
+| Picture window | 1024 x 464 at y = 0, 512 and 1024 |
+| Caption strip | 1024 x 48 directly below each picture, ivory `#FBECD8`, no border |
+| Caption text | dark brown `#32120B`, Bahnschrift Bold Condensed, 24 px, uppercase, centred on one line |
+| Caption fields | `SHOT 1  \|  0.00-3.61 s  \|  SLOW PUSH IN  \|  DEFINING ACTION` |
+
+A single scene image, a two-shot board, a landscape sheet, a board drawn by the image model with its own captions, or an unlabeled board is not a substitute. `python pipeline/storyboard.py verify BOARD` must pass before a board is reviewed. Dialogue keeps its separate clean-scene and accepted-audio workflow.
 
 ## 1. Understand the narration before drawing
 
-Listen to the complete accepted narration, verify the transcript, and inspect measured audio cues before planning images. Divide the narration into three sequential, gap-free semantic intervals whose total required duration is normally 10-15 seconds. If the audio cannot be truthfully covered by three shots or exceeds the provider limit, split it at a measured semantic cue into additional three-shot boards. Never speed up, omit, or rewrite accepted narration to fit.
+Analyse the accepted narration audio and its verified transcript before planning images: the measured duration, the cue time of each phrase or sentence, and what each part of the narration says. ChatGPT or the user owns listening; Claude works from the accepted audio manifest, transcript and measured cues and never claims to have listened. Divide the narration into three sequential, gap-free semantic intervals that follow the meaning of the words at their measured times.
+
+Each board covers **10-15 seconds** of generated footage, including the 1-2 second shot buffers. The compositor and the runtime both reject a narration board or render outside 10-15 seconds. If the audio cannot be truthfully covered by three shots in that range, split it at a measured semantic cue into additional three-shot boards. Never speed up, omit, or rewrite accepted narration to fit.
 
 Use this narrative progression unless the source requires a more precise equivalent:
 
@@ -14,6 +27,8 @@ Use this narrative progression unless the source requires a more precise equival
 
 Every shot has one distinct defining action. Do not repeat the same composition merely to fill time. A detail insert is justified only when narration identifies that evidence. Do not invent people, props, locations, reactions, signage, or actions.
 
+Save the timing table (each shot's start, end, required duration, buffer, camera and defining action) before writing any image prompt. The same table produces the captions, the animation prompt and the render duration.
+
 ## 2. Generate only the required assets
 
 Create and approve assets in this order:
@@ -21,17 +36,22 @@ Create and approve assets in this order:
 1. character sheets for characters visible in the three shots;
 2. one scene-specific environment shown in two useful views;
 3. only the props visibly required by the scene;
-4. the final storyboard sheet.
+4. the three shot pictures for the board.
 
-The environment views establish the same place, geometry, time, and lighting; they are not two different locations. Character sheets and prop plates define identity and material only. The storyboard remains the composition authority.
+The environment views establish the same place, geometry, time, and lighting; they are not two different locations. The scene master for a continuous location is the approved full-frame composition built on that environment; it fixes camera axis, screen positions, furniture and lighting for the shots. Character sheets and prop plates define identity and material only. The board remains the composition authority.
 
-## 3. Draw the fixed storyboard sheet
+Each shot picture is generated as its own landscape image (1536 x 1024 from ChatGPT image generation) with **no text, captions, borders, arrows or motion symbols**. Compose it so every important subject sits inside the central horizontal band that survives the board crop: the compositor scales the picture to 1024 wide and keeps a 1024 x 464 window, centred unless the spec sets `focus_y` (0 = top, 1 = bottom). Keep the full original as well; it is the full-frame record of that shot.
 
-The full canvas is 1024 x 1536 portrait. Stack three wide 16:9 picture areas from top to bottom. Keep every picture edge-to-edge within its allotted width. Place a consistent ivory caption strip immediately below each picture, outside the artwork. Use readable uppercase dark text and thin vertical separators in this exact field order:
+## 3. Compose the fixed board
 
-`SHOT 1 | 0.00-3.61 s | SLOW PUSH IN | DEFINING ACTION`
+Write a board spec with the output path and, for each shot, the picture path, exact start and end times from the timing table, the CAMERA move or `STATIC`, the short DEFINING ACTION and an optional `focus_y`. Run:
 
-Every strip contains the shot number, exact start-end time, camera move or `STATIC`, and a short concrete defining action. The next shot starts exactly where the prior shot ends. Names and source-required text use exact spelling. Keep planning marks, arrows, motion symbols, captions, and labels out of the picture areas.
+```powershell
+python pipeline/storyboard.py compose visuals/boards/CLIP.board.json
+python pipeline/storyboard.py verify visuals/boards/CLIP.png
+```
+
+The compositor rejects anything other than three shots numbered 1-3, a gap or overlap between shots, a board outside 10-15 seconds, a picture smaller than 1024 x 464 (it never upscales), a damaged or half-loaded picture, and a caption too long for one 24 px line (shorten the text; the font never shrinks). It writes `CLIP.layout.json` with the fixed picture and caption boxes, caption text, cut times and input hashes. Names and source-required text use exact spelling.
 
 Preserve camera axis, screen direction, character positions, environment geometry, fixed landmarks, lighting, wardrobe, and prop state wherever the scene is continuous. For narration immediately before dialogue, Shot 3 becomes the dialogue handoff: it shows the upcoming speakers, lips closed, in approved dialogue positions with matching axis, lighting, set, and prop state. Inspect the board and clean dialogue scene side by side.
 
@@ -45,11 +65,11 @@ Classify each defining action before drawing it:
 
 Use the simplest source-faithful staging that communicates the beat. When a complex interaction is not essential, represent its clear preparation or consequence as a stable tableau. When it is essential, give it one action axis, one subject-object relationship, an unambiguous starting state, and a settled ending state. Do not combine multiple defining actions in one shot.
 
-## 5. Inspect before animation prompting
+## 5. Inspect, then transport at full quality
 
-Inspect all three pictures and all caption fields at useful resolution. Confirm source coverage, distinct actions, exact timing, identity, anatomy, perspective, physical support/contact, object orientation, and continuity. Repair observed defects and recheck the entire board.
+Inspect all three pictures and all caption fields at useful resolution. Confirm source coverage, distinct actions, exact timing, identity, anatomy, perspective, physical support/contact, object orientation, and continuity. A failed shot is regenerated or edited on its own and the board is recomposed; recheck the entire board.
 
-Select animation references in this fixed order: visible character identities, matching environment, visible props, storyboard last. Preserve originals and create provider-safe upload copies. Decode-check each copy, upload it, retrieve the provider copy when supported, compare SHA-256 where byte preservation is expected, and visually inspect it. Stop if a reference is corrupt, cropped, gray, incomplete, or visually different.
+Select animation references in this fixed order: visible character identities, matching environment, visible props, storyboard last. Before any upload, run `python pipeline/storyboard.py check-image FILE` on every reference: it fully decodes the file and rejects truncated files, flat grey or single-colour bands from half-loaded images, blank images and undersized images. Upload the approved original at full resolution. Never send a downscaled, re-compressed or "upload-safe" copy; if a provider requires JPEG, convert at the original pixel size with quality 95 or higher and record both hashes. After upload, retrieve the provider copy when supported and compare its pixel dimensions and SHA-256 (or a visual comparison when bytes are re-encoded). Stop if a reference is corrupt, cropped, grey, incomplete, smaller than the original, or visually different.
 
 ## 6. Analyze the board, then write the animation prompt
 
@@ -59,4 +79,4 @@ For every shot, define the composition, visible inventory, one defining action, 
 
 ## 7. Pilot and review gate
 
-Before a paid batch, render one representative narration pilot using verified references and normal production settings. Review the entire result at normal speed for composition, action, identity, geometry, timing, hard cuts, silence, and transport fidelity. Release the remaining batch only after the pilot is accepted. Provider completion, technical decode, or a contact sheet is not final acceptance.
+Before a paid batch, render one representative narration pilot using verified references and normal production settings. The user reviews the entire result at normal speed for composition, action, identity, geometry, timing, hard cuts, silence, and transport fidelity. Release the remaining batch only after the pilot is accepted. Provider completion, technical decode, or a contact sheet is not final acceptance.

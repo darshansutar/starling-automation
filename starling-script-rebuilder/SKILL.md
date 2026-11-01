@@ -5,6 +5,8 @@ description: Build a source-faithful branching video script from a Starling role
 
 # Starling Script Rebuilder
 
+**Owner:** ChatGPT, run by Claude through `codex exec`. Claude checks the delivered artifacts before the receipt is accepted. See [roles and handoff](../starling-production-master/SKILL.md#roles-and-handoff).
+
 Own canonical script content, source coverage and the matching Word/JSON artifacts. Follow the user-selected source mode. Read [intake](references/intake.md) before starting; obtain the mandatory source, style and voice answers before building. Read-only source inspection to identify speakers and references is intake work. Media generation belongs to downstream specialists.
 
 ## 1 Establish the source

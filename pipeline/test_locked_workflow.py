@@ -23,7 +23,10 @@ class LockedWorkflowTests(unittest.TestCase):
     def test_lock_has_non_negotiable_media_contracts(self):
         lock = load_workflow_lock()
         rules = set(lock["hard_rules"])
-        self.assertIn("narration_requires_labelled_storyboard_1x2_or_1x3", rules)
+        self.assertIn("narration_requires_labelled_storyboard_1x3", rules)
+        self.assertIn("narration_storyboard_is_composed_by_pipeline_storyboard_py_fixed_layout", rules)
+        self.assertIn("narration_board_and_render_cover_10_to_15_seconds", rules)
+        self.assertIn("references_are_uploaded_at_full_resolution_after_integrity_check", rules)
         self.assertIn("narration_audio_is_external_and_never_sent_to_en2", rules)
         self.assertIn("dialogue_uses_exactly_one_clean_scene_and_matching_approved_audio", rules)
         self.assertIn("dialogue_camera_is_pixel_locked_for_the_entire_spoken_line", rules)
@@ -34,6 +37,23 @@ class LockedWorkflowTests(unittest.TestCase):
         self.assertIn("unknown_submission_outcomes_cannot_be_retried", rules)
         self.assertTrue(lock["render_defaults"]["quality"])
         self.assertEqual(lock["render_defaults"]["batch_size"], 10)
+
+    def test_stage_owners_match_runtime_and_split_roles(self):
+        owners = load_workflow_lock()["stage_owners"]
+        self.assertEqual(owners["script"]["owner"], "chatgpt")
+        self.assertEqual(owners["audio"]["owner"], "chatgpt")
+        self.assertEqual(owners["images"], {"owner": "chatgpt", "reviewer": "claude"})
+        for stage in ("prompts", "animation_prompts", "renders", "assembly"):
+            self.assertEqual(owners[stage]["owner"], "claude")
+        self.assertEqual(owners["renders"]["reviewer"], "user")
+
+    def test_owner_drift_between_lock_and_runtime_fails_closed(self):
+        import runtime as runtime_module
+        drifted = {k: dict(v) for k, v in runtime_module.STAGES.items()}
+        drifted["images"]["reviewer"] = "chatgpt"
+        with patch.dict(locked_workflow_module.STAGES, drifted):
+            with self.assertRaisesRegex(PipelineError, "images"):
+                load_workflow_lock()
 
     def test_unreviewed_lock_edit_fails_closed(self):
         changed = LOCK_PATH.read_text(encoding="utf-8") + "\n"

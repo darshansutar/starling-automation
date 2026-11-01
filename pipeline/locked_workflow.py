@@ -12,14 +12,14 @@ from pathlib import Path
 from typing import Any
 
 try:
-    from .runtime import PipelineError, Project
+    from .runtime import STAGES, PipelineError, Project, validate_locked_prompt
 except ImportError:
-    from runtime import PipelineError, Project
+    from runtime import STAGES, PipelineError, Project, validate_locked_prompt
 
 
 LOCK_PATH = Path(__file__).with_name("workflow_lock.json")
 # Update only as part of an explicitly reviewed workflow-contract change.
-EXPECTED_LOCK_SHA256 = "7b95316c3865d3ebe44e7e6470b6edbaf4b4ba996b4a273f6b09a6e677810b0c"
+EXPECTED_LOCK_SHA256 = "7ae137a795fa19af0a91bf450257dd814a963d7c9ee4a2ec14b691f29abfd603"
 
 
 def file_sha256(path: Path) -> str:
@@ -37,38 +37,19 @@ def load_workflow_lock() -> dict[str, Any]:
     required = {
         "schema_version", "workflow_id", "workflow_version", "stage_order",
         "providers", "render_defaults", "hard_rules", "approval_boundaries",
-        "agent_roles",
+        "agent_roles", "stage_owners",
     }
-    if set(data) < required:
+    if not required <= set(data):
         raise PipelineError("Workflow lock is missing required sections")
+    for stage, spec in STAGES.items():
+        locked = data["stage_owners"].get(stage, {})
+        if (locked.get("owner"), locked.get("reviewer")) != (spec["owner"], spec["reviewer"]):
+            raise PipelineError(f"Runtime owner for stage {stage} differs from the workflow lock")
     if data["render_defaults"].get("quality") is not True:
         raise PipelineError("Locked workflow requires EN2 Ultra quality=true")
     if data["render_defaults"].get("batch_size") != 10:
         raise PipelineError("Locked workflow requires review batches of 10")
     return data
-
-
-def validate_locked_prompt(prompt: str, content_kind: str) -> None:
-    """Enforce current production invariants without invalidating legacy receipts."""
-    normalized = prompt.lower()
-    if content_kind == "dialogue":
-        required = ("static tripod", "zero camera movement", "no automatic reframing")
-        if not all(term in normalized for term in required):
-            raise PipelineError(
-                "Dialogue prompt must hard-lock a static tripod, zero camera movement "
-                "and no automatic reframing"
-            )
-    elif content_kind == "narration":
-        required = (
-            "storyboard is the per-shot composition authority",
-            "identity and material only",
-            "final storyboard panel",
-        )
-        if not all(term in normalized for term in required):
-            raise PipelineError(
-                "Narration prompt must lock per-shot storyboard composition, "
-                "identity-only sheets and the final panel"
-            )
 
 
 @dataclass(frozen=True)

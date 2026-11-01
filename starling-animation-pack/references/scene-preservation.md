@@ -6,7 +6,7 @@ Read [visual routing](visual-routing.md), [narration storyboards](narration-pair
 
 ## Plan each shot from the inspected image
 
-Write a concrete description of each actual picture in detailed_description, not just "follow the storyboard" or a summary of the story. Map the upper picture to Shot 1 and the lower picture to Shot 2. For a clean dialogue scene, describe that single composition. Include the scene-relevant facts:
+Write a concrete description of each actual picture in detailed_description, not just "follow the storyboard" or a summary of the story. Map the top, middle and bottom pictures to Shots 1, 2 and 3. For a clean dialogue scene, describe that single composition. Include the scene-relevant facts:
 
 - Visible cast and count, including zero people; identity, expression, posture, gaze and left/right placement.
 - Framing and camera side; relative depth, background landmarks, time of day and lighting.

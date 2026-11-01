@@ -34,9 +34,9 @@ retention_analysis:
 
 detailed_description:
 [Animation style, colours, materials, depth and lighting from the inspected colour references.]
-[Shot 1] [Generated range.] [Detailed upper-picture composition: visible cast, positions, expression/pose/gaze, props and support/orientation, background and camera side.] ACTION [interval]: [exact supported movement from the label, starting state and final pose]. CAMERA: [printed move and extent, or static]. BUFFER [interval]: [settled state]. [Scene-specific relationships that remain unchanged. Explicitly name every visible character whose lips stay completely closed; no speaking or lip-sync.]
-[Shot 2] At [MM:SS.mmm], hard cut to [generated range and detailed lower-picture composition]. ACTION [interval]: [labelled movement and final pose]. CAMERA: [printed instruction]. BUFFER [interval]: [settled state]. [Continuity with Shot 1 and any explicit final provider-rounding hold. Repeat the visible-character silence and closed-lips rule.]
-[Shot 3] At [MM:SS.mmm], hard cut to [generated range and detailed bottom-picture composition]. ACTION [interval]: [single labelled movement and final pose]. CAMERA: [printed instruction]. BUFFER [interval]: [settled state]. [Continuity or dialogue handoff requirements. Repeat the visible-character silence and closed-lips rule.]
+[Shot 1] [Detailed top-picture composition: visible cast, positions, expression/pose/gaze, props and support/orientation, background and camera side.] [In natural sentences: from [start] to [action end] the exact supported movement from the caption, its starting state and final pose; the camera's printed move and extent, or that it stays still; then the settled hold to [end].] [Scene-specific relationships that remain unchanged. Name every visible character whose lips stay completely closed; no speaking or lip-sync.]
+[Shot 2] At [MM:SS.mmm], hard cut to [detailed middle-picture composition]. [Natural sentences for the captioned movement and final pose, the camera behaviour and the settled hold.] [Continuity with Shot 1. Repeat the silence and closed-lips rule.]
+[Shot 3] At [MM:SS.mmm], hard cut to [detailed bottom-picture composition]. [Natural sentences for the single captioned movement and final pose, the camera behaviour and the settled hold.] [Continuity or dialogue handoff requirements. Repeat the silence and closed-lips rule.]
 
 overall_soundscape:
 Silent visual sequence; approved original narration is added during assembly.
@@ -45,7 +45,7 @@ non_diegetic_music:
 N/A
 ```
 
-State concrete observable motion. For a camera-only document insert, the camera reveals the existing rows while papers remain supported and unchanged. For an environment-only pond shot, describe the pictured shore, water level, inlet, steps and light, then the labelled ripples or trickle and camera movement. Do not introduce activity merely to fill time.
+Make `detailed_description` 350-500 English words for narration, as EN2's live reference guide recommends, spread across the three shots by information load. Write action, camera and settling holds as natural English sentences inside each shot; do not print `ACTION:`, `CAMERA:` or `BUFFER:` labels in the prompt. State concrete observable motion. For a camera-only document insert, the camera reveals the existing rows while papers remain supported and unchanged. For an environment-only pond shot, describe the pictured shore, water level, inlet, steps and light, then the labelled ripples or trickle and camera movement. Do not introduce activity merely to fill time.
 
 For an eight-second example with three seconds of required action per shot and one-second buffers: Shot 1 action 0–3, hold 3–4; hard cut at 4; Shot 2 action 4–7, hold 7–8. Print those same ranges below the pictures. Assembly source_spans [[0,3],[4,7]] retain six seconds without stretching narration. Follow the [timing contract](timing-and-visual-review.md).
 

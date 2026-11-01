@@ -16,8 +16,8 @@ Source-faithful branching video workflow: script, accepted audio, mandatory fixe
 1. Clone this repository and open its root folder in Codex.
 2. Use Python 3.10 or newer. The runtime and Script Rebuilder use the Python standard library. Install FFmpeg and ffprobe on PATH for assembly and media tests.
 3. Install the bundled `starling-script-rebuilder` folder into your personal Codex skills directory (normally `~/.codex/skills/`). Review any existing installation before replacing it. Keep the other skill folders beside `pipeline/` so relative reference links work.
-4. Connect Starling MCP, EN2 video MCP, ElevenLabs, and Google Drive/Docs in the active assistant session. Native ChatGPT image generation is also required. Connections and credentials are not distributed in this repository.
-5. Read `AGENTS.md`, `starling-production-master/SKILL.md` and `pipeline/WORKFLOW.md`. Record source, visual style and voice choices before building or generating.
+4. Claude Code coordinates the production and needs EN2 video MCP and Google Drive/Docs. ChatGPT runs through the Codex CLI (`codex exec`) for the script, audio and image generation, and needs Starling MCP, ElevenLabs and ChatGPT image generation. Connections and credentials are not distributed in this repository.
+5. Read `CLAUDE.md` (Claude), `AGENTS.md` (Codex), `starling-production-master/SKILL.md` and `pipeline/WORKFLOW.md`. Record source, visual style and voice choices before building or generating.
 
 The configured Google account is `darshan@en2.ai`; confirm live connector account metadata before any write. That account requirement is intentional and is also enforced by the runtime. The included PDF and Word documents are dated snapshots; their original Windows paths document the source machine and are not installation requirements.
 
@@ -39,7 +39,7 @@ Keep each production under `projects/`. Its media, local account snapshots and d
 python -m unittest discover -s pipeline -p "test_*.py" -v
 ```
 
-FFmpeg and ffprobe are required for the synthetic media tests. Offline tests do not certify production picture, sound or lip-sync quality.
+FFmpeg and ffprobe are required for the synthetic media tests. Pillow (`python -m pip install pillow`) is required for the storyboard compositor and its tests; without it those tests are skipped. Offline tests do not certify production picture, sound or lip-sync quality.
 
 Run `python tools/reports/audit_workflow.py` to check active skill links and exported source hashes. See [the workflow audit](docs/workflow-audit.md) for the cleanup findings and verification scope.
 
@@ -77,6 +77,10 @@ python -m pip install -r requirements-agents.txt
 The connected MCP calls still run in the authenticated host session. Unknown tool
 outcomes remain blocked until provider history is reconciled; they are never retried
 by the agent.
+
+## Fixed-format narration storyboards
+
+ChatGPT generates each narration shot as a separate text-free picture. `pipeline/storyboard.py compose` builds every board to one fixed layout (1024 x 1536; three 1024 x 464 pictures, each above an ivory `#FBECD8` caption strip with identical 24 px dark text), rejects damaged or undersized pictures and boards outside 10-15 seconds, and `storyboard.py verify` checks any board against that layout. `storyboard.py check-image` is the integrity check run on every reference before upload. See [narration storyboard production](starling-animation-pack/references/narration-pairs.md).
 
 ## Timing and visual review
 

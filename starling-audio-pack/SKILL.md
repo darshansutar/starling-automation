@@ -5,6 +5,8 @@ description: Prepare selected ElevenLabs speech or supplied recordings with comp
 
 # Starling Audio Pack
 
+**Owner:** ChatGPT, run by Claude through `codex exec`. Claude checks the manifest and measurements before the receipt is accepted. See [roles and handoff](../starling-production-master/SKILL.md#roles-and-handoff).
+
 Check [mandatory intake](../pipeline/INTAKE.md). The user must have answered which voice ID or name each character/narrator uses, or selected supplied recordings/silent production. Resolve names with ElevenLabs, clarify multiple matches and record actual IDs. Keep every source speaker.
 
 Read [the handoff contract](../starling-prompt-pack/references/handoff-contract.md). Inventory exact spoken lines, speakers, language, nodes and branches. Classify narration/dialogue/speech-free intervals. Voice player controls only when the canonical script explicitly speaks them. Reuse accepted recordings unchanged.

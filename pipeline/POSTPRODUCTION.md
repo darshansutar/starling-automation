@@ -1,6 +1,6 @@
 # Collect review and stitch
 
-ChatGPT calls EN2 and downloads outputs during an active session or a demonstrated scheduled task. postproduction.py stores durable state and runs local FFmpeg edits; it cannot invoke MCP or wake the host. The requested follow-up cadence is ten minutes. A scheduled task must demonstrate connected EN2 and local workspace access before it is recorded as active. Full audiovisual review capability must be demonstrated separately.
+Claude calls EN2 and downloads outputs during an active Claude Code session or a demonstrated `/loop`. postproduction.py stores durable state and runs local FFmpeg edits; it cannot invoke MCP or wake the host. The requested follow-up cadence is ten minutes. A scheduled task must demonstrate connected EN2 and local workspace access before it is recorded as active. Complete audiovisual review is performed by the user and recorded by Claude.
 
 ## Reconcile inputs before collection
 

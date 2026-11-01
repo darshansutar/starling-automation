@@ -1,4 +1,4 @@
-"""Local state and handoff engine. Connected tools execute in ChatGPT, not here."""
+"""Local state and handoff engine. Connected tools run in the owning agent session (ChatGPT or Claude), not here."""
 import argparse
 import hashlib
 import json
@@ -14,22 +14,38 @@ except ImportError:
 
 
 STAGES = {
-    'script': {'deps': [], 'skills': ['starling-script-rebuilder'],
+    'script': {'deps': [], 'skills': ['starling-script-rebuilder'], 'owner': 'chatgpt', 'reviewer': 'chatgpt',
                'checks': ['canonical_content', 'stable_ids', 'branch_routing']},
-    'docs': {'deps': ['script'], 'skills': ['google-drive:google-docs'],
+    'docs': {'deps': ['script'], 'skills': ['google-drive:google-docs'], 'owner': 'claude', 'reviewer': 'claude',
              'checks': ['account_identity', 'native_doc_readback', 'script_matches']},
-    'audio': {'deps': ['script'], 'skills': ['starling-audio-pack'],
+    'audio': {'deps': ['script'], 'skills': ['starling-audio-pack'], 'owner': 'chatgpt', 'reviewer': 'chatgpt',
               'checks': ['word_coverage', 'speakers', 'measured_cues', 'listening']},
     'prompts': {'deps': ['audio'], 'skills': ['starling-director', 'starling-cinematography', 'starling-prompt-pack'],
+                'owner': 'claude', 'reviewer': 'claude',
                 'checks': ['style_reference', 'director', 'cinematography', 'audio_mapping', 'complete_inventory']},
-    'images': {'deps': ['prompts'], 'skills': ['starling-image-pack-generator', 'starling-verification'],
+    'images': {'deps': ['prompts'], 'skills': ['starling-image-pack-generator', 'starling-panel-corrector', 'starling-verification'],
+               'owner': 'chatgpt', 'reviewer': 'claude',
                'checks': ['all_assets_and_panels', 'director', 'cinematography', 'format_and_geometry', 'spatial_fidelity']},
-    'animation_prompts': {'deps': ['images'], 'skills': ['starling-animation-pack'],
+    'animation_prompts': {'deps': ['images'], 'skills': ['starling-animation-pack'], 'owner': 'claude', 'reviewer': 'claude',
                           'checks': ['actual_inputs_inspected', 'mode_and_references', 'shot_inventory_match', 'measured_timing', 'provider_limits']},
-    'renders': {'deps': ['animation_prompts'], 'skills': ['starling-animation-pack', 'starling-verification'],
+    'renders': {'deps': ['animation_prompts'], 'skills': ['starling-animation-pack', 'starling-animation-monitor', 'starling-verification'],
+                'owner': 'claude', 'reviewer': 'user',
                 'checks': ['complete_picture', 'complete_sound', 'speech_and_lipsync', 'director', 'cinematography', 'spatial_fidelity']},
     'assembly': {'deps': ['renders', 'docs'], 'skills': ['starling-animation-pack', 'starling-verification'],
+                 'owner': 'claude', 'reviewer': 'user',
                  'checks': ['complete_picture', 'assembled_audio', 'joins', 'all_branches', 'word_coverage']},
+}
+
+# Who performs and who reviews each stage. ChatGPT runs through Codex (`codex exec`);
+# its generated images land in ~/.codex/generated_images and Claude collects them.
+OWNER_INSTRUCTIONS = {
+    'chatgpt': 'Owner: ChatGPT/Codex. Claude sends the exact request through codex exec, collects the outputs into the project and records them; ChatGPT does not copy files or operate desktop apps.',
+    'claude': 'Owner: Claude. Read the owning skills, execute within user scope using connected tools, save artifacts and evidence.',
+}
+REVIEWER_INSTRUCTIONS = {
+    'chatgpt': 'Review: ChatGPT/Codex records its own evidence; Claude checks the artifacts before accepting the receipt. Do not fabricate evidence.',
+    'claude': 'Review: Claude inspects every artifact itself, records findings and repair instructions, then accepts the receipt. Do not fabricate evidence.',
+    'user': 'Review: the user watches the complete video and sound; Claude prepares the review list, records only the verdicts the user gives, then accepts the receipt. Do not fabricate evidence.',
 }
 
 
@@ -105,6 +121,34 @@ def validate_render(payload, content_kind, reference_seconds=None):
             'Reference prompt requires five legacy sections or six current provider sections in order')
 
 
+NEW_RENDER_WIDTH, NEW_RENDER_HEIGHT = 1344, 768
+NARRATION_SECONDS = (10, 15)
+
+
+def validate_locked_prompt(prompt, content_kind):
+    """Required wording for every new dialogue and narration prompt."""
+    normalized = (prompt or '').lower()
+    if content_kind == 'dialogue':
+        required = ('static tripod', 'zero camera movement', 'no automatic reframing')
+        require(all(term in normalized for term in required),
+                'Dialogue prompt must hard-lock a static tripod, zero camera movement and no automatic reframing')
+    elif content_kind == 'narration':
+        required = ('storyboard is the per-shot composition authority', 'identity and material only', 'final storyboard panel')
+        require(all(term in normalized for term in required),
+                'Narration prompt must lock per-shot storyboard composition, identity-only sheets and the final panel')
+
+
+def validate_new_submission(payload, content_kind):
+    """Current-contract checks for a new paid render; historical receipts are not re-judged by these."""
+    require(payload.get('quality') is True, 'New renders must use EN2 Ultra quality=true')
+    require(payload.get('width') == NEW_RENDER_WIDTH and payload.get('height') == NEW_RENDER_HEIGHT,
+            f'New renders must be {NEW_RENDER_WIDTH}x{NEW_RENDER_HEIGHT}')
+    validate_locked_prompt(payload.get('prompt'), content_kind)
+    if content_kind == 'narration':
+        low, high = NARRATION_SECONDS
+        require(low <= payload.get('duration', 0) <= high, f'Narration renders must be {low}-{high} seconds; split longer narration into another board')
+
+
 def validate_plan(plan):
     validate_render(plan['payload'], plan['content_kind'], plan.get('reference_seconds'))
     if plan['content_kind'] == 'dialogue':
@@ -134,8 +178,10 @@ def validate_plan(plan):
             return
         count = plan.get('shot_count')
         if plan['content_kind'] == 'narration':
-            require(count in (2, 3) and plan.get('visual_format') == f'storyboard_1x{count}',
-                    'Narration requires a matching labelled two- or three-panel storyboard')
+            require(count == 3 and plan.get('visual_format') == 'storyboard_1x3',
+                    'Narration requires a labelled three-panel storyboard_1x3')
+            low, high = NARRATION_SECONDS
+            require(low <= plan['payload']['duration'] <= high, f'Narration storyboards cover {low}-{high} seconds')
             # Narration after dialogue is B-roll/subject action; only the narration-before-dialogue handoff is enforced, on the dialogue plan.
         elif count == 1:
             require(plan.get('visual_format') == 'narration_scene', 'Single-shot speech-free coverage requires one approved full-frame scene')
@@ -170,7 +216,7 @@ class Project:
                 require(not self.db.execute('SELECT 1 FROM settings').fetchone(), 'Project already initialized')
                 self.db.execute('INSERT INTO settings VALUES (?,?)', ('config', json.dumps({
                     'title': title or self.path.name, 'google_email': 'darshan@en2.ai',
-                    'aspect': '16:9', 'execution': 'chatgpt_session', 'monitor': 'not_active',
+                    'aspect': '16:9', 'execution': 'stage_owners', 'monitor': 'not_active',
                     'image_provider': 'chatgpt_imagegen', 'audio_provider': 'elevenlabs',
                     'audio_model': 'eleven_v3', 'video_provider': 'en2_video_mcp',
                     'max_replacements': 1, 'submission_policy': 'all_ready_once',
@@ -283,8 +329,9 @@ class Project:
             if states[stage]['state'] in {'pending', 'stale'} and all(states[d]['state'] == 'verified' for d in spec['deps']):
                 return {'stage': stage, 'skills': spec['skills'], 'required_checks': spec['checks'],
                         'expected_ids': self.scope(stage), 'dependencies': spec['deps'],
-                        'instruction': 'Read the owning skills, execute within user scope using connected ChatGPT tools, save artifacts and evidence, then accept a receipt. Do not fabricate evidence.',
-                        'execution': 'chatgpt_session', 'config': self.config()}
+                        'owner': spec['owner'], 'reviewer': spec['reviewer'],
+                        'instruction': OWNER_INSTRUCTIONS[spec['owner']] + ' ' + REVIEWER_INSTRUCTIONS[spec['reviewer']],
+                        'execution': 'stage_owners', 'config': self.config()}
         return {'stage': None, 'complete': all(s['state'] == 'verified' for s in states.values()), 'states': states}
 
     def accept(self, receipt):
@@ -335,6 +382,7 @@ class Project:
         require('end' not in payload and 'image' not in payload, 'New production uses approved scene/storyboard refs and clean-scene refs for dialogue')
         require(re.fullmatch(r'[a-zA-Z0-9_-]+', clip or ''), 'Invalid clip ID')
         validate_render(payload, content_kind, reference_seconds)
+        validate_new_submission(payload, content_kind)
         with self.db:
             self.db.execute('BEGIN IMMEDIATE')
             require(self.status()['animation_prompts']['state'] == 'verified', 'Animation preflight must pass')

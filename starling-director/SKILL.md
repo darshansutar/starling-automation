@@ -5,6 +5,8 @@ description: Plan and review source meaning, supported action and branch continu
 
 # Starling Director
 
+**Owner:** Claude, for planning and for image and prompt review. Complete video review belongs to the user; Claude records the user's verdicts. See [roles and handoff](../starling-production-master/SKILL.md#roles-and-handoff).
+
 Apply [buffered timing and visual review](../starling-animation-pack/references/timing-and-visual-review.md) for storyboard/prompt timing, per-output visual checks, bounded repair and the user-owned manual lip-sync check.
 
 Follow the [scene-matched reference selection](../starling-animation-pack/references/reference-bundle.md), including its failed-output repair exception.
@@ -18,5 +20,3 @@ Plan exactly three related shots per narration storyboard, each communicating so
 At image and prompt review, compare each actual composition and printed ACTION with its [detailed shot description](../starling-animation-pack/references/scene-preservation.md). Check that the starting pose, movement and outcome convey the source meaning without inventing activity or changing the approved staging. At video review inspect the complete action, reactions and sound, including intermediate motion. Reject unsupported additions or altered results. Panel Corrector owns detailed still repairs; Cinematography owns shot geometry. Missing inspection remains unverified.
 
 Record director_review.json with exact source/output versions, panels or actual time ranges, observations, verdicts and minimum repair owner. A review invocation does not generate or submit repairs.
-
-Follow [narration storyboard production](../starling-animation-pack/references/narration-pairs.md) for audio-led beat coverage, the fixed 1024 x 1536 portrait three-shot layout, exact caption fields, one defining action per shot and source-faithful continuity.

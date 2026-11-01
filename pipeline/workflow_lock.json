@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "workflow_id": "starling-production-locked",
-  "workflow_version": "2026-10-31",
+  "workflow_version": "2026-11-01",
   "execution_model": "code_orchestrated_agents_sdk",
   "stage_order": [
     "intake",
@@ -19,9 +19,21 @@
     "source": "starling_mcp_or_finalized_document",
     "documents": "google_docs_darshan_en2_ai",
     "audio": "elevenlabs_eleven_v3",
-    "images": "chatgpt_imagegen",
+    "images": "chatgpt_imagegen_via_codex_exec",
     "video": "en2_reference_to_video_ultra",
     "assembly": "local_ffmpeg"
+  },
+  "stage_owners": {
+    "intake": {"owner": "claude", "reviewer": "user"},
+    "script": {"owner": "chatgpt", "reviewer": "chatgpt"},
+    "docs": {"owner": "claude", "reviewer": "claude"},
+    "audio": {"owner": "chatgpt", "reviewer": "chatgpt"},
+    "prompts": {"owner": "claude", "reviewer": "claude"},
+    "images": {"owner": "chatgpt", "reviewer": "claude"},
+    "animation_prompts": {"owner": "claude", "reviewer": "claude"},
+    "renders": {"owner": "claude", "reviewer": "user"},
+    "review": {"owner": "user", "reviewer": "user"},
+    "assembly": {"owner": "claude", "reviewer": "user"}
   },
   "render_defaults": {
     "quality": true,
@@ -40,7 +52,10 @@
     "scene_master_precedes_continuous_panels",
     "camera_axis_screen_positions_geometry_props_and_light_are_locked",
     "physical_action_geometry_must_be_valid",
-    "narration_requires_labelled_storyboard_1x2_or_1x3",
+    "narration_requires_labelled_storyboard_1x3",
+    "narration_storyboard_is_composed_by_pipeline_storyboard_py_fixed_layout",
+    "narration_board_and_render_cover_10_to_15_seconds",
+    "references_are_uploaded_at_full_resolution_after_integrity_check",
     "narration_audio_is_external_and_never_sent_to_en2",
     "narration_references_are_ordered_characters_environment_props_composition_last",
     "narration_storyboard_is_the_per_shot_composition_authority",
@@ -62,6 +77,7 @@
     "source_style_voice_intake",
     "prompt_pack",
     "generated_images",
+    "complete_video_review_by_user",
     "paid_animation_submission",
     "visual_replacement_after_failure",
     "live_publication"

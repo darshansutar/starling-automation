@@ -19,7 +19,7 @@ Store each approved original reference in Google Drive under the confirmed `dars
 
 Save one transport record per input: role, Drive file ID/URL, local hash, EN2 upload name, upload evidence and visual-match verdict. Rebuild Picture/Subject indexes after any omission or reorder.
 
-References apply to the entire render request. For a two- or three-shot clip, take the union of the visible identities and relevant props across all its pictures and explicitly record visibility per shot. A character visible only in Shot 1 supplies a reference for Shot 1, not permission to appear in an empty Shot 2. Separate requests use their own inventories; do not inherit the whole scene's cast. Keep the approved shot timing unless a source-supported replan is needed.
+References apply to the entire render request. For a multi-shot clip, take the union of the visible identities and relevant props across all its pictures and explicitly record visibility per shot. A character visible only in Shot 1 supplies a reference for Shot 1, not permission to appear in an empty Shot 2. Separate requests use their own inventories; do not inherit the whole scene's cast. Keep the approved shot timing unless a source-supported replan is needed.
 
 For first submissions, approved sheets may be used for selected visible characters and props only as identity/material references. A sheet's multiple views describe one identity/object, never multiple occupants or a scene. Reuse suitable assets; generate and inspect a missing reference only when the visible scene needs it. The repair exception below allows scene-specific individual references after an incorrect animation output.
 

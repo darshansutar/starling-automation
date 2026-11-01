@@ -1,9 +1,17 @@
 # Starling workspace
 
-For production requests, read starling-production-master/SKILL.md and pipeline/WORKFLOW.md. Use the sibling skill folders in this workspace as the current workflow. Resolve starling-script-rebuilder from the installed personal skill catalog; do not use the older branching-scenario-prompt-generator in place of this audio-first workflow.
+This workflow is split between two agents. Claude (Claude Code) coordinates the production and calls you, ChatGPT/Codex, through `codex exec` for these stages only:
 
-Use pipeline/runtime.py for project state, handoffs and recorded acceptance. ChatGPT executes connected tools in the active session; the CLI does not run MCP calls or background work. Review-only requests route to starling-verification and do not generate media. Building/editing this infrastructure does not authorize a production run.
+- **Script**: starling-script-rebuilder
+- **Audio**: starling-audio-pack
+- **Image generation and image edits**: starling-image-pack-generator, from the requests in `visuals/image-requests.json` and the repair instructions in `visuals/image-review.json`
 
-User-selected integrations: native ChatGPT images, en2 video MCP renders, Starling MCP source retrieval, ElevenLabs audio, Google Docs under darshan@en2.ai, and local FFmpeg assembly. Confirm the Google connector's account metadata before writes and store real returned document IDs. Do not silently substitute providers.
+Claude owns intake, the Google Doc, the image prompt pack, all image and storyboard review, animation prompts, EN2 submission and collection, and assembly. The user reviews complete videos and lip-sync. See starling-production-master/SKILL.md (Roles and handoff) and pipeline/WORKFLOW.md.
 
-Preserve original media and all paid-job IDs. Follow pipeline/INTAKE.md: record mandatory source, style and character/narrator voice answers before script building or generation. Read-only intake inspection may identify cast and references. Never claim unperformed listening, complete video inspection, source approval or active monitoring. Test runtime changes offline before delivery.
+When Claude calls you:
+
+- Do only the requested work and write outputs only to the paths named in the request.
+- Generate only. Do not copy generated images out of your own folders, approve your own output, accept runtime receipts or operate desktop applications. Claude collects, records and reviews every output.
+- Resolve starling-script-rebuilder from the installed personal skill catalog; do not use the older branching-scenario-prompt-generator in place of this audio-first workflow.
+
+Preserve original media and all paid-job IDs. Follow pipeline/INTAKE.md: record mandatory source, style and character/narrator voice answers before script building or generation. Never claim unperformed listening, complete video inspection, source approval or active monitoring. Building/editing this infrastructure does not authorize a production run. Test runtime changes offline before delivery.
