@@ -36,8 +36,8 @@ class AutoEditTests(unittest.TestCase):
     def tearDownClass(cls):
         cls.temp.cleanup()
 
-    def pace(self, starts, lengths, protect=False, drop=()):
-        return auto_edit.pace_narration(starts, lengths, self.board, protect, 2.0, {}, drop)
+    def pace(self, starts, lengths, protect=False, drop=(), trim_head=None):
+        return auto_edit.pace_narration(starts, lengths, self.board, protect, 2.0, {}, drop, trim_head)
 
     def test_short_shot_is_merged_into_a_neighbour_with_footage(self):
         S, L, V, notes = self.pace([0.0, 4.05, 8.05], [3.0, 1.0, 3.0])
@@ -60,6 +60,13 @@ class AutoEditTests(unittest.TestCase):
         self.assertEqual(len(L), 2)
         self.assertAlmostEqual(sum(L), 7.5, places=6)
         self.assertTrue(any("flagged" in n for n in notes))
+
+    def test_flagged_opening_is_skipped_and_overflow_moves_on(self):
+        S, L, V, notes = self.pace([0.0, 4.05, 8.05], [3.8, 2.0, 2.0], trim_head={"1": 1.5})
+        self.assertAlmostEqual(S[0], 1.5)
+        self.assertAlmostEqual(sum(L), 7.8, places=6)
+        self.assertLessEqual(L[0], (4.05 - 0.01 - 1.5) / auto_edit.MIN_SPEED + 1e-6)   # footage left after the skipped opening
+        self.assertTrue(any("starts 1.50 s later" in n for n in notes))
 
     def test_dialogue_keeps_one_spoken_copy_of_the_line(self):
         t0, t1, d, repeat = auto_edit.dialogue_trim(self.render, self.approved)

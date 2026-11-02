@@ -42,7 +42,7 @@ Agreed with the user on 2026-11-02 while finishing the PAI roleplay (English and
 ## E. Faults
 
 1. A fault inside a shot's buffer is trimmed away.
-2. A fault inside the needed time is fixed in the edit when possible: zoom out side or top bars or an edge sign (up to 15%), blur a small invented number, freeze a screen so a chart stops moving, drop a shot flagged for talking.
+2. A fault inside the needed time is fixed in the edit when possible: zoom out side or top bars or an edge sign (up to 15%), blur a small invented number, freeze a screen so a chart stops moving, drop a shot flagged for talking, or start a shot later to skip a hallucinated opening (flag `trim_head`), passing the time it can no longer cover to the next shot.
 3. Black frames or fades in a used shot, bars too large to zoom, lips moving that cannot be dropped, garbled text, wrong objects or vanishing props go on the re-render list with reason and timestamp. **Paid re-renders need the user's approval.**
 4. A re-render keeps the same storyboard method; redesign the panel when the fault came from the picture (for example a face-to-face pose that EN2 animated as speech).
 

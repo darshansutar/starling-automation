@@ -17,7 +17,7 @@ Follow the exact numbers in [the editing rules](references/rules.md).
 
 - `animation/v1/preview-assembly.json`: the per-node timeline written by the project's assembler - for every clip its source render, and for narration the source start and length of each shot plus the narration audio window.
 - `canonical-script.json` (speakers), `audio/audio_manifest.json` (approved narration and dialogue audio).
-- Optional `animation/v1/auto-edit-flags.json`: shots to drop with a reason (for example a reviewer saw lips moving during narration).
+- Optional `animation/v1/auto-edit-flags.json`: per narration clip, `drop_shots` (for example lips moving during narration) and `trim_head` (seconds to skip at a shot's start when its opening is hallucinated), each with a reason.
 
 ## What it does
 

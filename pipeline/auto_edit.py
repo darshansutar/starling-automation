@@ -21,8 +21,9 @@ window) and writes a new set of node videos plus auto-edit-report.json. No rende
    bars are zoomed out up to MAX_BAR_ZOOM and flagged for re-render beyond it. A frame sheet of every narration shot
    (outputs/<out>/review-sheets) is written for Claude's no-talking and hallucination review.
 5. Flags. animation/v1/auto-edit-flags.json may list narration shots to drop, e.g. {"segment_3_line_1":
-   {"drop_shots": [3], "reason": "characters move their lips during narration"}}; their time is spread over the
-   nearest remaining shots and the cut goes straight into the next picture.
+   {"drop_shots": [3], "reason": "characters move their lips during narration"}} or
+   {"bad_3_line_1_a": {"trim_head": {"1": 1.5}, "reason": "the register morphs as it closes"}}. A dropped shot's time,
+   or the time a later-starting shot can no longer cover, is spread over the nearest remaining shots.
 Narration audio is unchanged; nodes get shorter only where dialogue dead air is removed.
 """
 import argparse
@@ -118,7 +119,7 @@ MIN_SPEED = 0.8   # B-roll may play down to 0.8x to fill a merged shot
 SINGLE_PANEL_MAX = 3.75   # a narration shorter than this plays as one narration panel
 
 
-def pace_narration(starts, lengths, src, protect_last, min_shot, cache, drop=()):
+def pace_narration(starts, lengths, src, protect_last, min_shot, cache, drop=(), trim_head=None):
     """Return (starts, lengths, speeds, notes) with no shot under min_shot where the footage allows.
 
     Each shot's footage window runs from its start to the next scene cut (or the next shot's start, or the end
@@ -132,6 +133,30 @@ def pace_narration(starts, lengths, src, protect_last, min_shot, cache, drop=())
         ends = [c - EDGE for c in cuts if c > s + 0.05] + ([S[i + 1] - EDGE] if i + 1 < len(S) else []) + [total_src - EDGE]
         win.append(min(ends) - s)
     notes, stuck = [], set()
+
+    def spread(t, i, keep):
+        """Give t seconds to the shots in keep, nearest to shot i first, each up to its footage at MIN_SPEED."""
+        for k in sorted(keep, key=lambda k: abs(k - i)):
+            give = min(t, max(0.0, win[k] / MIN_SPEED - L[k]))
+            L[k] += give
+            t -= give
+            if t <= 1e-6:
+                return 0.0
+        return t
+
+    # Flagged hallucinated openings: start the shot later and pass any time it can no longer cover to its neighbours.
+    for key, skip in (trim_head or {}).items():
+        i = int(key) - 1
+        if not 0 <= i < len(L):
+            continue
+        S[i] += skip
+        win[i] -= skip
+        over = L[i] - win[i] / MIN_SPEED
+        if over > 0:
+            L[i] -= over
+            left = spread(over, i, [k for k in range(len(L)) if k != i])
+            assert left <= 1e-6, f"not enough footage to trim {skip:.2f} s from shot {i + 1}"
+        notes.append(f"shot {i + 1} starts {skip:.2f} s later (flagged opening removed)")
     # Flagged shots (e.g. people talking during narration) are removed first; their time is spread over the
     # nearest remaining shots, each up to what its footage allows at MIN_SPEED.
     for i in sorted({d - 1 for d in drop if 0 < d <= len(L)}, reverse=True):
@@ -243,7 +268,8 @@ def main():
                 starts, lengths = c["starts"], c["shots"]
             protect = k + 1 < len(clips) and clips[k + 1]["kind"] == "dialogue"
             flag = flags.get(c["clip"], {})
-            S, L, V, notes = pace_narration(starts, lengths, src, protect, a.min_shot, cache, flag.get("drop_shots", ()))
+            S, L, V, notes = pace_narration(starts, lengths, src, protect, a.min_shot, cache, flag.get("drop_shots", ()),
+                                            flag.get("trim_head"))
             if flag:
                 notes.insert(0, "flag: " + flag.get("reason", ""))
             faults = []
