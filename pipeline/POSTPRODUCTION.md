@@ -4,7 +4,7 @@ Claude calls EN2 and downloads outputs during an active Claude Code session or a
 
 ## Reconcile inputs before collection
 
-The current animation/animation-manifest.json and animation/assembly-plan.json must cover the whole production, including retained dialogue. Each clip has clip_id, explicit runtime_clip_id (or identical canonical ID), content_kind, visual_format, approved inputs/hashes and used_duration_seconds. New narration boards use storyboard_1x3 with three shots and two measured cuts; historical two-shot records remain readable but are not templates for new production. Store source/audio/image manifest hashes. Do not automatically infer a new pairs ID from an old clip ID or split a timeline by filename.
+The current animation/animation-manifest.json and animation/assembly-plan.json must cover the whole production, including retained dialogue. Each clip has clip_id, explicit runtime_clip_id (or identical canonical ID), content_kind, visual_format, approved inputs/hashes and used_duration_seconds. New narration boards use storyboard_1x1, storyboard_1x2 or storyboard_1x3 with a shot count chosen from the narration length and one measured cut between shots. Store source/audio/image manifest hashes. Do not automatically infer a new pairs ID from an old clip ID or split a timeline by filename.
 
 Existing projects require a reviewed, versioned migration of these files before collecting a changed scope. Preserve prior manifests and job IDs. known_jobs rejects an unmapped scoped job. The manifest/timeline clip inventories must match. A workflow edit does not migrate production artifacts.
 
@@ -18,6 +18,10 @@ Existing projects require a reviewed, versioned migration of these files before 
 6. advance emits remaining poll/review/repair actions and assembles ready nodes. Final delivery requires complete current-scope coverage and accepted final-node reviews.
 
 For progress alerts, save `studio_queue` separately from individual `video_status` results. `ingest` consumes a JSON list of individual status results and emits exact download handoffs. `monitor-report --queue-snapshot PATH` reports project counts from recorded provider IDs, separate studio context, and scorecards for attached outputs. `evidence_coverage_percent` is not a quality verdict; `quality_score_percent` stays null while required checks are unverified. Only accepted review records authorize assembly. See [the scheduled check](../starling-animation-monitor/references/scheduled-check.md).
+
+## Auto-edit before review
+
+Run [Auto-Edit](../starling-auto-edit/SKILL.md) automatically as soon as the last raw render of the project (or of a repair batch) has downloaded: `python pipeline/auto_edit.py PROJECT`. It paces narration, trims dialogue to one spoken copy of each line, covers jump cuts, fixes or flags shot faults and writes the edited node videos, `auto-edit-report.json` and narration review sheets. Claude reads the report and inspects every sheet; the user then reviews the edited videos, not the raw clips. The edit never cuts inside approved audio, never overwrites original renders and keeps every node a separate video. Exact rules: [auto-edit rules](../starling-auto-edit/references/rules.md).
 
 ## Stitching
 

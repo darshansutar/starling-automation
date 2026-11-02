@@ -23,9 +23,11 @@ class LockedWorkflowTests(unittest.TestCase):
     def test_lock_has_non_negotiable_media_contracts(self):
         lock = load_workflow_lock()
         rules = set(lock["hard_rules"])
-        self.assertIn("narration_requires_labelled_storyboard_1x3", rules)
+        self.assertIn("narration_requires_labelled_storyboard_with_1_to_3_shots_chosen_from_narration_length", rules)
+        self.assertIn("narration_panels_show_no_character_speaking", rules)
+        self.assertIn("raw_renders_are_auto_edited_before_user_review_and_originals_are_preserved", rules)
         self.assertIn("narration_storyboard_is_composed_by_pipeline_storyboard_py_fixed_layout", rules)
-        self.assertIn("narration_board_and_render_cover_10_to_15_seconds", rules)
+        self.assertIn("narration_board_and_render_cover_4_to_15_seconds_by_shot_count", rules)
         self.assertIn("references_are_uploaded_at_full_resolution_after_integrity_check", rules)
         self.assertIn("narration_audio_is_external_and_never_sent_to_en2", rules)
         self.assertIn("dialogue_uses_exactly_one_clean_scene_and_matching_approved_audio", rules)

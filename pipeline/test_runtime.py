@@ -8,7 +8,8 @@ from test_intake import complete_intake
 
 
 LOCK_WORDING = ('The storyboard is the per-shot composition authority; sheets give identity and material only; '
-                'the last shot matches the final storyboard panel. Static tripod, zero camera movement, no automatic reframing.')
+                'the last shot matches the final storyboard panel. Everyone keeps closed lips; nobody speaks. '
+                'Static tripod, zero camera movement, no automatic reframing.')
 
 
 def reference_prompt(description='approved three related shots. ' + LOCK_WORDING):
@@ -23,8 +24,13 @@ class RuntimeTests(unittest.TestCase):
         plan = {'payload': dict(payload(), quality=True, duration=12), 'content_kind': 'narration',
                 'visual_format': 'storyboard_1x3', 'shot_count': 3, 'cut_times': [4, 8]}
         validate_plan(plan)
-        with self.assertRaisesRegex(PipelineError, 'three-panel'):
-            validate_plan(dict(plan, visual_format='storyboard_1x2', shot_count=2, cut_times=[6]))
+        # shot count follows narration length: 1 and 2 shot boards are valid with their own length ranges
+        validate_plan(dict(plan, visual_format='storyboard_1x2', shot_count=2, cut_times=[6], payload=dict(payload(), duration=8)))
+        validate_plan(dict(plan, visual_format='storyboard_1x1', shot_count=1, cut_times=[], payload=dict(payload(), duration=5)))
+        with self.assertRaisesRegex(PipelineError, '2-shot narration storyboards cover 6-15'):
+            validate_plan(dict(plan, visual_format='storyboard_1x2', shot_count=2, cut_times=[3], payload=dict(payload(), duration=5)))
+        with self.assertRaisesRegex(PipelineError, 'storyboard_1x1, storyboard_1x2 or storyboard_1x3'):
+            validate_plan(dict(plan, visual_format='storyboard_1x3', shot_count=2, cut_times=[6]))
         with self.assertRaises(PipelineError):
             validate_plan(dict(plan, visual_format='narration_scene', shot_count=1, cut_times=[]))
         validate_plan(dict(plan, content_kind='speech_free', visual_format='narration_scene', shot_count=1, cut_times=[]))
@@ -282,7 +288,8 @@ class RuntimeTests(unittest.TestCase):
             (dict(payload(), quality=False), 'Ultra'),
             (dict(payload(), width=1280, height=720), '1344x768'),
             (dict(payload(), prompt=reference_prompt('approved three related shots')), 'storyboard composition'),
-            (dict(payload(), duration=9), '10-15'),
+            (dict(payload(), duration=3), '4-15'),
+            (dict(payload(), prompt=reference_prompt('approved three related shots. ' + LOCK_WORDING.replace('Everyone keeps closed lips; nobody speaks. ', ''))), 'closed lips'),
         )
         for bad, message in cases:
             with self.subTest(message=message), self.assertRaisesRegex(PipelineError, message):

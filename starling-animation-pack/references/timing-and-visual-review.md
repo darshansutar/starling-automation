@@ -10,7 +10,7 @@ Use one timing table as the source for the storyboard captions, animation prompt
 
 General example: three equal semantic intervals produce Shot 1 from 0.00-4.00 seconds, Shot 2 from 4.00-8.00 seconds, and Shot 3 from 8.00-12.00 seconds, with hard cuts at 4.00 and 8.00 seconds. Each shot completes one defining action and settles within its own range. Actual timings come from the accepted audio cues and need not be equal. The approved narration stays at its original speed; do not stretch or compress it to fill generated footage.
 
-Storyboard labels display exact sequential start-end times, including decimals when required by measured cues. The next shot starts exactly where the prior shot ends, with no gaps or overlaps. Use the same ranges and two hard-cut times in the board, animation prompt, render plan and assembly mapping. Reserve any required settling hold inside the labelled range without shortening the defining action. Do not round accepted audio or assembly cues merely for display. Check current provider duration limits before submission and split longer coverage at a measured semantic cue into another three-shot board.
+Storyboard labels display exact sequential start-end times, including decimals when required by measured cues. The next shot starts exactly where the prior shot ends, with no gaps or overlaps. Use the same ranges and hard-cut times in the board, animation prompt, render plan and assembly mapping. Reserve any required settling hold inside the labelled range without shortening the defining action. Do not round accepted audio or assembly cues merely for display. Check current provider duration limits before submission and split longer coverage at a measured semantic cue into another board.
 
 ## Review each completed output
 

@@ -9,13 +9,15 @@ Claude's work:
 - Image prompt pack: Director, Cinematography and Prompt Pack, ending in `visuals/image-requests.json`.
 - Image, storyboard and prompt review: Panel Corrector and Verification, writing `visuals/image-review.json`.
 - Animation prompts, EN2 uploads, Ultra (`quality=true`) submission, collection and monitoring.
-- FFmpeg assembly.
+- FFmpeg assembly and the automatic edit (`starling-auto-edit`, `pipeline/auto_edit.py`) as soon as raw renders download.
 
 ChatGPT's work (script, audio, image generation and image edits) runs through Codex:
 
 ```powershell
-codex exec --skip-git-repo-check --sandbox workspace-write -C <project directory> "<exact request>"
+codex exec --skip-git-repo-check --sandbox workspace-write -C <project directory> - < request.md
 ```
+
+Put the request in a file and pass it on stdin: as a command-line argument, `codex.cmd` truncates it at characters such as `>` and `%`. In background runs always close or redirect stdin. Add `-c sandbox_workspace_write.network_access=true` when Codex must download provider files.
 
 Tell Codex in every request that it generates only: no copying files out of its folders, no approving its own output, no desktop applications. Collect generated images from `~/.codex/generated_images/<session>/` into the project, then record each one's hash and dimensions in `visuals/image_manifest.json` before reviewing it.
 

@@ -61,12 +61,13 @@ class StoryboardTests(unittest.TestCase):
         self.assertTrue(verify_board(board)["verified"])
 
     def test_spec_rules(self):
-        two = self.spec(); two["shots"] = two["shots"][:2]
+        four = self.spec(); four["shots"] = four["shots"] + [dict(four["shots"][2], shot=4, start=12.0, end=14.0)]
+        two_short = self.spec(); two_short["shots"] = two_short["shots"][:2]; two_short["shots"][1]["end"] = 5.0
         gap = self.spec(); gap["shots"][1]["start"] = 4.5
         short = self.spec(); short["shots"][2]["end"] = 9.0
         long = self.spec(); long["shots"][2]["end"] = 15.5
         long_caption = self.spec(); long_caption["shots"][0]["action"] = "word " * 60
-        for name, spec, message in (("two shots", two, "exactly 3"), ("gap", gap, "exactly where"),
+        for name, spec, message in (("four shots", four, "1, 2 or 3"), ("two short", two_short, "6-15"), ("gap", gap, "exactly where"),
                                     ("short", short, "10-15"), ("long", long, "10-15"),
                                     ("caption", long_caption, "too long")):
             with self.subTest(name), self.assertRaisesRegex(StoryboardError, message):
@@ -98,11 +99,23 @@ class StoryboardTests(unittest.TestCase):
             verify_board(self.root / "drawn.png")
 
     def test_cli_reports_errors_as_json(self):
-        spec = self.spec(); spec["shots"] = spec["shots"][:2]
+        spec = self.spec(); spec["shots"] = spec["shots"][:2]; spec["shots"][1]["end"] = 5.0
         path = self.root / "spec.json"; path.write_text(json.dumps(spec), encoding="utf-8")
         with contextlib.redirect_stdout(io.StringIO()) as out:
             self.assertEqual(storyboard.main(["compose", str(path)]), 1)
-        self.assertIn("exactly 3", out.getvalue())
+        self.assertIn("6-15", out.getvalue())
+
+    def test_one_and_two_shot_boards(self):
+        two = self.spec(); two["shots"] = two["shots"][:2]
+        record = compose(two, self.root)
+        self.assertEqual(record["format"], "storyboard_1x2_fixed")
+        self.assertEqual((record["width"], record["height"]), (1024, 1024))
+        self.assertEqual(record["cut_times"], [4.0])
+        self.assertEqual(verify_board(self.root / "board.png")["shot_count"], 2)
+        one = self.spec(out="one.png"); one["shots"] = [dict(one["shots"][0], end=5.0)]
+        record = compose(one, self.root)
+        self.assertEqual((record["format"], record["height"], record["cut_times"]), ("storyboard_1x1_fixed", 512, []))
+        self.assertTrue(verify_board(self.root / "one.png")["verified"])
 
 
 if __name__ == "__main__":

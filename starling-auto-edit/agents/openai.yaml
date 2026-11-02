@@ -1,0 +1,6 @@
+interface:
+  display_name: "Starling Auto-Edit"
+  short_description: "Edit raw EN2 renders into paced, clean node videos"
+  default_prompt: "Use $starling-auto-edit to run pipeline/auto_edit.py on the project, review its report and frame sheets, and list any re-renders."
+policy:
+  allow_implicit_invocation: true

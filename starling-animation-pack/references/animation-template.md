@@ -16,14 +16,14 @@ Use the official [MiniMax H3 reference guide](https://huggingface.co/MiniMaxAI/M
 
 Only when generated voiceover is explicitly requested, use `says in an off-screen voiceover` for every line. Put only the language tag and exact spoken words inside `<d>...</d>`; put speaker description, stable ID, action and delivery outside. Immediately after every voiceover block state that each visible character's lips remain completely closed. Describe the vocal identity on first use and retain its ID across shots. For speech crossing a cut, put `<scenetrans>` at both connecting points and state that it continues seamlessly. Preserve the complete script; do not impose a word-count cap. Keep speech out of overall_soundscape. The official guide specifies `non_diegetic_music: N/A` for no music. If prompt rewriting is used, inspect the rewritten result for these per-line constraints.
 
-The reusable example below uses the required three shots. Replace every placeholder with inspected scene facts and measured timing.
+The reusable example below uses three shots; for a one- or two-shot board drop the extra shot paragraphs and cut times. Replace every placeholder with inspected scene facts and measured timing.
 
 Replace the placeholders with inspected scene facts and measured timing. Definitions and indexes vary with the selected bundle; an environment-only sequence has no character or prop-sheet definitions.
 
 ```text
 subject_definitions:
 [Define only visible identities and relevant environment/prop subjects from the actual images.]
-<Picture N> is the inspected three-shot storyboard. Its top, middle and bottom pictures define Shots 1, 2 and 3, including composition, visible inventory and printed CAMERA/DEFINING ACTION/timing instructions.
+<Picture N> is the inspected storyboard. Its pictures, top to bottom, define Shots 1, 2 and 3 (as many as the board has), including composition, visible inventory and printed CAMERA/DEFINING ACTION/timing instructions.
 
 summary:
 [reference generation] [Duration]-second [2D, 2.5D or 3D] sequence showing [source-supported scene]. Three full-frame shots follow <Picture N>, with hard cuts at [cut time 1] and [cut time 2].
@@ -45,7 +45,7 @@ non_diegetic_music:
 N/A
 ```
 
-Make `detailed_description` 350-500 English words for narration, as EN2's live reference guide recommends, spread across the three shots by information load. Write action, camera and settling holds as natural English sentences inside each shot; do not print `ACTION:`, `CAMERA:` or `BUFFER:` labels in the prompt. State concrete observable motion. For a camera-only document insert, the camera reveals the existing rows while papers remain supported and unchanged. For an environment-only pond shot, describe the pictured shore, water level, inlet, steps and light, then the labelled ripples or trickle and camera movement. Do not introduce activity merely to fill time.
+Make `detailed_description` 350-500 English words for narration, as EN2's live reference guide recommends, spread across the shots by information load. Every narration prompt states that everyone keeps closed lips and nobody speaks (the runtime requires "closed lips"). Write action, camera and settling holds as natural English sentences inside each shot; do not print `ACTION:`, `CAMERA:` or `BUFFER:` labels in the prompt. State concrete observable motion. For a camera-only document insert, the camera reveals the existing rows while papers remain supported and unchanged. For an environment-only pond shot, describe the pictured shore, water level, inlet, steps and light, then the labelled ripples or trickle and camera movement. Do not introduce activity merely to fill time.
 
 For an eight-second example with three seconds of required action per shot and one-second buffers: Shot 1 action 0–3, hold 3–4; hard cut at 4; Shot 2 action 4–7, hold 7–8. Print those same ranges below the pictures. Assembly source_spans [[0,3],[4,7]] retain six seconds without stretching narration. Follow the [timing contract](timing-and-visual-review.md).
 

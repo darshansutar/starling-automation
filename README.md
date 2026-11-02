@@ -1,6 +1,6 @@
 # Starling automation
 
-Source-faithful branching video workflow: script, accepted audio, mandatory fixed-format three-shot narration storyboards, animation, review and final assembly.
+Source-faithful branching video workflow: script, accepted audio, mandatory fixed-format 1-3 shot narration storyboards, animation, automatic editing, review and final assembly.
 
 ## Contents
 
@@ -80,7 +80,7 @@ by the agent.
 
 ## Fixed-format narration storyboards
 
-ChatGPT generates each narration shot as a separate text-free picture. `pipeline/storyboard.py compose` builds every board to one fixed layout (1024 x 1536; three 1024 x 464 pictures, each above an ivory `#FBECD8` caption strip with identical 24 px dark text), rejects damaged or undersized pictures and boards outside 10-15 seconds, and `storyboard.py verify` checks any board against that layout. `storyboard.py check-image` is the integrity check run on every reference before upload. See [narration storyboard production](starling-animation-pack/references/narration-pairs.md).
+ChatGPT generates each narration shot as a separate text-free picture. `pipeline/storyboard.py compose` builds every board to one fixed layout (1024 wide; one 1024 x 464 picture per shot, 1-3 shots by narration length, each above an ivory `#FBECD8` caption strip with identical 24 px dark text), rejects damaged or undersized pictures and boards outside the 4-15 second range for their shot count, and `storyboard.py verify` checks any board against that layout. `storyboard.py check-image` is the integrity check run on every reference before upload. See [narration storyboard production](starling-animation-pack/references/narration-pairs.md).
 
 ## Timing and visual review
 

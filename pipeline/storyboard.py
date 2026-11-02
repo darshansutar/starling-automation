@@ -1,9 +1,12 @@
 """Fixed-format narration storyboard compositor and image integrity checks.
 
-ChatGPT generates the three shot pictures with no text. This module builds the
-board so every storyboard has identical geometry, caption colour and type:
+ChatGPT generates the shot pictures with no text. This module builds the
+board so every storyboard has identical geometry, caption colour and type.
+The shot count follows the narration it covers (see BOARD_SECONDS):
 
-    canvas 1024 x 1536, three 512 px blocks
+    1 shot  = storyboard_1x1: canvas 1024 x 512   (narration under ~4 s)
+    2 shots = storyboard_1x2: canvas 1024 x 1024  (about 4-8 s; the "2x1 grid")
+    3 shots = storyboard_1x3: canvas 1024 x 1536  (about 8-15 s)
     each block = picture 1024 x 464 + ivory caption strip 1024 x 48
     caption: SHOT n | start-end s | CAMERA | DEFINING ACTION
 
@@ -21,7 +24,8 @@ import hashlib
 import json
 from pathlib import Path
 
-WIDTH, HEIGHT = 1024, 1536
+WIDTH, HEIGHT = 1024, 1536          # HEIGHT is the three-shot board; boards are 512 px per shot
+BOARD_SECONDS = {1: (4.0, 15.0), 2: (6.0, 15.0), 3: (10.0, 15.0)}   # generated length allowed per shot count
 BLOCK_H, PICTURE_H, STRIP_H = 512, 464, 48
 IVORY = (0xFB, 0xEC, 0xD8)
 TEXT = (0x32, 0x12, 0x0B)
@@ -58,15 +62,15 @@ def sha256(path) -> str:
     return h.hexdigest()
 
 
-def picture_boxes():
-    """Return the fixed [left, top, right, bottom] picture and strip boxes."""
+def picture_boxes(count=3):
+    """Return the fixed [left, top, right, bottom] picture and strip boxes for a 1-3 shot board."""
     return [
         {
             "shot": i + 1,
             "picture": [0, i * BLOCK_H, WIDTH, i * BLOCK_H + PICTURE_H],
             "caption": [0, i * BLOCK_H + PICTURE_H, WIDTH, (i + 1) * BLOCK_H],
         }
-        for i in range(3)
+        for i in range(count)
     ]
 
 
@@ -162,10 +166,10 @@ def _fit_picture(source, focus_y):
 
 def validate_spec(spec):
     shots = spec.get("shots")
-    require(isinstance(shots, list) and len(shots) == 3, "A narration storyboard needs exactly 3 shots")
+    require(isinstance(shots, list) and len(shots) in BOARD_SECONDS, "A narration storyboard needs 1, 2 or 3 shots")
     previous_end = 0.0
     for index, shot in enumerate(shots, start=1):
-        require(shot.get("shot") == index, f"Shots must be numbered 1, 2, 3 in order (got {shot.get('shot')})")
+        require(shot.get("shot") == index, f"Shots must be numbered from 1 in order (got {shot.get('shot')})")
         start, end = shot.get("start"), shot.get("end")
         require(isinstance(start, (int, float)) and isinstance(end, (int, float)), f"Shot {index} needs numeric start and end")
         require(abs(start - previous_end) < 1e-6, f"Shot {index} must start exactly where the previous shot ends ({previous_end:.2f})")
@@ -173,7 +177,9 @@ def validate_spec(spec):
         require(shot.get("image"), f"Shot {index} needs an image path")
         previous_end = end
     total = shots[-1]["end"]
-    require(10.0 <= total <= 15.0, f"Narration board covers {total:.2f} s; it must be 10-15 s (split longer narration into another board)")
+    low, high = BOARD_SECONDS[len(shots)]
+    require(low <= total <= high, f"A {len(shots)}-shot narration board covers {total:.2f} s; it must be {low:g}-{high:g} s "
+                                  "(choose the shot count from the narration length, or split longer narration into another board)")
 
 
 def compose(spec, base_dir=None):
@@ -182,10 +188,11 @@ def compose(spec, base_dir=None):
     validate_spec(spec)
     base = Path(base_dir or ".")
     out = base / spec["out"]
-    board = Image.new("RGB", (WIDTH, HEIGHT), IVORY)
+    count = len(spec["shots"])
+    board = Image.new("RGB", (WIDTH, count * BLOCK_H), IVORY)
     draw = ImageDraw.Draw(board)
     inputs, fonts = [], []
-    for shot, box in zip(spec["shots"], picture_boxes()):
+    for shot, box in zip(spec["shots"], picture_boxes(count)):
         source_path = base / shot["image"]
         facts = check_image(source_path, min_width=MIN_SOURCE_WIDTH, min_height=PICTURE_H)
         with Image.open(source_path) as im:
@@ -205,15 +212,15 @@ def compose(spec, base_dir=None):
     out.parent.mkdir(parents=True, exist_ok=True)
     board.save(out, format="PNG")
     record = {
-        "format": "storyboard_1x3_fixed",
+        "format": f"storyboard_1x{count}_fixed",
         "board": spec["out"],
         "board_sha256": sha256(out),
-        "width": WIDTH, "height": HEIGHT,
-        "boxes": picture_boxes(),
+        "width": WIDTH, "height": count * BLOCK_H,
+        "boxes": picture_boxes(count),
         "captions": [caption_text(s) for s in spec["shots"]],
         "caption_font_px": fonts,
         "timing": [{"shot": s["shot"], "start": s["start"], "end": s["end"]} for s in spec["shots"]],
-        "cut_times": [spec["shots"][0]["end"], spec["shots"][1]["end"]],
+        "cut_times": [s["end"] for s in spec["shots"][:-1]],
         "duration": spec["shots"][-1]["end"],
         "inputs": inputs,
     }
@@ -226,11 +233,13 @@ def compose(spec, base_dir=None):
 def verify_board(path):
     """Check a board's size and that every caption strip is the fixed ivory with dark text."""
     Image, _, _, ImageStat = _pil()
-    facts = check_image(path, min_width=WIDTH, min_height=HEIGHT)
-    require((facts["width"], facts["height"]) == (WIDTH, HEIGHT), f"Board must be exactly {WIDTH}x{HEIGHT}")
+    facts = check_image(path, min_width=WIDTH, min_height=BLOCK_H)
+    count = facts["height"] // BLOCK_H
+    require(facts["width"] == WIDTH and facts["height"] == count * BLOCK_H and count in BOARD_SECONDS,
+            f"Board must be {WIDTH} wide and 512, 1024 or 1536 high (1, 2 or 3 shots); got {facts['width']}x{facts['height']}")
     with Image.open(path) as im:
         rgb = im.convert("RGB")
-    for box in picture_boxes():
+    for box in picture_boxes(count):
         left, top, right, bottom = box["caption"]
         # top and bottom 4 rows of the strip carry no text and must be pure ivory
         for y0 in (top, bottom - 4):
@@ -241,7 +250,7 @@ def verify_board(path):
         strip = rgb.crop((left, top, right, bottom))
         darkest, _ = strip.convert("L").getextrema()
         require(darkest < 70,f"Shot {box['shot']} caption strip has no dark caption text")
-    return {**facts, "format": "storyboard_1x3_fixed", "verified": True}
+    return {**facts, "format": f"storyboard_1x{count}_fixed", "shot_count": count, "verified": True}
 
 
 def main(argv=None):

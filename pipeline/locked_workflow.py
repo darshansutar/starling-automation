@@ -19,7 +19,7 @@ except ImportError:
 
 LOCK_PATH = Path(__file__).with_name("workflow_lock.json")
 # Update only as part of an explicitly reviewed workflow-contract change.
-EXPECTED_LOCK_SHA256 = "7ae137a795fa19af0a91bf450257dd814a963d7c9ee4a2ec14b691f29abfd603"
+EXPECTED_LOCK_SHA256 = "280461fc7af0e29ff00a6ce8b76fa1f97439e0466cb0b73fd7add7ddd93a4b76"
 
 
 def file_sha256(path: Path) -> str:

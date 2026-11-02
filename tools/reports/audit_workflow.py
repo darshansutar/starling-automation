@@ -8,7 +8,7 @@ ROOT = Path(__file__).resolve().parents[2]
 skills = sorted(ROOT.glob('starling-*/SKILL.md'))
 if not any(p.parent.name == 'starling-script-rebuilder' for p in skills):
     skills.append(Path.home()/'.codex/skills/starling-script-rebuilder/SKILL.md')
-assert len(skills) == 11, 'Expected eleven active skill entrypoints'
+assert len(skills) == 12, 'Expected twelve active skill entrypoints'
 markdown = set(ROOT.glob('pipeline/*.md'))
 for skill in skills:
     text = skill.read_text(encoding='utf-8-sig')

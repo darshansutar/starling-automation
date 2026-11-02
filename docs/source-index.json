@@ -3,7 +3,7 @@
     "name": "starling-production-master",
     "title": "Starling Production Master",
     "source": "C:\\Users\\darsh\\Downloads\\roleplay\\github\\starling-automation\\starling-production-master\\SKILL.md",
-    "sha256": "5f4d804fc764b39b6b3f5fb59190e19fdeb7b115018a3ec4d1ae9b53f1ea58e0",
+    "sha256": "3ae34e77e2f759c966012823490832783e967a609be013f306829176c4ebebc4",
     "output": "C:\\Users\\darsh\\Downloads\\roleplay\\github\\starling-automation\\deliveries\\workflow-explanation-2026-10-21\\skill-documents\\starling-production-master.docx",
     "render": "C:\\Users\\darsh\\Downloads\\roleplay\\github\\starling-automation\\tmp\\pdfs\\workflow-explanation\\starling-production-master.pdf"
   },
@@ -27,7 +27,7 @@
     "name": "starling-prompt-pack",
     "title": "Starling Prompt Pack",
     "source": "C:\\Users\\darsh\\Downloads\\roleplay\\github\\starling-automation\\starling-prompt-pack\\SKILL.md",
-    "sha256": "704e77b6eb97b910f832da570370a1d778c9b08b2d60a0932528ae26ff477306",
+    "sha256": "eef6d4b4302fcb005efa69be519e956aea2904a75577c0c38eeeab074b8fa7a6",
     "output": "C:\\Users\\darsh\\Downloads\\roleplay\\github\\starling-automation\\deliveries\\workflow-explanation-2026-10-21\\skill-documents\\starling-prompt-pack.docx",
     "render": "C:\\Users\\darsh\\Downloads\\roleplay\\github\\starling-automation\\tmp\\pdfs\\workflow-explanation\\starling-prompt-pack.pdf"
   },
@@ -43,7 +43,7 @@
     "name": "starling-cinematography",
     "title": "Starling Cinematography",
     "source": "C:\\Users\\darsh\\Downloads\\roleplay\\github\\starling-automation\\starling-cinematography\\SKILL.md",
-    "sha256": "e31dd4ae84a52e4b40a6cf8a56bb732bb731f118a23cfa26f26f8d675eceebb4",
+    "sha256": "65178c379cee1e776f7fd754f957a9d19cc3a48f8a10fdd1f2a6a529ee7b120c",
     "output": "C:\\Users\\darsh\\Downloads\\roleplay\\github\\starling-automation\\deliveries\\workflow-explanation-2026-10-21\\skill-documents\\starling-cinematography.docx",
     "render": "C:\\Users\\darsh\\Downloads\\roleplay\\github\\starling-automation\\tmp\\pdfs\\workflow-explanation\\starling-cinematography.pdf"
   },
@@ -51,7 +51,7 @@
     "name": "starling-image-pack-generator",
     "title": "Starling Image Pack Generator",
     "source": "C:\\Users\\darsh\\Downloads\\roleplay\\github\\starling-automation\\starling-image-pack-generator\\SKILL.md",
-    "sha256": "724a61f7021d9da8f631b1e7ebbd8f896e0654ff2d1f96326ec0c7c335e1f999",
+    "sha256": "23ceaaffd8f8d44770863ae71881eece2f402476086f0d60d379d189771b6526",
     "output": "C:\\Users\\darsh\\Downloads\\roleplay\\github\\starling-automation\\deliveries\\workflow-explanation-2026-10-21\\skill-documents\\starling-image-pack-generator.docx",
     "render": "C:\\Users\\darsh\\Downloads\\roleplay\\github\\starling-automation\\tmp\\pdfs\\workflow-explanation\\starling-image-pack-generator.pdf"
   },
@@ -59,7 +59,7 @@
     "name": "starling-panel-corrector",
     "title": "Starling Panel Corrector",
     "source": "C:\\Users\\darsh\\Downloads\\roleplay\\github\\starling-automation\\starling-panel-corrector\\SKILL.md",
-    "sha256": "6f6e2715c9270a9bcecd6072b86d0d9e03b92e3116487845e9e922b4aab05d55",
+    "sha256": "93638a9846fda8f5e0bec8ed0283a15abd324e24b8aa5a573f4fd051a137d4a3",
     "output": "C:\\Users\\darsh\\Downloads\\roleplay\\github\\starling-automation\\deliveries\\workflow-explanation-2026-10-21\\skill-documents\\starling-panel-corrector.docx",
     "render": "C:\\Users\\darsh\\Downloads\\roleplay\\github\\starling-automation\\tmp\\pdfs\\workflow-explanation\\starling-panel-corrector.pdf"
   },
@@ -67,7 +67,7 @@
     "name": "starling-animation-pack",
     "title": "Starling Animation Pack",
     "source": "C:\\Users\\darsh\\Downloads\\roleplay\\github\\starling-automation\\starling-animation-pack\\SKILL.md",
-    "sha256": "e4c7d36d1a647f6683893a536355b9dc8759e83f5cc10359f95afd52e1a00244",
+    "sha256": "1ab9ec7bd51313b4308ff075d443755da0ba76ee5a8cccc0dae3b4989996b38c",
     "output": "C:\\Users\\darsh\\Downloads\\roleplay\\github\\starling-automation\\deliveries\\workflow-explanation-2026-10-21\\skill-documents\\starling-animation-pack.docx",
     "render": "C:\\Users\\darsh\\Downloads\\roleplay\\github\\starling-automation\\tmp\\pdfs\\workflow-explanation\\starling-animation-pack.pdf"
   },
@@ -75,7 +75,7 @@
     "name": "starling-animation-monitor",
     "title": "Starling Animation Monitor",
     "source": "C:\\Users\\darsh\\Downloads\\roleplay\\github\\starling-automation\\starling-animation-monitor\\SKILL.md",
-    "sha256": "faf1a0b699394dce458d2b1b440f28a9a1f320af59793d3e8768174fe81f87c4",
+    "sha256": "de0843a54e169c93bf12e9dff578f1866df91ede33878c9bcbcee37858217fc2",
     "output": "C:\\Users\\darsh\\Downloads\\roleplay\\github\\starling-automation\\deliveries\\workflow-explanation-2026-10-21\\skill-documents\\starling-animation-monitor.docx",
     "render": "C:\\Users\\darsh\\Downloads\\roleplay\\github\\starling-automation\\tmp\\pdfs\\workflow-explanation\\starling-animation-monitor.pdf"
   },
@@ -83,8 +83,16 @@
     "name": "starling-verification",
     "title": "Starling Verification",
     "source": "C:\\Users\\darsh\\Downloads\\roleplay\\github\\starling-automation\\starling-verification\\SKILL.md",
-    "sha256": "82e4935f6e2eb95549c759c8e7dffcf29eee42181dd2c34af48a132046d86a8c",
+    "sha256": "082638ce33a0707b431e682adc02fac9f92fbfe04ff7ce535d7b30200e7ddbb2",
     "output": "C:\\Users\\darsh\\Downloads\\roleplay\\github\\starling-automation\\deliveries\\workflow-explanation-2026-10-21\\skill-documents\\starling-verification.docx",
     "render": "C:\\Users\\darsh\\Downloads\\roleplay\\github\\starling-automation\\tmp\\pdfs\\workflow-explanation\\starling-verification.pdf"
+  },
+  {
+    "name": "starling-auto-edit",
+    "title": "Starling Auto Edit",
+    "source": "C:\\Users\\darsh\\Downloads\\roleplay\\github\\starling-automation\\starling-auto-edit\\SKILL.md",
+    "sha256": "b0b6cc7a030bb557c363b5230fb1b63bd8d59b99b3360eb70087888c35501acb",
+    "output": "C:\\Users\\darsh\\Downloads\\roleplay\\github\\starling-automation\\deliveries\\workflow-explanation-2026-10-21\\skill-documents\\starling-auto-edit.docx",
+    "render": "C:\\Users\\darsh\\Downloads\\roleplay\\github\\starling-automation\\tmp\\pdfs\\workflow-explanation\\starling-auto-edit.pdf"
   }
 ]

@@ -122,7 +122,8 @@ def validate_render(payload, content_kind, reference_seconds=None):
 
 
 NEW_RENDER_WIDTH, NEW_RENDER_HEIGHT = 1344, 768
-NARRATION_SECONDS = (10, 15)
+NARRATION_SECONDS = (4, 15)   # any new narration render; the per-shot-count range is checked on the plan
+NARRATION_BOARD_SECONDS = {1: (4, 15), 2: (6, 15), 3: (10, 15)}
 
 
 def validate_locked_prompt(prompt, content_kind):
@@ -133,9 +134,9 @@ def validate_locked_prompt(prompt, content_kind):
         require(all(term in normalized for term in required),
                 'Dialogue prompt must hard-lock a static tripod, zero camera movement and no automatic reframing')
     elif content_kind == 'narration':
-        required = ('storyboard is the per-shot composition authority', 'identity and material only', 'final storyboard panel')
+        required = ('storyboard is the per-shot composition authority', 'identity and material only', 'final storyboard panel', 'closed lips')
         require(all(term in normalized for term in required),
-                'Narration prompt must lock per-shot storyboard composition, identity-only sheets and the final panel')
+                'Narration prompt must lock per-shot storyboard composition, identity-only sheets, the final panel and closed lips (nobody speaks)')
 
 
 def validate_new_submission(payload, content_kind):
@@ -146,7 +147,7 @@ def validate_new_submission(payload, content_kind):
     validate_locked_prompt(payload.get('prompt'), content_kind)
     if content_kind == 'narration':
         low, high = NARRATION_SECONDS
-        require(low <= payload.get('duration', 0) <= high, f'Narration renders must be {low}-{high} seconds; split longer narration into another board')
+        require(low <= payload.get('duration', 0) <= high, f'Narration renders must be {low}-{high} seconds (10-15 for three shots); split longer narration into another board')
 
 
 def validate_plan(plan):
@@ -178,10 +179,10 @@ def validate_plan(plan):
             return
         count = plan.get('shot_count')
         if plan['content_kind'] == 'narration':
-            require(count == 3 and plan.get('visual_format') == 'storyboard_1x3',
-                    'Narration requires a labelled three-panel storyboard_1x3')
-            low, high = NARRATION_SECONDS
-            require(low <= plan['payload']['duration'] <= high, f'Narration storyboards cover {low}-{high} seconds')
+            require(count in NARRATION_BOARD_SECONDS and plan.get('visual_format') == f'storyboard_1x{count}',
+                    'Narration requires a labelled storyboard_1x1, storyboard_1x2 or storyboard_1x3 matching its shot count')
+            low, high = NARRATION_BOARD_SECONDS[count]
+            require(low <= plan['payload']['duration'] <= high, f'{count}-shot narration storyboards cover {low}-{high} seconds')
             # Narration after dialogue is B-roll/subject action; only the narration-before-dialogue handoff is enforced, on the dialogue plan.
         elif count == 1:
             require(plan.get('visual_format') == 'narration_scene', 'Single-shot speech-free coverage requires one approved full-frame scene')
