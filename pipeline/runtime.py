@@ -437,7 +437,7 @@ class Project:
                     'warning': 'Intent saved before external call. On uncertainty, reconcile instead of submitting again.'}
 
     def job_update(self, intent, state, evidence, provider_id=None):
-        transitions = {'submitting': {'queued', 'submission_unknown', 'submission_rejected', 'cancelled_before_call'}, 'submission_unknown': {'queued'},
+        transitions = {'submitting': {'queued', 'submission_unknown', 'submission_rejected', 'cancelled_before_call'}, 'submission_unknown': {'queued', 'submission_rejected'},
                        'cancelled_before_call': set(),
                        'submission_rejected': set(),
                        'queued': {'running', 'review_pending', 'needs_fix'},
@@ -464,8 +464,12 @@ class Project:
                                      'the box drops renders that wait past ' in x.get('text', '') and
                                      'let it drain first' in x.get('text', '')
                                      for x in response.get('content', []))
+                reference_limit_error = any(x.get('type') == 'text' and
+                                            re.search(r'reference (audio|video|clip)s? \d+ is [\d.]+s', x.get('text', '')) and
+                                            'reference clips must be 2-15s' in x.get('text', '')
+                                            for x in response.get('content', []))
                 require(rejection.get('intent') == intent and not actual_id and response.get('isError') is True
-                        and (structured_error or typed_error or capacity_error),
+                        and (structured_error or typed_error or capacity_error or reference_limit_error),
                         'Explicit connector parameter or capacity rejection without a provider job required')
             require(state in {'submission_unknown', 'submission_rejected', 'cancelled_before_call'} or actual_id, 'Provider job ID required')
             require(not row['provider_id'] or actual_id == row['provider_id'], 'Provider job ID cannot change')

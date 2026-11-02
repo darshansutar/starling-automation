@@ -337,6 +337,26 @@ class RuntimeTests(unittest.TestCase):
         self.assertEqual(row['state'], 'submission_rejected')
         self.assertIsNone(row['provider_id'])
 
+    def test_reference_length_rejection_resolves_unknown_outcome(self):
+        self.ready()
+        task = self.project.prepare_render('clip1', payload(), 'narration')
+        self.project.job_update(task['intent'], 'submission_unknown', 'Script recorded an error response as unknown')
+        rejection = {'intent': task['intent'], 'response': {'isError': True, 'content': [
+            {'type': 'text', 'text': 'reference audio 1 is 1.9s — reference clips must be 2-15s'}]}}
+        path = Path(self.temp.name, 'length-rejection.json')
+        path.write_text(json.dumps(rejection), encoding='utf-8')
+        self.project.job_update(task['intent'], 'submission_rejected', path.name)
+        row = self.project.db.execute('SELECT state,provider_id FROM jobs WHERE intent=?', (task['intent'],)).fetchone()
+        self.assertEqual(row['state'], 'submission_rejected')
+        self.assertIsNone(row['provider_id'])
+        vague = {'intent': task['intent'], 'response': {'isError': True, 'content': [{'type': 'text', 'text': 'timeout'}]}}
+        other = self.project.prepare_render('clip1', payload(), 'narration')
+        self.project.job_update(other['intent'], 'submission_unknown', 'Synthetic timeout')
+        vague['intent'] = other['intent']
+        Path(self.temp.name, 'vague.json').write_text(json.dumps(vague), encoding='utf-8')
+        with self.assertRaises(PipelineError):
+            self.project.job_update(other['intent'], 'submission_rejected', 'vague.json')
+
     def test_unknown_submission_never_duplicates(self):
         self.ready()
         task = self.project.prepare_render('clip1', payload(), 'narration')
